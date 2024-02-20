@@ -1,0 +1,54 @@
+Due to some library problems, it only works on linux operating systems.
+Bazı kütüphanesel sorunlardan kaynaklı olarak sadece linux işletim 
+sistemlerinde çalışmaktadır.
+----------------------------------TUGAY TALHA İÇEN-------------------------------------------------
+
+  Firstly, As in the video, set up your arduino and connect it to your 
+computer so that the positive leg of the led is connected to the 13th 
+input of the arduino and the leg of the button from which we will 
+receive the data is connected to the 3rd input of the arduino.
+
+  Secondly, Upload the code in the file named "arduinocode" to your 
+arduino.
+
+  After that, Open the terminal in the "C codes" file or navigate to 
+the file named "C codes" in the terminal and Copy the: 
+"
+cc  -O -Wall -std=gnu99 -c TimeOfCodeOfC.c  -o Tugay.o
+cc  -O -Wall -std=gnu99 -o Tugay Tugay.o arduino-serial-lib.o
+./Tugay
+"
+command to the terminal and press enter to compile & execute.
+
+In the end, you can now do whatever you want within the program.
+
+
+
+Türkçesi:
+
+	  İlk olarak,Videodaki gibi, ledin pozitif bacağı arduino nun 13. 
+	girişine ve butonun veriyi alacağımız bacağı arduino'nun 3. girişine 
+	bağlı olacak şekilde arduinonuzu kurun ve bilgisayarınıza bağlayın. 
+	  
+	  İkincil olarak,"arduinocode" isimli dosyanın içindeki kodu 
+	arduinonuza yükleyin.
+
+	  Ondan sonra, terminali "C codes" dosyasının içinde açınız ya da 
+	terminalde "C codes" isimli dosyanın içine geliniz ve :
+	"
+	cc  -O -Wall -std=gnu99 -c TimeOfCodeOfC.c  -o Tugay.o
+	cc  -O -Wall -std=gnu99 -o Tugay Tugay.o arduino-serial-lib.o
+	./Tugay 
+	" 
+	komutunu terminale kopyalayıp (kopyalamadan önce başındaki tab boyutundaki
+	boşlukları silerseniz ya da yukarıda İngilizce olan kısımdan 
+	kopyalarsanız daha iyi olur) entera basarak derleme & uygulama 
+	işlemini gerçekleştiriniz.
+	
+	Artık programın içinde olduğunuza göre keyfinize bakabilirsiniz.
+	  
+
+
+
+
+
