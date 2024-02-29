@@ -1,0 +1,1203 @@
+Tetromino:
+
+
+   S S
+ S S
+
+
+Tetromino rotated left:
+
+ S
+ S S
+   S
+
+
+Tetromino rotated left x2:
+
+
+   S S
+ S S
+
+
+Empty board:
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+Press enter
+Tetromino added:
+x x x x x x x x x x x x
+x           S S       x
+x         S S         x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+Tetromino rotated right:
+x x x x x x x x x x x x
+x           S         x
+x           S S       x
+x             S       x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+Press enter for fast random play
+x x x x x x x x x x x x
+x                     x
+x         O O         x
+x         O O         x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x     O O             x
+x     O O             x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x   O O               x
+x   O O               x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x   O O               x
+x   O O               x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   O O               x
+x   O O               x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   O O               x
+x   O O               x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x     O O             x
+x     O O             x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   O O               x
+x   O O               x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   O O               x
+x   O O               x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   O O               x
+x   O O               x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   O O               x
+x   O O               x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               O O   x
+x               O O   x
+x                     x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x         O O         x
+x         O O         x
+x                     x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               O O   x
+x               O O   x
+x                     x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x               Z Z   x
+x                 Z Z x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 S S x
+x               S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x         Z Z         x
+x           Z Z       x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 S S x
+x               S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x       Z Z           x
+x         Z Z         x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 S S x
+x               S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x         Z Z         x
+x           Z Z       x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 S S x
+x               S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   Z Z               x
+x     Z Z             x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 S S x
+x               S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x         Z Z         x
+x           Z Z       x
+x                     x
+x                     x
+x                     x
+x                 S S x
+x               S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               Z Z   x
+x                 Z Z x
+x                     x
+x                     x
+x                 S S x
+x               S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x             Z Z     x
+x               Z Z   x
+x                     x
+x                 S S x
+x               S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   Z Z               x
+x     Z Z             x
+x                 S S x
+x               S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   Z Z               x
+x     Z Z         S S x
+x               S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x     Z Z         S S x
+x       Z Z     S S J x
+x                   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 S S x
+x           Z Z S S J x
+x             Z Z   J x
+x                 J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                 S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x               O O   x
+x                 L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x       Z Z           x
+x         Z Z         x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               Z Z   x
+x                 Z Z x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x   Z Z               x
+x     Z Z             x
+x                     x
+x                     x
+x                     x
+x                     x
+x               Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x   Z Z               x
+x     Z Z             x
+x                     x
+x                     x
+x                     x
+x               Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   Z Z               x
+x     Z Z             x
+x                     x
+x                     x
+x               Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   Z Z               x
+x     Z Z             x
+x                     x
+x               Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x     Z Z             x
+x       Z Z           x
+x               Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   Z Z               x
+x     Z Z       Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x             I I I I x
+x                     x
+x                     x
+x                     x
+x                     x
+x                   J x
+x                   J x
+x   Z Z           J J x
+x     Z Z       Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x       I I I I       x
+x                     x
+x                     x
+x                     x
+x                   J x
+x                   J x
+x   Z Z           J J x
+x     Z Z       Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x                     x
+x                     x
+x                   J x
+x                   J x
+x   Z Z           J J x
+x     Z Z       Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x           I I I I   x
+x                     x
+x                   J x
+x                   J x
+x   Z Z           J J x
+x     Z Z       Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x   I I I I           x
+x                   J x
+x                   J x
+x   Z Z           J J x
+x     Z Z       Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x           I I I I J x
+x                   J x
+x   Z Z           J J x
+x     Z Z       Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                   J x
+x           I I I I J x
+x   Z Z           J J x
+x     Z Z       Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x         L           x
+x         L     J     x
+x       I L I I J     x
+x             J J S S x
+x               S S   x
+x         I I I I S S x
+x   O O         S S J x
+x   O O     I I I I J x
+x   Z Z           J J x
+x     Z Z       Z Z   x
+x   I I I I       Z Z x
+x         I I I I S S x
+x               S S J x
+x           Z Z     J x
+x             Z Z J J x
+x               O O   x
+x       Z Z     O O   x
+x         Z Z     L   x
+x           S S   L   x
+x         S S     L L x
+x x x x x x x x x x x x
+
+
+
+Game finished, Press enter for next driver
+

@@ -1,0 +1,21 @@
+Empty: True  Size: 0
+PFArray: { 110 ,115 ,97 ,111 ,109 ,105}
+PFArray after sort: { 97 ,105 ,109 ,110 ,111 ,115}
+*(find(begin(), end(), 111)): 111
+*(++find(begin(), end(), 111)): 115
+Before erase  Empty: False  Size: 6
+After erase  Empty: False  Size: 5
+PFArray: { 97 ,105 ,109 ,110 ,115}
+for_each based PFArray print: {97 105 109 110 115 }
+Exception: Illegal index in PFArray.
+
+Empty: True  Size: 0
+PFArray: { n ,s ,a ,o ,m ,i}
+PFArray after sort: { a ,i ,m ,n ,o ,s}
+*(find(begin(), end(), 111)): o
+*(++find(begin(), end(), 111)): s
+Before erase  Empty: False  Size: 6
+After erase  Empty: False  Size: 5
+PFArray: { a ,i ,m ,n ,s}
+for_each based PFArray print: {a i m n s }
+Exception: Illegal index in PFArray.

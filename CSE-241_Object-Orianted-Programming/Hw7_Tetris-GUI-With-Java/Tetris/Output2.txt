@@ -1,0 +1,1093 @@
+java Tetris.Driver2
+Enter board wide: 10
+Enter board high: 10
+What are the type?
+I
+x x x x x x x x x x x x
+x             I       x
+x             I       x
+x             I       x
+x             I       x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+rotate Which direction?
+L
+rotate How many times?
+3
+move Which direction
+R
+move How many times?
+3
+x x x x x x x x x x x x
+x             I I I I x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x             I I I I x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x             I I I I x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x                     x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x                     x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x                     x
+x                     x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x                     x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+What are the type?
+T
+x x x x x x x x x x x x
+x             T       x
+x           T T       x
+x             T       x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+rotate Which direction?
+L
+rotate How many times?
+2
+move Which direction
+RIGHT
+move How many times?
+2
+x x x x x x x x x x x x
+x               T     x
+x               T T   x
+x               T     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x                     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x                     x
+x                     x
+x                     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x                     x
+x                     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x                     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+What are the type?
+I
+x x x x x x x x x x x x
+x             I       x
+x             I       x
+x             I       x
+x             I       x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+rotate Which direction?
+L
+rotate How many times?
+0
+Please enter a valid number.
+1
+move Which direction
+L
+move How many times?
+1
+x x x x x x x x x x x x
+x     I I I I         x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x     I I I I         x
+x                     x
+x                     x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x     I I I I         x
+x                     x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x     I I I I         x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x     I I I I         x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x     I I I I         x
+x               T     x
+x               T T   x
+x               T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x     I I I I   T     x
+x               T T   x
+x               T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               T     x
+x     I I I I   T T   x
+x               T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x     I I I I   T     x
+x             I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+What are the type?
+I
+x x x x x x x x x x x x
+x             I       x
+x             I       x
+x             I       x
+x             I       x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+rotate Which direction?
+R
+rotate How many times?
+2
+move Which direction
+R
+move How many times?
+0
+Please enter a valid number.
+R
+Please enter a valid number.
+1
+x x x x x x x x x x x x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x                     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x                     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+What are the type?
+I
+x x x x x x x x x x x x
+x             I       x
+x             I       x
+x             I I     x
+x             I I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+rotate Which direction?
+L
+rotate How many times?
+1
+move Which direction
+L
+move How many times?
+1
+x x x x x x x x x x x x
+x     I I I I         x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x     I I I I         x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x     I I I I   I     x
+x               I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x     I I I I   I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x     I I I I   I     x
+x               I     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x     I I I I   I     x
+x               T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x     I I I I   T     x
+x               T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x               T     x
+x     I I I I   T T   x
+x               T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+What are the type?
+T
+x x x x x x x x x x x x
+x             T       x
+x           T T       x
+x             T I     x
+x               I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+rotate Which direction?
+L1
+rotate How many times?
+1
+move Which direction
+L
+move How many times?
+1
+x x x x x x x x x x x x
+x         T           x
+x       T T T         x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x         T           x
+x       T T T   I     x
+x               I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x         T     I     x
+x       T T T   I     x
+x               I     x
+x               I     x
+x               T     x
+x               T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x         T     I     x
+x       T T T   I     x
+x               I     x
+x               T     x
+x               T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x         T     I     x
+x       T T T   I     x
+x               T     x
+x               T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x         T     I     x
+x       T T T   T     x
+x               T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+What are the type?
+I
+x x x x x x x x x x x x
+x             I       x
+x             I       x
+x             I I     x
+x             I I     x
+x               I     x
+x               I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+rotate Which direction?
+L
+rotate How many times?
+1
+move Which direction
+L
+move How many times?
+1
+x x x x x x x x x x x x
+x     I I I I         x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x     I I I I         x
+x               I     x
+x               I     x
+x               I     x
+x               I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x     I I I I   I     x
+x               I     x
+x               I     x
+x               I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x     I I I I   I     x
+x               I     x
+x               I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x     I I I I   I     x
+x               I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x               I     x
+x               I     x
+x               I     x
+x     I I I I   I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+What are the type?
+T
+x x x x x x x x x x x x
+x             T       x
+x           T T       x
+x             T I     x
+x               I     x
+x               I     x
+x     I I I I   I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+rotate Which direction?
+L
+rotate How many times?
+2
+move Which direction
+L
+move How many times?
+1
+x x x x x x x x x x x x
+x         T           x
+x         T T         x
+x         T     I     x
+x               I     x
+x               I     x
+x     I I I I   I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x         T           x
+x         T T   I     x
+x         T     I     x
+x               I     x
+x     I I I I   I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+x x x x x x x x x x x x
+x                     x
+x                     x
+x         T     I     x
+x         T T   I     x
+x         T     I     x
+x     I I I I   I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+What are the type?
+T
+x x x x x x x x x x x x
+x             T       x
+x           T T       x
+x         T   T I     x
+x         T T   I     x
+x         T     I     x
+x     I I I I   I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+rotate Which direction?
+L
+rotate How many times?
+2
+move Which direction
+L
+move How many times?
+2
+Couldn't as shift as want beacuse of impossible
+x x x x x x x x x x x x
+x           T         x
+x           T T       x
+x         T T   I     x
+x         T T   I     x
+x         T     I     x
+x     I I I I   I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+What are the type?
+T
+x x x x x x x x x x x x
+x             T       x
+x           T T       x
+x         T T   I     x
+x         T T   I     x
+x         T     I     x
+x     I I I I   I     x
+x         T     T     x
+x       T T T   T T   x
+x     I I I I   T     x
+x     I I I I I I I I x
+x x x x x x x x x x x x
+
+
+
+                                         Game over!!!
