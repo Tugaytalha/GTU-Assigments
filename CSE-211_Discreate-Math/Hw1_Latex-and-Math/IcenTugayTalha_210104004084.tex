@@ -1,0 +1,287 @@
+\documentclass[a4 paper]{article}
+\usepackage[inner=2.0cm,outer=2.0cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage[ruled]{algorithm2e}
+\usepackage[rgb]{xcolor}
+\usepackage{verbatim}
+\usepackage{subcaption}
+\usepackage{amsgen,amsmath,amstext,amsbsy,amsopn,tikz,amssymb,tkz-linknodes}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true, urlcolor=blue,  linkcolor=blue, citecolor=blue]{hyperref}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{rotating}
+\usepackage{booktabs}
+\usetikzlibrary{positioning,shapes,fit,arrows}
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Remark}
+\numberwithin{equation}{section}
+
+\newcommand{\homework}[6]{
+   \pagestyle{myheadings}
+   \thispagestyle{plain}
+   \newpage
+   \setcounter{page}{1}
+   \noindent
+   \begin{center}
+   \framebox{
+      \vbox{\vspace{2mm}
+    \hbox to 6.28in { {\bf CSE 211:~Discrete Mathematics \hfill {\small (#2)}} }
+       \vspace{6mm}
+       \hbox to 6.28in { {\Large \hfill #1  \hfill} }
+       \vspace{6mm}
+       \hbox to 6.28in { {\it Instructor: {\rm #3} \hfill Name: {\rm #5} \hfill Student Id: {\rm #6}} \hfill}
+       \hbox to 6.28in { {\it Assistant: #4  \hfill #6}}
+      \vspace{2mm}}
+   }
+   \end{center}
+   \markboth{#5 -- #1}{#5 -- #1}
+   \vspace*{4mm}
+}
+
+\newcommand{\problem}[2]{~\\\fbox{\textbf{Problem #1}}\hfill (#2 points)\newline\newline}
+\newcommand{\subproblem}[1]{~\newline\textbf{(#1)}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\Hy}{\mathcal{H}}
+\newcommand{\VS}{\textrm{VS}}
+\newcommand{\solution}{~\newline\textbf{\textit{(Solution)}} }
+
+\newcommand{\bbF}{\mathbb{F}}
+\newcommand{\bbX}{\mathbb{X}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bX}{\mathbf{X}}
+\newcommand{\bY}{\mathbf{Y}}
+\newcommand{\bepsilon}{\boldsymbol{\epsilon}}
+\newcommand{\balpha}{\boldsymbol{\alpha}}
+\newcommand{\bbeta}{\boldsymbol{\beta}}
+\newcommand{\0}{\mathbf{0}}
+
+
+\begin{document}
+\homework{Homework \#1}{Due: 30/10/22}{Dr. Zafeirakis Zafeirakopoulos}{Başak Karakaş}{}{}
+\textbf{Course Policy}: Read all the instructions below carefully before you start working on the assignment, and before you make a submission.
+\begin{itemize}
+\item It is not a group homework. Do not share your answers to anyone in any circumstance. Any cheating means at least -100 for both sides. 
+\item Do not take any information from Internet.
+\item No late homework will be accepted. 
+\item For any questions about the homework, send an email to bkarakas2018@gtu.edu.tr
+\item Use LaTeX. You can work on the tex file shared with you in the assignment document.
+\item Submit both the tex and pdf files into Homework1. Name of the files should be "\emph{SurnameName$\_$Id.tex}" and "\emph{SurnameName$\_$Id.pdf}".
+\end{itemize}
+
+\problem{1: Sets}{3+3+3+3+3=15}
+Which of the following sets are equal? Show your work step by step.\newline
+\subproblem{a} $\{$t : t is a root of $x^2$ – 6x + 8 = 0$\}$
+\newline
+\subproblem{b} $\{$y : y is a real number in the closed interval [2, 3]$\}$
+\newline
+\subproblem{c} $\{$4, 2, 5, 4$\}$
+\newline
+\subproblem{d} $\{$4, 5, 7, 2$\}$ - $\{$5, 7$\}$
+\newline
+\subproblem{e} $\{$q: q is either the number of sides of a rectangle or the number of digits in any integer between 11 and 99$\}$\\
+\solution
+\newline
+$(a)$ \[ (x-4)×(x-2) = 0\]
+\[ x = 4\]  \[ x=2\] 
+\[ t\in\{4, 2\}\] 
+
+$(b)$ \[ y\in[2,3]\]
+
+$(c)$ \[ \{ 4,2,5,4\}\]
+
+$(d)$ \[ \{ 4,2\}\]
+
+$(e)$ The number of sides of a rectangle = 4, The number of digits in any integer between 11
+and 99 = 2
+\[ q\in\{ 4,2\}\]
+
+ \centering\textit{\fontsize{15}{15}\fontfamily{ptm}\selectfont(a), (d) and (e) is equal}
+
+\newpage
+\problem{2: Cardinality of Sets}{2+2+2+2=8}
+What is the cardinality of each of these sets? Explain your answers.\\
+\subproblem{a} $\{\emptyset\}$\\
+\subproblem{b} $\{\emptyset,\{\emptyset\}\}$\\
+\subproblem{c} $\{\emptyset,\{\emptyset,\{\emptyset\}\}\}$\\
+\subproblem{d} $\{\emptyset,\{\emptyset,\{\emptyset,\{\emptyset\}\}\}\}$\\
+\solution
+\newline
+\newline
+\newline
+$(a)$ {Set that have 1 element that is a empty set ($\emptyset$)} \\
+$(b)$ Have 2 different elements which are $\emptyset$ and $\{\emptyset\}$ \\
+$(c)$ Have 2 different elements which are $\emptyset$ and $\{\emptyset,\{\emptyset\}\}$ \\
+$(d)$ Have 2 different elements which are $\emptyset$ and $\{\emptyset,\{\emptyset,\{\emptyset\}\}\}$ \\~\\
+The sets $(b)$, $(c)$ and $(d)$ have the element as a set. That is only one element, we can't count it separately
+\newline
+\newline
+\newline
+
+
+
+
+\problem{3: Cartesian Product of Sets}{15}
+Explain why (A $\times$ B) $\times$ (C $\times$ D) and A $\times$ (B $\times$ C) $\times$ D are not the same.\\
+\solution
+\newline
+\newline
+{Assume that A = \{1\}, B = \{3, 4\}, C = \{5\}, D = \{7, 8\}} \\~\\
+\raggedright{(a)} \[(A\times B) = \{(1, 3), (1, 4)\}\]
+\[(C\times D) = \{(5, 7), (5, 8)\}\]
+\[(A\times B)\times(C\times D) = ((1, 3), (5, 7)), ((1, 3), (5 ,8)), ((1, 4), (5, 7)), ((1 ,4), (5, 8))\]  \\~\\
+\hspace{20}That means $(A\times B) = \{(a, b), a\in A, b\in B\}$ \hspace{20}
+$(C\times D) = \{(c, d), c\in C, d\in D\}$
+\[(A\times B)\times(C\times D) = \{((a, b),(c, d)), a\in A, b\in B, c\in C, d\in D\}\] 
+
+\raggedright{(b)} \[(B\times C) = \{(3, 5), (4, 5)\}\]
+\[A\times(B\times C)\times D = \{(1, (3, 5), 7), (1, (3, 5), 8), (1, (4, 5), 7), (1, (4, 5), 8)\}\]
+\\~\\ \hspace{20}{That means $(B\times C) = \{(b, c), b\in B, c\in C\}$}
+\[A\times (B\timesC)\times D) = \{(a, (b,c), d), a\in A, b\in B, c\in C, d\in D\}\] \\~\\
+\hspace{20}$\{((a, b),(c, d))\}\neq\{(a, (b,c), d)\}$ therefore they aren't same 
+
+\newpage
+\problem{4: Cartesian Product of Sets in Algorithms }{25}
+Let A, B and C be sets which have different cardinalities. Let (p, q, r) be each triple of A $\times$ B $\times$ C where p $\in$ A, q $\in$ B and r $\in$ C. Design an algorithm which finds all the triples that are satisfying the criteria: p $\leq$ q and q $\geq$ r. Write the pseudo code of the algorithm in your solution.\newline
+\newline
+For example: Let the set A, B and C be as A = $\{$ 3, 5, 7 $\}$, B = $\{$ 3, 6 $\}$ and C = $\{$ 4, 6, 9 $\}$. Then the output should be : $\{$ (3, 6, 4), (3, 6, 6), (5, 6, 4), (5, 6, 6) $\}$. \newline
+\newline
+(Note: Assume that you have sets of A, B, C as an input argument.)\newline
+\solution
+
+\begin{algorithm}
+\SetAlgoLined
+\KwIn{The sets of A, B, C}
+\eIf{write a condition}{
+    Statements
+}{
+ Statements
+}
+ When you want to write a for loop, you can use: \newline
+\For{write a condition}{
+
+}
+ When you want to write a while loop, you can use: \newline
+\While{write a condition}{
+If you need to return, use \Return
+}
+ For any additional things you have to do while writing your pseudo code, Google "How to use algorithm2e in Latex?".
+\caption{Pseudo Code of Your Algorithm}
+\end{algorithm}
+
+\begin{algorithm}
+\SetAlgoLined
+\KwIn{The sets of A, B, C}
+$Rset \gets \{\}$ \\
+\For{$p \in A$}{
+    \For{$q \in B$}{
+        \For{$r \in C$}{
+            \If{$p \le q \And q \geq r$}{
+                $Rset \gets Rset + \{(p, q, r)\}$
+            }
+        }
+    }
+}
+\Return $Rset$
+
+\caption{My Algorithm}
+\end{algorithm}
+
+\newpage
+\problem{5: Functions}{16}
+If f and f $\circ$ g are one-to-one, does it follow that g is one-to-one? Justify your answer.\\
+\solution
+\newline
+\newline
+Assume a function is one-to-one, if $f(x)=f(y) x=y$ and if $x\neq y, f(x)\neq f(y)$ \\~\\
+\centering{if $g:A\xrightarrow[]{}B$ and $f:C\xrightarrow[]{}D$, $f\circ g:A\xrightarrow[]{}D$}
+\\$f(z)$ is one-to-one and $f(g(x))$ is one-to-one, if $f(z)=f(g(x)), z = g(x)$ and if z = g(x) and $z\in C$,\hspace{3} $g(x)\in C$ \\~\\
+{Let's assume $g(x)$ isn't one to one function when $g(x) = g(y)$ and $x\neq y$ \\ will be $f(g(x)) = f(g(y))$ but as we can see 2 elements of the domain correspond to a single element of the image set, that mean is if $g(x)$ isn't one-to-one $f\circ g(x)$ cannot be one-to-one therefore $g(x)$ is one-to-one}
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+
+\problem{6: Functions}{7+7+7=21}
+Determine whether the function $f:$ $\mathbb{Z}\times\mathbb{Z}\to\mathbb{Z}$ is onto if\\
+\subproblem{a} $f(m,n)=2m-n$\\
+\subproblem{b} $f(m,n)=m^2-n^2$\\
+\subproblem{c} $f(m,n)=\mid m\mid - \mid n\mid$\\
+\solution
+\newline
+
+\raggedright{(a)}
+Let's say $m = 0,$ \[ f(0,n) = 2*0 - n, \hspace{10} n\in Z\]
+\begin{center}
+\begin{tabular}{ | m{0.1cm} | m{0.1cm}| m{0.1cm} | } 
+ \hline
+ n & f(0,n) \\ [0.5ex] 
+ \hline
+ \hline
+ -2 & 2  \\
+ \hline
+ -1 & 1\\
+ \hline
+ 0 & 0 \\
+ \hline
+ 1 & -1  \\
+ \hline
+ 2 & -2  \\  [0.2ex] 
+ \hline
+\end{tabular}
+\end{center}
+$n\in Z$ for all $Z$ value $n$ have a value that's why this function is onto \\~\\
+
+$(b)$ \\\hspace{20}There are no perfect square expressions with two spaces between them that's why $f(n,m) = m$ is not onto \\~\\
+
+$(c)$ let's examine the problem in 2 parts  \\\hspace{10} 1. $f(m,0)$  \\\hspace{10} 2. $f(0,n)$ \\ 
+$(1).$ \\\hspace{10} $f(m,0) = |m|,$ $m\in Z;$ $|m|$ is take all non-negative$(\{0\} + Z^+)$ values  
+$(2).$ \\\hspace{10} $f(0,n) = -|n|$ $n\in Z;$ $|n|$ is always in $N$ therefore $-|n|$ take all non-positive$(\{0\} + Z^-)$ values  
+\[ Z^- + \{0\} + Z^+ = Z\] as we can see  $f(m,n)$ takes all integer values and it is onto
+
+\newpage
+\problem{7: Functions}{Bonus 20}
+Suppose that $f$ is a function from $A$ to $B$, where $A$ and $B$ are finite sets with $\mid A\mid=\mid B\mid$. Show that $f$ is one-to-one if and only if it is onto.\\
+\solution
+\newline
+\newline
+Onto is that all elements in the range match at least one element in the domain
+and one-to-one is all elements in the range match at most one element in the domain \\ 
+In the case where the cardinality of the sets is equal, since the number of elements in it are equal, for the function to be an non-matched element in the range (not onto), at least 2 elements in the domain must match the same 1 element in the image set, so it cannot be one-to-one
+\begin{tikzpicture}[line width=1pt,>=latex]
+\sffamily
+\node (a1) {•1};
+\node[below=of a1] (a2) {•2};
+\node[below=of a2] (a3) {•3};
+\node[below=of a3] (a4) {•4};
+
+\node[right=4cm of a1] (aux1) {};
+\node[below= 0.5cm of aux1] (b1) {•5};
+\node[below=of b1] (b2) {•6};
+\node[below=of b2] (b3) {•7};
+\node[below=of b3] (b4) {•8};
+\node[right=4cm of a4] (aux2) {};
+
+\node[shape=ellipse,draw=myblue,minimum size=3cm,fit={(a1) (a4)}] {};
+\node[shape=ellipse,draw=myblue,minimum size=3cm,fit={(aux1) (aux2)}] {};
+
+\node[below=1.5cm of a4,font=\color{myblue}\Large\bfseries] {Domain};
+\node[below=1.5cm of aux2,font=\color{myblue}\Large\bfseries] {Range};
+
+\draw[->,myblue] (a1) -- (b1.170);
+\draw[->,myblue] (a2) -- (b3.190);
+\draw[->,myblue] (a3) -- (b2.175);
+\draw[->,myblue] (a4.20) -- (b2.190);
+\end{tikzpicture}
+
+\end{document} 
+
+
