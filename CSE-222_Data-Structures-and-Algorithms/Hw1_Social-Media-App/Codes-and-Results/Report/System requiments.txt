@@ -1,0 +1,4 @@
+Ram : 1 gb +
+OS: 64 bit (windows 11 recommended)
+CPU: dual core 1 ghz +
+Memory space: 50 mb is 	exceedingly enough

@@ -1,0 +1,52 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+//SCENARIO 1
+
+
+Login succesfull to sibelgulmez
+User not logged in
+Log out succesfully to sibelgulmez
+Login succesfull to gokhankaya
+User ID: 2
+Username: sibelgulmez
+Location: Tuzla/Istanbul
+Birthdate: 08.04.1995
+gokhankaya is following 2account(s) and has 0 follower(s)
+Followers:
+- sibelgulmez
+Following:
+gokhankaya has 2 post(s)
+Viewing sibelgulmez's posts...
+(PostID: 1) sibelgulmez: I like Java.
+(PostID: 2) sibelgulmez: Java the coffee...
+Post liked successfully.
+Comment added.
+Message posted to gizemsungu
+User not logged in
+Log out succesfully to gokhankaya
+Login succesfull to gizemsungu
+You have 0 in outbox
+You have 1 in inbox
+Inbox:
+gokhankaya: This homework is too easy!
+ I was just kidding xD
+User ID: 2
+Username: sibelgulmez
+Location: Tuzla/Istanbul
+Birthdate: 08.04.1995
+gizemsungu is following 2account(s) and has 1 follower(s)
+Followers:
+- sibelgulmez
+- gokhankaya
+Following:
+gizemsungu has 2 post(s)
+Viewing sibelgulmez's posts...
+(PostID: 1) sibelgulmez: I like Java.
+(PostID: 2) sibelgulmez: Java the coffee...
+Please log in to view post interactions.
+Please log in to view post interactions.
+Post liked successfully.
+Ivalid post
+Please log in to view post interactions.
+Please log in to view post interactions.
+User not logged in
+Log out succesfully to gizemsungu

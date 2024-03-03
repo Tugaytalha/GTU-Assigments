@@ -1,0 +1,55 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SCENARIO 2
+
+
+Login succesfull to gizemsungu
+User not logged in
+Log out succesfully to gizemsungu
+Login succesfull to sibelgulmez
+User ID: 1
+Username: gizemsungu
+Location: Gebze/Kocaeli
+Birthdate: 19.02.1996
+sibelgulmez is following 0account(s) and has 2 follower(s)
+Followers:
+- gokhankaya
+Following:
+- gizemsungu
+- gokhankaya
+sibelgulmez has 2 post(s)
+Ivalid post
+User not logged in
+Log out succesfully to sibelgulmez
+Login succesfull to gokhankaya
+User ID: 1
+Username: gizemsungu
+Location: Gebze/Kocaeli
+Birthdate: 19.02.1996
+gokhankaya is following 0account(s) and has 2 follower(s)
+Followers:
+- sibelgulmez
+Following:
+- sibelgulmez
+- gizemsungu
+gokhankaya has 2 post(s)
+You must be logged in to add comments.
+Message posted to gizemsungu
+User not logged in
+Log out succesfully to gokhankaya
+Login succesfull to gizemsungu
+User ID: 1
+Username: gizemsungu
+Location: Gebze/Kocaeli
+Birthdate: 19.02.1996
+gizemsungu is following 0account(s) and has 2 follower(s)
+Followers:
+- sibelgulmez
+- gokhankaya
+Following:
+gizemsungu has 2 post(s)
+Inbox:
+gokhankaya: This homework is too easy!
+ I was just kidding xD
+gokhankaya: Hello!
+User not logged in
+Log out succesfully to gizemsungu

@@ -1,0 +1,278 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SCENARIO 1
+
+
+User name has changed.
+Account created succesfully
+User name has changed.
+Account created succesfully
+User name has changed.
+Account created succesfully
+
+Login succesfull to sibelgulmez
+
+Posted succesfully.
+
+Posted succesfully.
+
+Succesfully followed
+
+Succesfully followed
+
+Log out succesfully to sibelgulmez
+
+Login succesfull to gokhankaya
+
+User ID: 2
+Username: sibelgulmez
+Location: Tuzla/Istanbul
+Birthdate: 08.04.1995
+sibelgulmez is following 2 account(s) and has 0 follower(s)
+Following:
+- gizemsungu
+- gokhankaya
+Followers:
+sibelgulmez has 2 post(s)
+
+Viewing sibelgulmez's posts...
+(PostID: 1) sibelgulmez: I like Java.
+(PostID: 2) sibelgulmez: Java the coffee...
+
+Post liked successfully.
+
+Comment added.
+
+Succesfully followed
+
+Succesfully followed
+
+Message posted to gizemsungu
+
+Log out succesfully to gokhankaya
+
+Login succesfull to gizemsungu
+You have 0 in outbox
+You have 1 in inbox
+
+Inbox:
+gokhankaya: This homework is too easy!
+ I was just kidding xD
+
+User ID: 2
+Username: sibelgulmez
+Location: Tuzla/Istanbul
+Birthdate: 08.04.1995
+sibelgulmez is following 2 account(s) and has 1 follower(s)
+Following:
+- gizemsungu
+- gokhankaya
+Followers:
+- gokhankaya
+sibelgulmez has 2 post(s)
+
+Viewing sibelgulmez's posts...
+(PostID: 1) sibelgulmez: I like Java.
+(PostID: 2) sibelgulmez: Java the coffee...
+
+Interactions for post 1:
+No one has liked this post yet.
+No comments on this post yet.
+
+Interactions for post 2:
+Likes:
+- gokhankaya
+Comments:
+gokhankaya: me too!
+
+Post liked successfully.
+
+Post liked successfully.
+
+Interactions for post 1:
+Likes:
+- gizemsungu
+No comments on this post yet.
+
+Interactions for post 2:
+Likes:
+- gokhankaya
+- gizemsungu
+Comments:
+gokhankaya: me too!
+
+Log out succesfully to gizemsungu
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SCENARIO 2
+
+
+
+Login succesfull to gizemsungu
+
+Posted succesfully.
+
+Posted succesfully.
+
+Log out succesfully to gizemsungu
+
+Login succesfull to sibelgulmez
+
+User ID: 1
+Username: gizemsungu
+Location: Gebze/Kocaeli
+Birthdate: 19.02.1996
+gizemsungu is following 0 account(s) and has 2 follower(s)
+Following:
+Followers:
+- sibelgulmez
+- gokhankaya
+gizemsungu has 2 post(s)
+Index 2 out of bounds for length 2
+
+Log out succesfully to sibelgulmez
+
+Login succesfull to gokhankaya
+
+User ID: 1
+Username: gizemsungu
+Location: Gebze/Kocaeli
+Birthdate: 19.02.1996
+gizemsungu is following 0 account(s) and has 2 follower(s)
+Following:
+Followers:
+- sibelgulmez
+- gokhankaya
+gizemsungu has 2 post(s)
+
+Comment added.
+
+Message posted to gizemsungu
+
+Log out succesfully to gokhankaya
+
+Login succesfull to gizemsungu
+
+User ID: 1
+Username: gizemsungu
+Location: Gebze/Kocaeli
+Birthdate: 19.02.1996
+gizemsungu is following 0 account(s) and has 2 follower(s)
+Following:
+Followers:
+- sibelgulmez
+- gokhankaya
+gizemsungu has 2 post(s)
+
+Inbox:
+gokhankaya: This homework is too easy!
+ I was just kidding xD
+gokhankaya: Hello!
+
+Log out succesfully to gizemsungu
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SCENARIO 3
+
+
+
+Login succesfull to gizemsungu
+
+
+You are not following this user
+You have blocked sibelgulmez.
+
+Log out succesfully to gizemsungu
+
+Login succesfull to sibelgulmez
+
+You must be logged in to view profiles (clue: maybe blocked).
+
+Please follow the user before send a message (clue: maybe blocked)
+
+Log out succesfully to sibelgulmez
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SCENARIO 4
+
+
+
+Login succesfull to gizemsungu
+
+Succesfully followed
+
+User ID: 1
+Username: gizemsungu
+Location: Gebze/Kocaeli
+Birthdate: 19.02.1996
+gizemsungu is following 1 account(s) and has 1 follower(s)
+Following:
+- gokhankaya
+Followers:
+- gokhankaya
+gizemsungu has 2 post(s)
+
+You have unblocked sibelgulmez.
+
+Successfully unfollowed
+
+Succesfully followed
+
+User ID: 1
+Username: gizemsungu
+Location: Gebze/Kocaeli
+Birthdate: 19.02.1996
+gizemsungu is following 1 account(s) and has 1 follower(s)
+Following:
+- sibelgulmez
+Followers:
+- gokhankaya
+gizemsungu has 2 post(s)
+
+Log out succesfully to gizemsungu
+
+Login succesfull to gokhankaya
+
+User ID: 2
+Username: sibelgulmez
+Location: Tuzla/Istanbul
+Birthdate: 08.04.1995
+sibelgulmez is following 1 account(s) and has 2 follower(s)
+Following:
+- gokhankaya
+Followers:
+- gokhankaya
+- gizemsungu
+sibelgulmez has 2 post(s)
+
+Interactions for post 2:
+Likes:
+- gokhankaya
+- gizemsungu
+Comments:
+gokhankaya: me too!
+
+Post unliked successfully.
+
+Comment removed.
+Comment removed.
+
+Interactions for post 2:
+Likes:
+- gizemsungu
+No comments on this post yet.
+
+Activity history for gokhankaya:
+User name changed togokhankaya
+gokhankayastarted following you
+You liked a post ID:2
+You commentedme too!to post ID:2
+You followed sibelgulmez
+You followed gizemsungu
+You commentedNice!to post ID:4
+gokhankayastarted following you
+gokhankayastopped following you
+You unliked a post ID:2
+You removed a comment with content 'me too!' from post ID:2
+
+Log out succesfully to gokhankaya
+Scenario 1:93ms
+Scenario 2:29ms
+Scenario 3:2ms
+Scenario 4:9ms

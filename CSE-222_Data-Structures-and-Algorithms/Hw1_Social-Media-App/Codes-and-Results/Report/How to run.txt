@@ -1,0 +1,8 @@
+1. Unzip the file
+2. In the 210104004084_HW1 use this commands:
+cd homework1
+javac *.java
+cd ..
+java homework1.TestClass 
+
+3. Code will be executed have fun ^_^

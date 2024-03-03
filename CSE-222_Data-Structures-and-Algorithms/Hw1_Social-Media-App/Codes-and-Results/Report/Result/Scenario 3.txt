@@ -1,0 +1,13 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//SCENARIO 3
+
+
+Login succesfull to gizemsungu
+You have blocked sibelgulmez.
+User not logged in
+Log out succesfully to gizemsungu
+Login succesfull to sibelgulmez
+You must be logged in to view profiles (clue: maybe blocked).
+Please follow the user before send a message (clue: maybe blocked)
+User not logged in
+Log out succesfully to sibelgulmez
