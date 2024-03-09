@@ -1,0 +1,100 @@
+java homework6.Main
+Orginal String:             Buzzing bees buzz.
+Preprocessed String:        buzzing bees buzz
+
+
+
+The ORginal (unsorted) map
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: s - Count: 1 - Words: [bees]
+
+
+The sorted map
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: s - Count: 1 - Words: [bees]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+
+
+Orginal String:             'Hush, hush!' whispered the rushing wind.
+Preprocessed String:        hush hush whispered the rushing wind
+
+
+
+The ORginal (unsorted) map
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: p - Count: 1 - Words: [whispered]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: t - Count: 1 - Words: [the]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: g - Count: 1 - Words: [rushing]
+
+
+The sorted map
+Letter: p - Count: 1 - Words: [whispered]
+Letter: t - Count: 1 - Words: [the]
+Letter: g - Count: 1 - Words: [rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+
+
+Orginal String:             ThiS is An Examp!e InpUt StRinG.
+Preprocessed String:        this is an exampe ınput string
+
+
+
+The ORginal (unsorted) map
+Letter: t - Count: 3 - Words: [this, ınput, string]
+Letter: h - Count: 1 - Words: [this]
+Letter: i - Count: 3 - Words: [this, is, string]
+Letter: s - Count: 3 - Words: [this, is, string]
+Letter: a - Count: 2 - Words: [an, exampe]
+Letter: n - Count: 3 - Words: [an, ınput, string]
+Letter: e - Count: 2 - Words: [exampe, exampe]
+Letter: x - Count: 1 - Words: [exampe]
+Letter: m - Count: 1 - Words: [exampe]
+Letter: p - Count: 2 - Words: [exampe, ınput]
+Letter: ı - Count: 1 - Words: [ınput]
+Letter: u - Count: 1 - Words: [ınput]
+Letter: r - Count: 1 - Words: [string]
+Letter: g - Count: 1 - Words: [string]
+
+
+The sorted map
+Letter: h - Count: 1 - Words: [this]
+Letter: x - Count: 1 - Words: [exampe]
+Letter: m - Count: 1 - Words: [exampe]
+Letter: ı - Count: 1 - Words: [ınput]
+Letter: u - Count: 1 - Words: [ınput]
+Letter: r - Count: 1 - Words: [string]
+Letter: g - Count: 1 - Words: [string]
+Letter: a - Count: 2 - Words: [an, exampe]
+Letter: e - Count: 2 - Words: [exampe, exampe]
+Letter: p - Count: 2 - Words: [exampe, ınput]
+Letter: t - Count: 3 - Words: [this, ınput, string]
+Letter: i - Count: 3 - Words: [this, is, string]
+Letter: s - Count: 3 - Words: [this, is, string]
+Letter: n - Count: 3 - Words: [an, ınput, string]
