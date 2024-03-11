@@ -1,0 +1,20 @@
+SORTING WITH MERGE SORT...
+    Worst case:   0,028048 ms
+    Avarage case: 0,014088 ms
+    Best case:    0,008449 ms
+SORTING WITH SELECTION SORT...
+    Worst case:   0,003452 ms
+    Avarage case: 0,002778 ms
+    Best case:    0,001584 ms
+SORTING WITH INSERTION SORT...
+    Worst case:   0,002802 ms
+    Avarage case: 0,002353 ms
+    Best case:    0,001377 ms
+SORTING WITH BUBBLE SORT...
+    Worst case:   0,003642 ms
+    Avarage case: 0,002612 ms
+    Best case:    0,002385 ms
+SORTING WITH QUICK SORT...
+    Worst case:   0,004950 ms
+    Avarage case: 0,003851 ms
+    Best case:    0,001581 ms

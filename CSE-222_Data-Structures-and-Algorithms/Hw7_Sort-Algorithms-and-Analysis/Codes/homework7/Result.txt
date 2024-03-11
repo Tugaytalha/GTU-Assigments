@@ -1,0 +1,278 @@
+Orginal String:             Buzzing bees buzz.
+Preprocessed String:        buzzing bees buzz
+
+
+
+SORTING WITH MERGE SORT...
+The Original (unsorted) map
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: s - Count: 1 - Words: [bees]
+
+
+The sorted map
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: s - Count: 1 - Words: [bees]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+
+
+SORTING WITH SELECTION SORT...
+The Original (unsorted) map
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: s - Count: 1 - Words: [bees]
+
+
+The sorted map
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: s - Count: 1 - Words: [bees]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+
+
+SORTING WITH INSERTION SORT...
+The Original (unsorted) map
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: s - Count: 1 - Words: [bees]
+
+
+The sorted map
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: s - Count: 1 - Words: [bees]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+
+
+SORTING WITH BUBBLE SORT...
+The Original (unsorted) map
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: s - Count: 1 - Words: [bees]
+
+
+The sorted map
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: s - Count: 1 - Words: [bees]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+
+
+SORTING WITH QUICK SORT...
+The Original (unsorted) map
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: s - Count: 1 - Words: [bees]
+
+
+The sorted map
+Letter: i - Count: 1 - Words: [buzzing]
+Letter: n - Count: 1 - Words: [buzzing]
+Letter: g - Count: 1 - Words: [buzzing]
+Letter: s - Count: 1 - Words: [bees]
+Letter: u - Count: 2 - Words: [buzzing, buzz]
+Letter: e - Count: 2 - Words: [bees, bees]
+Letter: b - Count: 3 - Words: [buzzing, bees, buzz]
+Letter: z - Count: 4 - Words: [buzzing, buzzing, buzz, buzz]
+
+
+Orginal String:             'Hush, hush!' whispered the rushing wind.
+Preprocessed String:        hush hush whispered the rushing wind
+
+
+
+SORTING WITH MERGE SORT...
+The Original (unsorted) map
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: p - Count: 1 - Words: [whispered]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: t - Count: 1 - Words: [the]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: g - Count: 1 - Words: [rushing]
+
+
+The sorted map
+Letter: p - Count: 1 - Words: [whispered]
+Letter: t - Count: 1 - Words: [the]
+Letter: g - Count: 1 - Words: [rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+
+
+SORTING WITH SELECTION SORT...
+The Original (unsorted) map
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: p - Count: 1 - Words: [whispered]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: t - Count: 1 - Words: [the]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: g - Count: 1 - Words: [rushing]
+
+
+The sorted map
+Letter: p - Count: 1 - Words: [whispered]
+Letter: t - Count: 1 - Words: [the]
+Letter: g - Count: 1 - Words: [rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+
+
+SORTING WITH INSERTION SORT...
+The Original (unsorted) map
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: p - Count: 1 - Words: [whispered]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: t - Count: 1 - Words: [the]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: g - Count: 1 - Words: [rushing]
+
+
+The sorted map
+Letter: p - Count: 1 - Words: [whispered]
+Letter: t - Count: 1 - Words: [the]
+Letter: g - Count: 1 - Words: [rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+
+
+SORTING WITH BUBBLE SORT...
+The Original (unsorted) map
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: p - Count: 1 - Words: [whispered]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: t - Count: 1 - Words: [the]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: g - Count: 1 - Words: [rushing]
+
+
+The sorted map
+Letter: p - Count: 1 - Words: [whispered]
+Letter: t - Count: 1 - Words: [the]
+Letter: g - Count: 1 - Words: [rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+
+
+SORTING WITH QUICK SORT...
+The Original (unsorted) map
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: p - Count: 1 - Words: [whispered]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: t - Count: 1 - Words: [the]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: g - Count: 1 - Words: [rushing]
+
+
+The sorted map
+Letter: p - Count: 1 - Words: [whispered]
+Letter: t - Count: 1 - Words: [the]
+Letter: g - Count: 1 - Words: [rushing]
+Letter: w - Count: 2 - Words: [whispered, wind]
+Letter: r - Count: 2 - Words: [whispered, rushing]
+Letter: d - Count: 2 - Words: [whispered, wind]
+Letter: n - Count: 2 - Words: [rushing, wind]
+Letter: e - Count: 3 - Words: [whispered, whispered, the]
+Letter: u - Count: 3 - Words: [hush, hush, rushing]
+Letter: i - Count: 3 - Words: [whispered, rushing, wind]
+Letter: s - Count: 4 - Words: [hush, hush, whispered, rushing]
+Letter: h - Count: 7 - Words: [hush, hush, hush, hush, whispered, the, rushing]
