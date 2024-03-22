@@ -10,5 +10,8 @@ build:
 run:
 	./main.out
 
+clear:
+	clear
+
 delete:
 	rm -f .txt

@@ -1,0 +1,94 @@
+(base) root@DESKTOP-D58326S:/home/c# make
+rm -f *.o *.out
+gcc -c -o main.o main.c
+main.c: In function ‘main’:
+main.c:511:7: warning: implicit declaration of function ‘gets’; did you mean ‘fgets’? [-Wimplicit-function-declaration]
+  511 |       gets(command);
+      |       ^~~~
+      |       fgets
+gcc -o main.out main.o
+/usr/bin/ld: main.o: in function `main':
+main.c:(.text+0x1755): warning: the `gets' function is dangerous and should not be used.
+./main.out
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): gtuStudentGrades
+Usage:
+gtuStudentGrades <file>  // Creates a file with the given name
+addStudentGrade <name> <grade> <file>  // Add the student to the given file with given grade
+searchStudent <name> <file> // Search the student in the given file
+sortAll <file> <type>  // Sort the students in the given file by the given type. Types:
+        0: Sort by name in ascending order
+        1: Sort by name in descending order
+        2: Sort by grade in ascending order
+        3: Sort by grade in descending order
+showAll <file>  // Show all student grades in the given file
+listGrades <file>  // List the first 5 student grades in the given file
+listSome <numEntries> <pageNumber> <file>  // List the student grades between the given range in the given file
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): showAll "grades.txt"
+tugay, AA
+ahmet, cc
+emre, Ba
+selim, BB
+sare, DD
+zerdus, ff
+tahmni talha, cb
+Selam ben tugay, Aa
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): addStudentGrade "odev demosu" "BA" "grades.txt"
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): searchStudent "odev demosu" "grades.txt"
+odev demosu,  BA
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): sortAll "grades.txt"
+Invalid number of arguments for 'sort' command
+Usage:
+gtuStudentGrades <file>  // Creates a file with the given name
+addStudentGrade <name> <grade> <file>  // Add the student to the given file with given grade
+searchStudent <name> <file> // Search the student in the given file
+sortAll <file> <type>  // Sort the students in the given file by the given type. Types:
+        0: Sort by name in ascending order
+        1: Sort by name in descending order
+        2: Sort by grade in ascending order
+        3: Sort by grade in descending order
+showAll <file>  // Show all student grades in the given file
+listGrades <file>  // List the first 5 student grades in the given file
+listSome <numEntries> <pageNumber> <file>  // List the student grades between the given range in the given file
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit):  sortAll "grades.txt" 0
+ahmet, cc
+emre, Ba
+odev demosu, BA
+sare, DD
+Selam ben tugay, Aa
+selim, BB
+tahmni talha, cb
+tugay, AA
+zerdus, ff
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit):  sortAll "grades.txt" 3
+zerdus, ff
+sare, DD
+ahmet, cc
+tahmni talha, cb
+selim, BB
+emre, Ba
+odev demosu, BA
+Selam ben tugay, Aa
+tugay, AA
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): listGrades "grades.txt"
+tugay, AA
+ahmet, cc
+emre, Ba
+selim, BB
+sare, DD
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): listSome 3 1 "grades.txt"
+tugay, AA
+ahmet, cc
+emre, Ba
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): listSome 3 3 "grades.txt"
+tahmni talha, cb
+Selam ben tugay, Aa
+odev demosu, BA
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): listSome 5 2 "grades.txt"
+zerdus, ff
+tahmni talha, cb
+Selam ben tugay, Aa
+odev demosu, BA
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): gtuStudentGrades "grades.txt"
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): showAll  "grades.txt"
+Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): exit
+(base) root@DESKTOP-D58326S:/home/c#

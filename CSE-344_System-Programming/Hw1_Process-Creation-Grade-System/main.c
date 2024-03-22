@@ -76,28 +76,46 @@ void addStudentGrade(char *fileName, char *name, char *grade) {
     int pid = fork();
     if (pid == -1) {
         perror("Error forking");
+        appendtolog("Error forking in addStudentGrade\n");
         exit(1);
     }
     if (pid == 0)
     {// Open the file in append mode (create if it doesn't exist)
-        int fd = open("grades.txt", O_WRONLY | O_APPEND | O_CREAT, 0644);
+        int fd = open(fileName, O_WRONLY | O_APPEND | O_CREAT, 0644);
         if (fd == -1) {
           perror("Error opening file");
+          char errstr[1024];
+            sprintf(errstr, "Error opening file in addStudentGrade %s %s %s\n", name, grade, fileName);
+          appendtolog(errstr);
           exit(1);
         }
 
         // Prepare the data to write
-        char data[1024];
+        char data[10240];
+        if (strlen(grade) > 2)
+        {
+            printf("Invalid grade\n");
+            char errstr[1024];
+            sprintf(errstr, "Invalid grade in addStudentGrade %s %s %s\n", name, grade, fileName);
+            appendtolog(errstr);
+            _exit(1);
+        }
         sprintf(data, "%s, %s\n", name, grade);
 
         // Write the data to the file
         if (write(fd, data, strlen(data)) == -1) {
-          perror("Error writing to file");
-          exit(1);
+            perror("Error writing to file");
+            char errstr[1024];
+            sprintf(errstr, "Error writing to file in addStudentGrade %s %s %s\n", name, grade, fileName);
+            appendtolog(errstr);
+            exit(1);
         }
 
         // Close the file
         close(fd);
+        char logstr[1024];
+        sprintf(logstr, "Added student grade %s %s %s\n", name, grade, fileName);
+        appendtolog(logstr);
         _exit(EXIT_SUCCESS);
     }
     else
@@ -106,26 +124,32 @@ void addStudentGrade(char *fileName, char *name, char *grade) {
     }
 }
 
+
 // Function to search for a student's grade by name
-void searchStudentGrade(char *name) {
+void searchStudentGrade(char *fileName, char *name) {
     int pid = fork();
     if (pid == -1) {
         perror("Error forking");
+        appendtolog("Error forking in searchStudentGrade\n");
         exit(1);
     }
     if (pid == 0)
     {
         // Open the file in read mode
-        int fd = open("grades.txt", O_RDONLY);
+        int fd = open(fileName, O_RDONLY);
         if (fd == -1) {
-          perror("Error opening file");
-          exit(1);
+            perror("Error opening file");
+            char errstr[1024];
+            sprintf(errstr, "Error opening file in searchStudentGrade %s %s\n", name, fileName);
+            appendtolog(errstr);
+            exit(1);
         }
 
         // Read the file line by line
-        char line[1024];
+        char line[20480];
         int bytesRead;
         int flags[5];
+
         while (((bytesRead = read(fd, line, sizeof(line))) > 0) && flags[0] == 0) {
             // Find the end of the line (replace newline with null terminator)
             //for (int i = 0; i < bytesRead; i++) {
@@ -137,26 +161,37 @@ void searchStudentGrade(char *name) {
             //}
             line[bytesRead] = '\0';
             // Split the line into the student's name and grade
-            char *studentName = strtok(line, ", ");
+            char *studentName = strtok(line, ",");
             char *studentGrade = strtok(NULL, "\n");
             do
             {
-
                 // Check if the student's name matches the search name
                 if (strcicmp(studentName, name) == 0) {
                   // Print the student's name and grade
                   printf("%s, %s\n", studentName, studentGrade);
                   flags[0] = 1;
+                  flags[2] = 1;
                 }
 
-                studentName = strtok(NULL, ", ");
+                studentName = strtok(NULL, ",");
                 studentGrade = strtok(NULL, "\n");
 
                 if (studentName == NULL)
                 {
                     flags[0] = 1;
+                    flags[1] = 1;
                 }
             } while (flags[0] == 0);
+        }
+        if (flags[0] == 0) {
+            printf("Student not found\n");
+            char errstr[1024];
+            sprintf(errstr, "Student not found in searchStudentGrade %s %s\n", name, fileName);
+            appendtolog(errstr);
+        } else if (flags[2] == 1){
+            char logstr[1024];
+            sprintf(logstr, "Searched student grade %s %s\n", name, fileName);
+            appendtolog(logstr);
         }
 
       // Close the file
@@ -170,53 +205,12 @@ void searchStudentGrade(char *name) {
 }
 
 
-
-//// Function to display all student grades in the file
-//void showAllStudentGrades(char *fileName) {
-//  // Open the file in read mode
-//  FILE *file = fopen(fileName, "r");
-//  if (file == NULL) {
-//    perror("Error opening file");
-//    exit(1);
-//  }
-//
-//  // Read the file line by line and print the student grades
-//  char line[1024];
-//  while (fgets(line, sizeof(line), file)) {
-//    printf("%s", line);
-//  }
-//
-//  // Close the file
-//  fclose(file);
-//}
-
-//// Function to display the first 5 student grades in the file
-//void listFirst5StudentGrades(char *fileName) {
-//  // Open the file in read mode
-//  FILE *file = fopen(fileName, "r");
-//  if (file == NULL) {
-//    perror("Error opening file");
-//    exit(1);
-//  }
-//
-//  // Read the file line by line and print the first 5 student grades
-//  char line[1024];
-//  int count = 0;
-//  while (fgets(line, sizeof(line), file) && count < 5) {
-//    printf("%s", line);
-//    count++;
-//  }
-//
-//  // Close the file
-//  fclose(file);
-//}
-
-
 // Function to sort the student grades in the file
 void sortStudentGrades(char *fileName, int sortType) {
     int pid = fork();
     if (pid == -1) {
         perror("Error forking");
+        appendtolog("Error forking in sortStudentGrades\n");
         exit(1);
     }
     if (pid == 0)
@@ -225,13 +219,16 @@ void sortStudentGrades(char *fileName, int sortType) {
         int fd = open(fileName, O_RDONLY);
         if (fd == -1) {
             perror("Error opening file");
+            char errstr[1024];
+            sprintf(errstr, "Error opening file in sortStudentGrades %s %d\n", fileName, sortType);
+            appendtolog(errstr);
             exit(1);
         }
 
         // Read the file line by line and store the student grades in an array
         char lines[1024][1024];
         int lineCount = 0;
-        char buffer[1024];
+        char buffer[10240];
         int bytesRead;
         while ((bytesRead = read(fd, buffer, sizeof(buffer))) > 0) {
             // Split the buffer into lines and store them in the array
@@ -247,8 +244,8 @@ void sortStudentGrades(char *fileName, int sortType) {
         close(fd);
 
         // Sort the student grades in the array
-        for (int i = 0; i < lineCount - 2; i++) {
-            for (int j = i + 1; j < lineCount - 1; j++) {
+        for (int i = 0; i < lineCount - 1; i++) {
+            for (int j = i + 1; j < lineCount; j++) {
                 if (sortType == 0) {
                   // Sort by name in ascending order
                   if (strcicmp(lines[i], lines[j]) > 0) {
@@ -290,15 +287,21 @@ void sortStudentGrades(char *fileName, int sortType) {
                 else
                 {
                     printf("Invalid sort type\n");
+                    char errstr[1024];
+                    sprintf(errstr, "Invalid sort type in sortStudentGrades %s %d\n", fileName, sortType);
+                    appendtolog(errstr);
                     _exit(1);
                 }
             }
         }
 
         // Print the sorted student grades
-        for (int i = 0; i < lineCount - 1; i++) {
+        for (int i = 0; i < lineCount; i++) {
             printf("%s\n", lines[i]);
         }
+        char logstr[1024];
+        sprintf(logstr, "Sorted student grades %s %d\n", fileName, sortType);
+        appendtolog(logstr);
         _exit(EXIT_SUCCESS);
     }
     else
@@ -313,6 +316,7 @@ void showAllStudentGrades(char *fileName) {
     int pid = fork();
     if (pid == -1) {
         perror("Error forking");
+        appendtolog("Error forking in showAllStudentGrades\n");
         exit(1);
     }
         if (pid == 0)
@@ -321,11 +325,14 @@ void showAllStudentGrades(char *fileName) {
         int fd = open(fileName, O_RDONLY);
         if (fd == -1) {
             perror("Error opening file");
+            char errstr[1024];
+            sprintf(errstr, "Error opening file in showAllStudentGrades %s\n", fileName);
+            appendtolog(errstr);
             exit(1);
         }
 
         // Read the file line by line and print the student grades
-        char buffer[1024];
+        char buffer[10240];
         int bytesRead;
         while ((bytesRead = read(fd, buffer, sizeof(buffer))) > 0) {
             write(STDOUT_FILENO, buffer, bytesRead);
@@ -333,6 +340,9 @@ void showAllStudentGrades(char *fileName) {
 
         // Close the file
         close(fd);
+        char logstr[1024];
+        sprintf(logstr, "Showed all student grades %s\n", fileName);
+        appendtolog(logstr);
         _exit(EXIT_SUCCESS);
     }
     else
@@ -341,11 +351,13 @@ void showAllStudentGrades(char *fileName) {
     }
 }
 
+
 // Function to display the first 5 student grades in the file
 void listFirst5StudentGrades(char *fileName) {
     int pid = fork();
     if (pid == -1) {
         perror("Error forking");
+        appendtolog("Error forking in listFirst5StudentGrades\n");
         exit(1);
     }
     if (pid == 0)
@@ -354,6 +366,9 @@ void listFirst5StudentGrades(char *fileName) {
         int fd = open(fileName, O_RDONLY);
         if (fd == -1) {
             perror("Error opening file");
+            char errstr[1024];
+            sprintf(errstr, "Error opening file in listFirst5StudentGrades %s\n", fileName);
+            appendtolog(errstr);
             exit(1);
         }
 
@@ -373,6 +388,9 @@ void listFirst5StudentGrades(char *fileName) {
 
         // Close the file
         close(fd);
+        char logstr[1024];
+        sprintf(logstr, "Listed first 5 student grades %s\n", fileName);
+        appendtolog(logstr);
         _exit(EXIT_SUCCESS);
     }
     else
@@ -381,11 +399,13 @@ void listFirst5StudentGrades(char *fileName) {
     }
 }
 
+
 // Function to display the student grades between the given range in the file
 void listSomeStudentGrades(char *fileName, int numEntries, int pageNumber) {
     int pid = fork();
     if (pid == -1) {
         perror("Error forking");
+        appendtolog("Error forking in listSomeStudentGrades\n");
         exit(1);
     }
     if (pid == 0)
@@ -394,11 +414,14 @@ void listSomeStudentGrades(char *fileName, int numEntries, int pageNumber) {
         int fd = open(fileName, O_RDONLY);
         if (fd == -1) {
             perror("Error opening file");
+            char errstr[1024];
+            sprintf(errstr, "Error opening file in listSomeStudentGrades %s %d %d\n", fileName, numEntries, pageNumber);
+            appendtolog(errstr);
             exit(1);
         }
 
         // Read the file line by line and print the student grades between the given range
-        char buffer[1024];
+        char buffer[10240];
         int bytesRead;
         int count = 0;
         int start = (pageNumber - 1) * numEntries;
@@ -414,6 +437,16 @@ void listSomeStudentGrades(char *fileName, int numEntries, int pageNumber) {
                 line = strtok(NULL, "\n");
             }
         }
+        if (count < start) {
+            printf("No student grades in the given range\n");
+            char errstr[1024];
+            sprintf(errstr, "No student grades in the given range %s %d %d\n", fileName, numEntries, pageNumber);
+            appendtolog(errstr);
+        } else {
+            char logstr[1024];
+            sprintf(logstr, "Listed student grades in the given range %s %d %d\n", fileName, numEntries, pageNumber);
+            appendtolog(logstr);
+        }
 
         // Close the file
         close(fd);
@@ -425,22 +458,56 @@ void listSomeStudentGrades(char *fileName, int numEntries, int pageNumber) {
     }
 }
 
+
+// Function to create empty file
+void gtuStudentGrades(char *fileName) {
+    int pid = fork();
+    if (pid == -1) {
+        perror("Error forking");
+        appendtolog("Error forking in gtuStudentGrades\n");
+        exit(1);
+    }
+    if (pid == 0)
+    {
+        // Create the file in write mode (if exists, empty it)
+        int fd = open(fileName, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+        if (fd == -1) {
+            perror("Error opening file");
+            char errstr[1024];
+            sprintf(errstr, "Error opening file in gtuStudentGrades %s\n", fileName);
+            appendtolog(errstr);
+            exit(1);
+        }
+
+        // Close the file
+        close(fd);
+        _exit(EXIT_SUCCESS);
+    }
+    else
+    {
+        waitpid(pid, NULL, 0);
+    }
+}
+
+
 // Function to display the usage of the program
 void usage() {
     printf("Usage:\n");
-    printf("addStudentGrade <name> <grade> <file>\n");
-    printf("searchStudent <name> <file>\n");
-    printf("sortAll <file> <type>\n\t0: Sort by name in ascending order\n\t1: Sort by name in descending order\n\t2: Sort by grade in ascending order\n\t3: Sort by grade in descending order\n");
-    printf("showAll <file>\n");
-    printf("listGrades <file>\n");
-    printf("listSome <numEntries> <pageNumber> <file>\n");
+    printf("gtuStudentGrades <file>  // Creates a file with the given name\n");
+    printf("addStudentGrade <name> <grade> <file>  // Add the student to the given file with given grade \n");
+    printf("searchStudent <name> <file> // Search the student in the given file\n");
+    printf("sortAll <file> <type>  // Sort the students in the given file by the given type. Types:\n\t0: Sort by name in ascending order\n\t1: Sort by name in descending order\n\t2: Sort by grade in ascending order\n\t3: Sort by grade in descending order\n");
+    printf("showAll <file>  // Show all student grades in the given file\n");
+    printf("listGrades <file>  // List the first 5 student grades in the given file\n");
+    printf("listSome <numEntries> <pageNumber> <file>  // List the student grades between the given range in the given file\n");
 }
+
 
 int main() {
     while (1) {
       // Get the command from the user
-      char command[1024];
-      printf("Enter a command (type 'help' for help): ");
+      char command[10240];
+      printf("Enter a command (type 'gtuStudentGrades' for help and 'exit' to exit): ");
       gets(command);
 
       // Parse the command
@@ -514,12 +581,24 @@ int main() {
             } else {
               listSomeStudentGrades(args[3], atoi(args[1]), atoi(args[2]));
             }
-        } else if (strcicmp(args[0], "help") == 0) {
-            usage();
-        } else {
+        } else if (strcicmp(args[0], "gtuStudentGrades") == 0) {
+            if (argc == 2) {
+              gtuStudentGrades(args[1]);
+            } else if (argc == 1) {
+              usage();
+            } else {
+              printf("Invalid number of arguments for 'gtuStudentGrades' command\n");
+              usage();
+            }
+        } else if (strcicmp(args[0], "exit") == 0) {
+            appendtolog("Exiting\n");
+            break;
+        }
+        else {
             printf("Invalid command\n");
             usage();
         }
     }
 
+    return 0;
 }
