@@ -6,6 +6,9 @@
 #include <fcntl.h>
 #include <string.h>
 #include <signal.h>
+#include <time.h>
+#include <sys/stat.h>
+#include <string.h>
 
 #define FIFO1 "fifo1"
 #define FIFO2 "fifo2"
@@ -18,6 +21,8 @@
 #define ERR_FIFO_CLOSE 5
 
 #define ERR_FORK 10
+
+#define ERR_INVALID_COMMAND 20
 
 // Define global atomatic child process count
 sig_atomic_t child_count = 0;
@@ -110,19 +115,24 @@ int main(int argc, char *argv[]) {
         else if (pid2 == 0) {
             // Child Process 2
             char received_command[MAX_LENGTH];
+            int received_numbers[array_size];
             int fd_read = open(FIFO2, O_RDONLY);
+
+            // Sleep for 10 seconds
+            sleep(10);
+
             if (fd_read == -1) {
                 perror("Error opening FIFO2 for reading in Child Process 2");
                 _exit(ERR_FIFO_OPEN);
             }
-            if (read(fd_read, received_command, sizeof(received_command)) == -1) {
+            if (read(fd_read, received_command, MAX_LENGTH) == -1) {
                 perror("Error reading from FIFO2 in Child Process 2");
                 _exit(ERR_FIFO_READ);
             }
 
             if (strcmp(received_command, "multiply") != 0) {
                 fprintf(stderr, "Error: Invalid command received in Child Process 2\n");
-                return 1;
+                _exit(ERR_INVALID_COMMAND);
             }
 
             // Print readed numbers and command
@@ -136,6 +146,8 @@ int main(int argc, char *argv[]) {
             for (int i = 0; i < array_size; i++) {
                 product *= numbers[i];
             }
+            // Sleep for 2 seconds
+            sleep(2);
 
             // Read other child's result from FIFO2
             int sum;
@@ -176,8 +188,8 @@ int main(int argc, char *argv[]) {
             }
 
             // Write random numbers and command and to FIFO2
-            char command[] = "multiply";
-            if (write(fd2, numbers, sizeof(numbers)) == -1) {
+            char command[MAX_LENGTH] = "multiply";
+            if (write(fd2, numbers, MAX_LENGTH) == -1) {
                 perror("Error writing random ints to FIFO2");
                 return ERR_FIFO_WRITE;
             }
