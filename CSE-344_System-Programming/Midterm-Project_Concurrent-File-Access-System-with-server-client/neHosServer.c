@@ -1,4 +1,4 @@
-#include "neHosServer.h"
+#include "neHos.h"
 
 int client_count = 0;
 pid_t client_pids[MAX_CLIENTS];
@@ -55,14 +55,32 @@ int main(int argc, char *argv[]) {
 
     dirname = argv[1];
     int max_clients = atoi(argv[2]);
-    int serverFd, clientFd dummy_fd;
-    struct sockaddr_in server_addr, client_addr;
-    char client_fifo[MAX_LENGTH];
+    int serverFd, clientFd;
+    char clientFifo[MAX_LENGTH];
     char buffer[MAX_LENGTH];
+    struct request req;
+    struct response resp;
+    int seqNum = 0;
 
     // Create directory if it doesn't exist
     mkdir(dirname, 0777);
-    
+
+    umask(0);    /* We get the permissions we want */
+    if (mkfifo(SERVER_FIFO, S_IRUSR | S_IWUSR | S_IWGRP) == -1
+            && errno != EEXIST){
+        perror("mkfifo error");
+        exit(ERR_FIFO_CREATE);
+    }
+    serverFd = open(SERVER_FIFO, O_RDONLY);
+    if (serverFd == -1){
+        perror("open error");
+        exit(ERR_FIFO_OPEN);
+    }
+
+    if (signal(SIGPIPE, SIG_IGN) == SIG_ERR){
+        perror("signal error");
+        exit(ERR_SIGNAL);
+    }
 
     // Create log file
     char log_filename[1024];
@@ -72,26 +90,7 @@ int main(int argc, char *argv[]) {
     int log_fd = open(log_filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
     if (log_fd == -1) {
         perror("Log file open error");
-        exit(LOG_CREATE_ERROR);
-    }
-
-    // Create a socket
-    serverFd = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverFd < 0) {
-        perror("socket creation failed");
-        exit(SOCKET_CREATE_ERROR);
-    }
-
-    // Set server address details
-    memset(&server_addr, 0, sizeof(server_addr));
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = INADDR_ANY; // Listen on all available interfaces
-    server_addr.sin_port = htons(PORT);
-
-    // Bind the socket to the address and port
-    if (bind(serverFd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
-        perror("bind failed");
-        exit(SOCKET_BIND_ERROR);
+        exit(ERR_LOG_CREATE);
     }
 
     // Register signal handler
@@ -103,23 +102,34 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    // Listen for incoming connections
-    if (listen(serverFd, BACKLOG) < 0) {
-        perror("listen failed");
-        exit(EXIT_FAILURE);
-    }
-
     // Print server information
     printf("Server started. PID: %d\n", getpid());
     printf("Waiting for clients...\n");
 
     while (running) {
-        // Accept client connection
-        int clientFd = accept(serverFd, NULL, NULL);
-        if (clientFd == -1) {
-            perror("Client connection error");
+
+        if (read(serverFd, &req, sizeof(struct request)) != sizeof(struct request)) {
+            fprintf(stderr, "Error reading request; discarding\n");
+            continue; 
+        }
+
+
+
+        // Open client FIFO (previously created by client) 
+        snprintf(clientFifo, CLIENT_FIFO_NAME_LEN, CLIENT_FIFO_TEMPLATE, (long) req.pid);
+        clientFd = open(clientFifo, O_WRONLY);
+        if (clientFd == -1) { /* Open failed, give up on client */
+            errMsg("open %s", clientFifo);
             continue;
         }
+        
+        resp.seqNum = seqNum;
+        if (write(clientFd, &resp, sizeof(struct response)) != sizeof(struct response))
+            fprintf(stderr, "Error writing to FIFO %s\n", clientFifo);
+        if (close(clientFd) == -1)
+            errMsg("close");
+        seqNum += req.seqLen; /* Update our sequence number */
+        
 
         // Check if maximum client limit reached
         if (client_count >= max_clients) {
