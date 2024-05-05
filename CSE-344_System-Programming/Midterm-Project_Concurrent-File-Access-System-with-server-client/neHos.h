@@ -36,7 +36,7 @@
 #define CLIENT_FIFO_TEMPLATE2 "/tmp/neHos2_cl.%ld"   /* Template for building client FIFO name */
 #define CLIENT_FIFO_NAME_LEN (sizeof(CLIENT_FIFO_TEMPLATE) + 20)
 
-#define MAX_LENGTH 2048
+#define MAX_LENGTH 5096
 
 #define MAX_CLIENTS 30
 
