@@ -10,6 +10,8 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <fcntl.h> 
+#include <dirent.h>
+#include <errno.h>
 
 // Error codes
 #define ERR_FIFO_CREATE 1
@@ -34,7 +36,7 @@
 #define SERVER_FIFO "/tmp/neHos_sv"    /* Well-known name for server's FIFO */
 #define CLIENT_FIFO_TEMPLATE1 "/tmp/neHos1_cl.%ld"   /* Template for building client FIFO name */
 #define CLIENT_FIFO_TEMPLATE2 "/tmp/neHos2_cl.%ld"   /* Template for building client FIFO name */
-#define CLIENT_FIFO_NAME_LEN (sizeof(CLIENT_FIFO_TEMPLATE) + 20)
+#define CLIENT_FIFO_NAME_LEN (sizeof(CLIENT_FIFO_TEMPLATE1) + 20)
 
 #define MAX_LENGTH 5096
 
@@ -61,6 +63,7 @@ struct reqCommand
 {
     pid_t pid;
     enum command cmd;
+    int status;
     char args[MAX_LENGTH];    
 };
 

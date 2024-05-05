@@ -6,6 +6,9 @@ char *dirname;
 volatile sig_atomic_t running = 1;
 
 
+char log_filename[1024];
+
+
 void handle_sigint(int sig) {
     // Send kill signal to all clients
     for (int i = 0; i < client_count; i++) {
@@ -17,6 +20,37 @@ void handle_sigint(int sig) {
 
     printf("\nServer shutting down...\n");
     exit(0);
+}
+
+void log_message(int log_fd, pid_t client_pid, char *message) {
+    char buffer[MAX_LENGTH];
+    snprintf(buffer, MAX_LENGTH, "PID %d: %s\n", client_pid, message);
+    write(log_fd, buffer, strlen(buffer));
+}
+
+void handle_sigchld(int sig) {
+    int status;
+    pid_t pid;
+    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
+        if (WIFEXITED(status)) {
+            int log_fd = open(log_filename, O_CREAT | O_WRONLY | O_APPEND, 0777);
+            log_message(log_fd, pid, "Client disconnected.");
+            close(log_fd); // Close log file
+            client_count--;
+            // Remove client PID from array
+            for (int i = 0; i < MAX_CLIENTS; i++) {
+                if (client_pids[i] == getpid()) {
+                    client_pids[i] = 0;
+                    printf("Client%d disconnected.\n", i+1);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+int MIN(int a, int b) {
+    return (a < b) ? a : b;
 }
 
 void handle_client(pid_t client_pid) {
@@ -41,7 +75,7 @@ void handle_client(pid_t client_pid) {
         struct reqCommand req;
         struct respCommand respCmd;
         // Receive command from client
-        int bytes_read = read(clientFd, &req, sizeof(struct reqCommand));
+        int bytes_read = read(clientFdR, &req, sizeof(struct reqCommand));
         if (bytes_read == -1) {
             perror("read from client FIFO");
             exit(ERR_FIFO_READ);
@@ -56,7 +90,7 @@ void handle_client(pid_t client_pid) {
                 DIR *dirp = opendir(dirname);
                 if (dirp == NULL) {
                     perror("opendir error");
-                    res.status = -1;
+                    respCmd.status = -1;
                     break;
                 }
 
@@ -100,7 +134,7 @@ void handle_client(pid_t client_pid) {
                 int fd = open(filepath, O_RDONLY); 
                 if (fd == -1) {
                     perror("open file");
-                    res.status = -1;
+                    respCmd.status = -1;
                     break; 
                 }
 
@@ -127,7 +161,7 @@ void handle_client(pid_t client_pid) {
                         } 
 
                         // Check if buffer is full or end of line reached
-                        if ((line_num == -1 && (i == MAX_LENGTH - 1 ||| i == bytes_read - 1)) || (line_num != -1 && current_line > line_num)) {
+                        if ((line_num == -1 && (i == MAX_LENGTH - 1 || i == bytes_read - 1)) || (line_num != -1 && current_line > line_num)) {
                             if (bytes_read != MAX_LENGTH) {
                                 respCmd.status = 0; // End of file
                                 respCmd.response[j] = '\0'; // Null-terminate string
@@ -153,7 +187,7 @@ void handle_client(pid_t client_pid) {
                 fcntl(fd, F_SETLK, &lock);
 
 
-                fclose(fp);
+                close(fd);
                 break;
             }
             case WRITET: {
@@ -166,10 +200,10 @@ void handle_client(pid_t client_pid) {
                 // Open file
                 char filepath[MAX_LENGTH];
                 snprintf(filepath, MAX_LENGTH, "%s/%s", dirname, filename);
-                int fd = open(filepath, O_RDWR | O_CREAT, 0644); 
+                int fd = open(filepath, O_RDWR | O_CREAT, 0777); 
                 if (fd == -1) {
                     perror("open file");
-                    res.status = -1;
+                    respCmd.status = -1;
                     break; 
                 }
 
@@ -188,7 +222,7 @@ void handle_client(pid_t client_pid) {
                     int offset = lseek(fd, 0, SEEK_END); // Move to end of file
                     if (offset == -1 || write(fd, string, strlen(string)) == -1 || write(fd, "\n", 1) == -1){
                         perror("write to file");
-                        res.status = -1;
+                        respCmd.status = -1;
                         break; 
                     }
                 } else {
@@ -196,10 +230,10 @@ void handle_client(pid_t client_pid) {
                     char temp_filepath[MAX_LENGTH];
                     int current_line = 1;
                     snprintf(temp_filepath, MAX_LENGTH, "%s/%s.tmp", dirname, filename);
-                    int temp_fd = open(temp_filepath, O_CREAT | O_WRONLY, 0644);
+                    int temp_fd = open(temp_filepath, O_CREAT | O_WRONLY, 0777);
                     if (temp_fd == -1) {
                         perror("open temp file");
-                        res.status = -1;
+                        respCmd.status = -1;
                         break; 
                     }
                     while (read(fd, buffer, MAX_LENGTH) > 0) {
@@ -230,15 +264,16 @@ void handle_client(pid_t client_pid) {
                     fcntl(fd, F_SETLKW, &lock);                   
 
                     temp_fd = open(temp_filepath, O_RDONLY);
-                    fd = open(filepath, O_WRONLY | O_TRUNC, 0644);
+                    fd = open(filepath, O_WRONLY | O_TRUNC, 0777);
                     if (temp_fd == -1 || fd == -1) {
                         perror("open temp file for reading or original file for writing");
-                        res.status = -1;
+                        respCmd.status = -1;
                         break; 
                     }
                     while (read(temp_fd, buffer, MAX_LENGTH) > 0) {
                         write(fd, buffer, strlen(buffer));
-                    }                 
+                    }  
+                    close(temp_fd);               
                 }
 
                 // Unlock file
@@ -248,11 +283,115 @@ void handle_client(pid_t client_pid) {
                 close(fd);
                 break;
             } 
+            case UPLOAD: { 
+                // Parse filename
+                char *filename = strtok(req.args, " ");
+
+                // Open file for writing
+                char filepath[MAX_LENGTH];
+                snprintf(filepath, MAX_LENGTH, "%s/%s", dirname, filename);
+                // Check if file already exists and update new file name (e.g. file(1).txt, file(2).txt, etc.)
+                int i = 1;
+                while (access(filepath, F_OK) != -1) {
+                    snprintf(filepath, MAX_LENGTH, "%s/%s(%d)", dirname, filename, i++);
+                }
+                int fd = open(filepath, O_WRONLY | O_CREAT | O_EXCL, 0777); 
+                if (fd == -1) {
+                    perror("open file for writing");
+                    respCmd.status = -1;
+                    break; 
+                }
+                char *content = strtok(NULL, ""); // Get the rest of the line as the content
+
+
+                // Lock file for writing
+                struct flock lock;
+                memset(&lock, 0, sizeof(lock));
+                lock.l_type = F_WRLCK;
+                fcntl(fd, F_SETLKW, &lock);
+
+
+                // Receive file content in chunks
+                struct reqCommand reqCmd;
+                while (read(clientFdR, &reqCmd, sizeof(reqCmd)) > 0) {
+                    if (write(fd, reqCmd.args, strlen(reqCmd.args)) == -1) {
+                        perror("write to file");
+                        respCmd.status = -1;
+                        break;
+                    }
+                    if (reqCmd.status == 0) { 
+                        break; // End of file
+                    }
+                }
+
+                // Unlock file
+                lock.l_type = F_UNLCK; 
+                fcntl(fd, F_SETLK, &lock);
+
+                close(fd);
+                break;
+            }
+            case DOWNLOAD: {
+                // Parse filename
+                char *filename = req.args;
+
+                // Open file for reading
+                char filepath[MAX_LENGTH];
+                snprintf(filepath, MAX_LENGTH, "%s/%s", dirname, filename);
+                int fd = open(filepath, O_RDONLY);
+                if (fd == -1) {
+                    perror("open file for reading");
+                    respCmd.status = -1;
+                    break;
+                }
+
+                // Lock file for reading
+                struct flock lock;
+                memset(&lock, 0, sizeof(lock));
+                lock.l_type = F_RDLCK; 
+                fcntl(fd, F_SETLKW, &lock);
+
+                // Send file content in chunks
+                struct respCommand respCmd;
+                ssize_t bytes_read;
+                while ((bytes_read = read(fd, respCmd.response, MAX_LENGTH)) > 0) {
+                    respCmd.status = (bytes_read == MAX_LENGTH) ? 1 : 0;
+                    if (write(clientFdW, &respCmd, sizeof(respCmd)) == -1) {
+                        perror("write to client FIFO");
+                        break;
+                    }
+                }
+
+                // Unlock file
+                lock.l_type = F_UNLCK; 
+                fcntl(fd, F_SETLK, &lock);
+
+                close(fd);
+                break;
+            }
+            case QUIT: {
+                int log_fd = open(log_filename, O_CREAT | O_WRONLY | O_APPEND, 0777);
+                log_message(log_fd, client_pid, "Client disconnected.");
+                printf("Client PID %d disconnected.\n", client_pid);
+                close(clientFdW);
+                close(clientFdR);
+                close(log_fd); // Close log file
+                client_count--;
+                //Remove client PID from array
+                for (int i = 0; i < MAX_CLIENTS; i++) {
+                    if (client_pids[i] == getpid()) {
+                        client_pids[i] = 0;
+                        break;
+                    }
+                }
+                _exit(0); // Exit child process
+            }
         }
 
     }
 
-    close(clientFd);
+    close(clientFdW);
+    close(clientFdR);
     client_count--;
 
     // Remove client PID from array
@@ -303,11 +442,10 @@ int main(int argc, char *argv[]) {
     }
 
     // Create log file
-    char log_filename[1024];
     // Concatenate the dirname with "/server.log" manually
     strcpy(log_filename, dirname);
     strcat(log_filename, "/server.log");
-    int log_fd = open(log_filename, O_CREAT | O_WRONLY | O_APPEND, 0644);
+    int log_fd = open(log_filename, O_CREAT | O_WRONLY | O_APPEND, 0777);
     if (log_fd == -1) {
         perror("Log file open error");
         exit(ERR_LOG_CREATE);
@@ -339,7 +477,7 @@ int main(int argc, char *argv[]) {
         snprintf(clientFifo, CLIENT_FIFO_NAME_LEN, CLIENT_FIFO_TEMPLATE1, (long) req.pid);
         clientFd = open(clientFifo, O_WRONLY);
         if (clientFd == -1) { /* Open failed, give up on client */
-            errMsg("open %s", clientFifo);
+            perror("open client FIFO");
             continue;
         }
         
@@ -367,7 +505,7 @@ int main(int argc, char *argv[]) {
         if (write(clientFd, &resp, sizeof(struct response)) != sizeof(struct response))
             fprintf(stderr, "Error writing to FIFO %s\n", clientFifo);
         if (close(clientFd) == -1)
-            errMsg("close");
+            perror("close");
 
         // Fork a child process to handle the client
         pid_t pid = fork();
@@ -382,7 +520,7 @@ int main(int argc, char *argv[]) {
         } else {
             // Parent process
             client_pids[client_count++] = pid;
-            printf("Client PID %d connected.\n", pid);
+            printf("Client PID %d connected as client0%d\n", pid, client_count);
         }
     }
 
@@ -393,3 +531,6 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
+
+// 
