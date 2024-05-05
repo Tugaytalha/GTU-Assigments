@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     clientFd = open(clientFifo, O_RDONLY);
     if (clientFd == -1)
     {
-        perror("open");
+        perror("open client fifo");
         exit(1);
     }
 
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
     int clientFdW = open(clientFifoW, O_WRONLY);
     if (clientFdW == -1)
     {
-        perror("open");
+        perror("open client fifo for writing");
         exit(1);
     }    
 
@@ -168,27 +168,69 @@ int parse_and_send_command(int serverFd, char *command)
     if (cmd_str == NULL)
     {
         fprintf(stderr, "Invalid command\n");
-        return;
+        return 1;
     }
     if (strcmp(cmd_str, "help") == 0)
     {
-        printf("Commands:\n");
-        printf("--> list\n");
-        printf("        List all files in the server\n");
-        printf("--> readF <filename> [line_num]\n");
-        printf("        Read file <filename> (optionally line number)\n");
-        printf("--> writeT <filename> <line_num> <string>\n");
-        printf("        Write <string> to file <filename> at line <line_num>\n");
-        printf("--> upload <filename>\n");
-        printf("        Upload file <filename> to server\n");
-        printf("--> download <filename>\n");
-        printf("        Download file <filename> from server\n");
-        printf("--> archServer <archive_filename>\n");
-        printf("        Archive server files to <archive_filename>\n");
-        printf("--> killServer\n");
-        printf("        Kill server\n");
-        printf("--> quit\n");
-        printf("        Quit client\n");
+        // Check if there are any arguments
+        char *arg = strtok(NULL, " ");
+        if (arg == NULL)
+        {
+            printf("Available comments are :\n");
+            printf("help, list, readF, writeT, upload, download, archServer, quit, killServer\n");
+        }
+        else if (strcmp(arg, "help") == 0)
+        {
+            printf("    help <command>\n");
+            printf("        Display help for a specific command. If no command is specified, display available commands.\n");
+        }
+        else if (strcmp(arg, "list") == 0)
+        {
+            printf("    list\n");
+            printf("        display the list of files in Servers directory\n");
+        }
+        else if (strcmp(arg, "readF") == 0)
+        {
+            printf("    readF <filename> <line>\n");
+            printf("        display the # line of the <file>, if no line number is given\n");
+            printf("        display the entire file\n");
+        }
+        else if (strcmp(arg, "writeT") == 0)
+        {
+            printf("    writeT <filename> <line> <string>\n");
+            printf("        write <string> to the <line> of the <file>, if no line number is given\n");
+            printf("        append the <string> to the end of the file\n");
+        }
+        else if (strcmp(arg, "upload") == 0)
+        {
+            printf("    upload <filename>\n");
+            printf("        upload a file to Servers directory\n");
+        }
+        else if (strcmp(arg, "download") == 0)
+        {
+            printf("    download <filename>\n");
+            printf("        download a file from Servers directory\n");
+        }
+        else if (strcmp(arg, "archServer") == 0)
+        {
+            printf("    archServer <archive_filename>\n");
+            printf("        archive the Servers directory\n");
+        }
+        else if (strcmp(arg, "killServer") == 0)
+        {
+            printf("    killServer\n");
+            printf("        kill the server\n");
+        }
+        else if (strcmp(arg, "quit") == 0)
+        {
+            printf("    quit\n");
+            printf("        quit the client\n");
+        }
+        else
+        {
+            fprintf(stderr, "Unknown command: %s\n", arg);
+            return 1;
+        }
     }
     else if (strcmp(cmd_str, "list") == 0)
     {
@@ -200,7 +242,7 @@ int parse_and_send_command(int serverFd, char *command)
         if (filename == NULL)
         {
             fprintf(stderr, "readF: Missing filename\n");
-            return;
+            return 1;
         }
         char *line_str = strtok(NULL, "\n");
         for (int i = 0; filename[i] != '\0'; i++)

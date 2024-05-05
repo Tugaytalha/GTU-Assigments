@@ -19,8 +19,24 @@ void handle_sigint(int sig) {
     exit(0);
 }
 
-void handle_client(int clientFd) {
-    char buffer[1024];
+void handle_client(pid_t client_pid) {
+    char buffer[MAX_LENGTH];
+    char client_fifo_r[MAX_LENGTH], client_fifo_w[MAX_LENGTH];
+
+    // Open client FIFO (previously created by client)
+    snprintf(client_fifo_r, CLIENT_FIFO_NAME_LEN, CLIENT_FIFO_TEMPLATE1, (long) client_pid);
+    snprintf(client_fifo_w, CLIENT_FIFO_NAME_LEN, CLIENT_FIFO_TEMPLATE2, (long) client_pid);
+    int clientFdR = open(client_fifo_r, O_RDONLY);
+    if (clientFd == -1) {
+        perror("open");
+        exit(1);
+    }
+    int clientFdW = open(client_fifo_w, O_WRONLY);
+    if (clientFd == -1) {
+        perror("open");
+        exit(1);
+    }
+    
     while (1) {
         // Receive command from client
         int bytes_read = read(clientFd, buffer, sizeof(buffer));
@@ -116,43 +132,45 @@ int main(int argc, char *argv[]) {
 
 
         // Open client FIFO (previously created by client) 
-        snprintf(clientFifo, CLIENT_FIFO_NAME_LEN, CLIENT_FIFO_TEMPLATE, (long) req.pid);
+        snprintf(clientFifo, CLIENT_FIFO_NAME_LEN, CLIENT_FIFO_TEMPLATE1, (long) req.pid);
         clientFd = open(clientFifo, O_WRONLY);
         if (clientFd == -1) { /* Open failed, give up on client */
             errMsg("open %s", clientFifo);
             continue;
         }
         
-        resp.seqNum = seqNum;
+        
+        
+        
+        resp.accepted = 1;
+        // Check if maximum client limit reached
+        if (client_count >= max_clients) {
+            // Send error message to client and close connection
+            resp.accepted = 0;
+            if (write(clientFd, &resp, sizeof(struct response)) != sizeof(struct response))
+                fprintf(stderr, "Error writing to FIFO %s\n", clientFifo);
+            close(clientFd);
+            continue;
+        }
+
+        // Send response to client
         if (write(clientFd, &resp, sizeof(struct response)) != sizeof(struct response))
             fprintf(stderr, "Error writing to FIFO %s\n", clientFifo);
         if (close(clientFd) == -1)
             errMsg("close");
-        seqNum += req.seqLen; /* Update our sequence number */
-        
-
-        // Check if maximum client limit reached
-        if (client_count >= max_clients) {
-            // Send error message to client and close connection
-            write(clientFd, "Server queue full\n", 17);
-            close(clientFd);
-            continue;
-        }
 
         // Fork a child process to handle the client
         pid_t pid = fork();
         if (pid == -1) {
             perror("fork");
-            close(clientFd);
             continue;
         } else if (pid == 0) {
             // Child process
-            close(serverFd); // Child doesn't need the server socket
-            handle_client(clientFd);
+            close(serverFd); // Child doesn't need the server FIFO
+            handle_client(req.pid);
             _exit(0);
         } else {
             // Parent process
-            close(clientFd); // Parent doesn't need the client socket
             client_pids[client_count++] = pid;
             printf("Client PID %d connected.\n", pid);
         }
@@ -160,6 +178,8 @@ int main(int argc, char *argv[]) {
 
     // Close log file
     close(log_fd);
+
+    unlink(SERVER_FIFO);
 
     return 0;
 }
