@@ -74,7 +74,7 @@ void InterruptManager::Activate()
     uint32_t idt_address = (uint32_t)this;
     uint16_t idt_size = sizeof(InterruptManager)-1;
     
-    // Load the IDT
+    // Load the Interrupt Descriptor Table
     asm volatile("lidt (%0)": :"p" (((uint32_t)idt_size<<16) | idt_address)); 
 }
 

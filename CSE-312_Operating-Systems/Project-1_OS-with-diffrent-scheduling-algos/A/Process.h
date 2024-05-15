@@ -4,6 +4,8 @@
 #include "types.h"
 #include <string.h>
 
+#define MAX_PROCESSES 254 // maximum 254, number 255 is reserved for the error code 
+
 class Process 
 {
 public:
@@ -12,7 +14,7 @@ public:
     uint32_t stackPointer;
     uint32_t base; 
     char name[32]; // For process identification
-    bool isFinished;
+    uint8_t state;  // 0 = Ready, 1 = Running, 2 = Blocked, 3 = Finished
 
     Process(uint32_t base);
     ~Process(); 
@@ -22,7 +24,7 @@ public:
 
 class ProcessTable
 {
-    Process* processes[16];
+    Process* processes[MAX_PROCESSES];
     uint8_t processCount;
     InterruptManager* interruptManager;
 

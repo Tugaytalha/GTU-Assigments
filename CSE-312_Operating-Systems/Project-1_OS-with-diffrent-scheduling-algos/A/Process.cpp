@@ -35,7 +35,7 @@ void Process::setBase(uint32_t newBase)
 
 ProcessTable::ProcessTable(InterruptManager* interruptManager)
 {
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < MAX_PROCESSES; i++)
     {
         this->processes[i] = NULL;
     }
@@ -46,7 +46,7 @@ ProcessTable::ProcessTable(InterruptManager* interruptManager)
 
 uint8_t ProcessTable::findEmptyProcessSlot()
 {
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < MAX_PROCESSES; i++)
     {
         if (this->processes[i] == NULL)
         {
@@ -88,7 +88,7 @@ void ProcessTable::handleTimerInterrupt()
 
     // Output Process Table information
     printf("\n--- Process Table ---\n");
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < MAX_PROCESSES; i++)
     {
         if (this->processes[i] != NULL)
         {
