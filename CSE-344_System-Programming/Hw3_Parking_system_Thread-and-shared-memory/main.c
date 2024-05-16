@@ -10,6 +10,7 @@ sem_t newPickup, inChargeforPickup, newAutomobile, inChargeforAutomobile;
 // Shared variables to track the availability of parking spots
 int mFree_automobile = 8;
 int mFree_pickup = 4;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 // Function for the carOwner thread
 void *carOwner(void *arg) {
@@ -17,25 +18,31 @@ void *carOwner(void *arg) {
 
     // Check if the vehicle is a pickup or an automobile
     if (vehicleType % 2 == 0) { // Pickup
+        pthread_mutex_lock(&mutex);
         if (mFree_pickup > 0) {
-            // Wait for the semaphore to indicate a new pickup is ready to be parked
-            sem_wait(&newPickup);
             mFree_pickup--;
-            printf("Pickup owner parked. Remaining pickup spots: %d\n", mFree_pickup);
+            printf("Pickup owner arrived. Remaining pickup spots: %d\n", mFree_pickup);
+            pthread_mutex_unlock(&mutex);
             // Signal the semaphore to indicate the attendant can park the pickup
             sem_post(&inChargeforPickup);
+            // Wait for the semaphore to indicate a new pickup spot is available
+            sem_wait(&newPickup);
         } else {
+            pthread_mutex_unlock(&mutex);
             printf("No pickup spot available. Pickup owner leaves.\n");
         }
     } else { // Automobile
+        pthread_mutex_lock(&mutex);
         if (mFree_automobile > 0) {
-            // Wait for the semaphore to indicate a new automobile is ready to be parked
-            sem_wait(&newAutomobile);
             mFree_automobile--;
-            printf("Automobile owner parked. Remaining automobile spots: %d\n", mFree_automobile);
+            printf("Automobile owner arrived. Remaining automobile spots: %d\n", mFree_automobile);
+            pthread_mutex_unlock(&mutex);
             // Signal the semaphore to indicate the attendant can park the automobile
             sem_post(&inChargeforAutomobile);
+            // Wait for the semaphore to indicate a new automobile spot is available
+            sem_wait(&newAutomobile);
         } else {
+            pthread_mutex_unlock(&mutex);
             printf("No automobile spot available. Automobile owner leaves.\n");
         }
     }
@@ -51,14 +58,22 @@ void *carAttendant(void *arg) {
         // Wait for the semaphore to indicate a pickup is ready to be parked by the attendant
         sem_wait(&inChargeforPickup);
         printf("Attendant parking a pickup.\n");
+        sleep(1); // Simulate the time taken to park the vehicle
         // Signal the semaphore to indicate the new pickup spot is available
         sem_post(&newPickup);
+        pthread_mutex_lock(&mutex);
+        mFree_pickup++;
+        pthread_mutex_unlock(&mutex);
     } else { // Automobile
         // Wait for the semaphore to indicate an automobile is ready to be parked by the attendant
         sem_wait(&inChargeforAutomobile);
         printf("Attendant parking an automobile.\n");
+        sleep(1); // Simulate the time taken to park the vehicle
         // Signal the semaphore to indicate the new automobile spot is available
         sem_post(&newAutomobile);
+        pthread_mutex_lock(&mutex);
+        mFree_automobile++;
+        pthread_mutex_unlock(&mutex);
     }
     pthread_exit(NULL);
 }
@@ -69,9 +84,9 @@ int main() {
     int vehicleTypes[12];
 
     // Initialize semaphores
-    sem_init(&newPickup, 0, 1);
+    sem_init(&newPickup, 0, 4);
     sem_init(&inChargeforPickup, 0, 0);
-    sem_init(&newAutomobile, 0, 1);
+    sem_init(&newAutomobile, 0, 8);
     sem_init(&inChargeforAutomobile, 0, 0);
 
     // Seed the random number generator
@@ -95,6 +110,7 @@ int main() {
     sem_destroy(&inChargeforPickup);
     sem_destroy(&newAutomobile);
     sem_destroy(&inChargeforAutomobile);
+    pthread_mutex_destroy(&mutex);
 
     return 0;
 }
