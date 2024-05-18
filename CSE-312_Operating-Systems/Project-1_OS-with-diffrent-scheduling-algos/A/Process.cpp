@@ -14,7 +14,7 @@ Process::Process(uint32_t base)
 {
     this->stackPointer = base + stackSize - 4; 
     this->base = base;
-    this->isFinished = false; 
+    this->state = 0; // 0 means Ready
     debug_print("Process Created at: ");
     debug_printHex((uint32_t) this);
     debug_print("\n");
@@ -56,6 +56,14 @@ uint8_t ProcessTable::findEmptyProcessSlot()
     return 0xFF;
 }
 
+/*
+    * addNewProcess - Add a new process to the process table
+    * 
+    * @param name: The name of the process
+    * 
+    * @return: A pointer to the newly added process
+    *          NULL if there's no space
+*/
 Process* ProcessTable::addNewProcess(const char* name)
 {
     uint8_t index = this->findEmptyProcessSlot();
@@ -78,7 +86,7 @@ void ProcessTable::handleTimerInterrupt()
     uint8_t nextProcessIndex = (currentProcessIndex + 1) % this->processCount; 
 
     // Skip finished processes
-    while (this->processes[nextProcessIndex]->isFinished) {
+    while (this->processes[nextProcessIndex]->state == 3) {
         nextProcessIndex = (nextProcessIndex + 1) % this->processCount;
     }
 
@@ -87,7 +95,7 @@ void ProcessTable::handleTimerInterrupt()
     Process* nextProcess = this->processes[nextProcessIndex];
 
     // Output Process Table information
-    printf("\n--- Process Table ---\n");
+    printf("\n--- Process Table ---\n"); 
     for (int i = 0; i < MAX_PROCESSES; i++)
     {
         if (this->processes[i] != NULL)
@@ -95,8 +103,10 @@ void ProcessTable::handleTimerInterrupt()
             printf("Process: %s (", this->processes[i]->name);
             if (i == this->interruptManager->getCurrentProcessIndex()) {
                 printf("Running");
-            } else if (this->processes[i]->isFinished) {
+            } else if (this->processes[i]->state == 3) {
                 printf("Finished");
+            } else if (this->processes[i]->state == 2) {
+                printf("Blocked");
             } else {
                 printf("Ready");
             }

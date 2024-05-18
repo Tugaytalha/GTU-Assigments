@@ -13,7 +13,12 @@
 // Global Process Table object
 extern ProcessTable processTable;
 
-// Constructor for SyscallHandler
+/*
+    * SyscallHandler - Constructor for the SyscallHandler class
+    * 
+    * @param interruptManager: The interrupt manager object
+    * @param memoryManager: The memory manager object
+*/
 SyscallHandler::SyscallHandler(InterruptManager* interruptManager, MemoryManager* memoryManager)
     : m_interruptManager(interruptManager), m_memoryManager(memoryManager) {
     
