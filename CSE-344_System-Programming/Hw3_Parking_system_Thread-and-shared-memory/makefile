@@ -1,7 +1,7 @@
 CC = gcc
-CFLAGS = -pthread -Wall
+CFLAGS = -pthread -Wall -std=gnu99
 
-all: clear clean main.c main 
+all: clear clean main.o main 
 
 main: main.o
 	$(CC) $(CFLAGS) -o main main.o
