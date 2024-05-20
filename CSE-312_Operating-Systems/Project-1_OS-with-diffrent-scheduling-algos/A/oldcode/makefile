@@ -2,37 +2,18 @@
 # sudo apt-get install g++ binutils libc6-dev-i386
 # sudo apt-get install VirtualBox grub-legacy xorriso
 
-GCCPARAMS = -m32 -Iinclude -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -Wno-write-strings
+GCCPARAMS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
 ASPARAMS = --32
 LDPARAMS = -melf_i386
 
-objects = obj/loader.o \
-          obj/gdt.o \
-          obj/drivers/driver.o \
-          obj/hardwarecommunication/port.o \
-          obj/hardwarecommunication/interruptstubs.o \
-          obj/hardwarecommunication/interrupts.o \
-          obj/multitasking.o \
-          obj/hardwarecommunication/pci.o \
-          obj/drivers/keyboard.o \
-          obj/drivers/mouse.o \
-          obj/drivers/vga.o \
-          obj/gui/widget.o \
-          obj/gui/window.o \
-          obj/gui/desktop.o \
-          obj/kernel.o
+objects = loader.o kernel.o
 
 
-run: mykernel.iso
-	(killall VirtualBox && sleep 1) || true
-	VirtualBox --startvm 'My Operating System' &
 
-obj/%.o: src/%.cpp
-	mkdir -p $(@D)
+%.o: %.cpp
 	gcc $(GCCPARAMS) -c -o $@ $<
 
-obj/%.o: src/%.s
-	mkdir -p $(@D)
+%.o: %.s
 	as $(ASPARAMS) -o $@ $<
 
 mykernel.bin: linker.ld $(objects)
@@ -53,9 +34,10 @@ mykernel.iso: mykernel.bin
 	grub-mkrescue --output=mykernel.iso iso
 	rm -rf iso
 
+run: mykernel.iso
+	(killall VirtualBox && sleep 1) || true
+	VirtualBox --startvm 'My Operating System' &
+
 install: mykernel.bin
 	sudo cp $< /boot/mykernel.bin
 
-.PHONY: clean
-clean:
-	rm -rf obj mykernel.bin mykernel.iso
