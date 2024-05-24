@@ -24,6 +24,13 @@ namespace myos
             ~InterruptHandler();
         public:
             virtual myos::common::uint32_t HandleInterrupt(myos::common::uint32_t esp);
+                void handleProcessExit(CPUState* cpustate);
+            // System Call Handling Functions (static members)
+            int sys_fork(CPUState* cpu);
+            bool sys_waitpid(common::uint32_t esp);
+            common::uint32_t sys_execve(const char *entrypoint, CPUState* cpu);
+            bool sys_exit();
+            int sys_getpid();
         };
 
 

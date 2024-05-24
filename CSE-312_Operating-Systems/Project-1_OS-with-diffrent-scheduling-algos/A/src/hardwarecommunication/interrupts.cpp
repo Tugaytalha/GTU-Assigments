@@ -1,4 +1,3 @@
-
 #include <hardwarecommunication/interrupts.h>
 using namespace myos;
 using namespace myos::common;
@@ -25,13 +24,75 @@ InterruptHandler::~InterruptHandler()
         interruptManager->handlers[InterruptNumber] = 0;
 }
 
-uint32_t InterruptHandler::HandleInterrupt(uint32_t esp)
+common::uint32_t InterruptHandler::HandleInterrupt(common::uint32_t esp)
 {
     return esp;
 }
 
+// Function to handle a process exiting
+void InterruptHandler::handleProcessExit(CPUState* cpustate) {
+    // Get the current task from the TaskManager using the cpustate
+    Task* currentTask = interruptManager->taskManager->GetCurrentTask();
+
+    // 1. Mark the current task as TERMINATED.
+    currentTask->state = Task::TERMINATED; 
+
+    // 2. Find the parent process (using waitppid).
+    int parentPID = currentTask->waitppid; 
+    Task* parentTask = interruptManager->taskManager->FindTaskByPID(parentPID); 
+
+    // 3. If the parent is blocked waiting for this child, unblock it. 
+    if (parentTask && parentTask->state == Task::BLOCKED && 
+        (parentTask->waitppid == currentTask->pid || parentTask->waitppid == -1)) { 
+        parentTask->state = Task::READY; 
+        parentTask->waitppid = -1; // Reset the parent's waitppid 
+    }
+
+    // 4. Free the resources held by the terminated task
+    interruptManager->taskManager->TerminateTask(currentTask);
+
+    
+
+    // 5. Schedule a new task.
+    interruptManager->taskManager->Schedule(cpustate); 
+} 
 
 
+int InterruptHandler::sys_fork(CPUState* cpu) {
+    // Call the TaskManager's Fork() function
+    return InterruptManager::ActiveInterruptManager->taskManager->Fork(cpu); 
+}
+
+bool InterruptHandler::sys_waitpid(common::uint32_t esp) {
+    CPUState* cpu = (CPUState*)esp;
+    int pid = cpu->ebx;
+    int* status = (int*)cpu->ecx; 
+
+    // Call the TaskManager's Waitpid() function
+    int result = InterruptManager::ActiveInterruptManager->taskManager->Waitpid(pid, status, cpu);
+    if (result >= 0) {
+        cpu->ecx = result; // Return the child PID or 0 in the child process
+        return false; // Indicate successful waitpid (no need to reschedule)
+    } else {
+        return true; // Indicate that the parent process is blocked
+    }
+}
+
+common::uint32_t InterruptHandler::sys_execve(const char* entrypoint, CPUState* cpu) {
+    // Call the TaskManager's Execve() function
+    return InterruptManager::ActiveInterruptManager->taskManager->Execve(entrypoint, cpu);
+}
+
+bool InterruptHandler::sys_exit() {
+    // Call the handleProcessExit() function to manage task termination
+    handleProcessExit((CPUState*)(InterruptManager::ActiveInterruptManager->taskManager->GetCurrentTask()->cpustate));
+    return true; // Indicate that a reschedule is needed
+}
+
+int InterruptHandler::sys_getpid() {
+    // Get the PID of the current task from the TaskManager
+    return InterruptManager::ActiveInterruptManager->taskManager->GetCurrentTask()->pid;
+}
 
 
 
@@ -42,35 +103,13 @@ uint32_t InterruptHandler::HandleInterrupt(uint32_t esp)
 InterruptManager::GateDescriptor InterruptManager::interruptDescriptorTable[256];
 InterruptManager* InterruptManager::ActiveInterruptManager = 0;
 
-
-// Function to handle a process exiting
-void handleProcessExit(CPUState* cpustate) {
-    // ... (Get the current task from the cpustate) ...
-    Task* currentTask = /* ... */ 
-
-    // 1. Mark the current task as TERMINATED.
-    currentTask->state = Task::TERMINATED; 
-
-    // 2. Find the parent process.
-    int parentPID = /* ... (Get parent PID from the currentTask) ... */
-    Task* parentTask = taskManager->FindTaskByPID(parentPID); 
-
-    // 3. If the parent is blocked waiting for this child, unblock it. 
-    if (parentTask && parentTask->state == Task::BLOCKED) {
-        parentTask->state = Task::READY; 
-    }
-
-    // 4. Schedule a new task.
-    taskManager->Schedule(cpustate); 
-} 
-
 void InterruptManager::SetInterruptDescriptorTableEntry(uint8_t interrupt,
     uint16_t CodeSegment, void (*handler)(), uint8_t DescriptorPrivilegeLevel, uint8_t DescriptorType)
 {
     // address of pointer to code segment (relative to global descriptor table)
     // and address of the handler (relative to segment)
-    interruptDescriptorTable[interrupt].handlerAddressLowBits = ((uint32_t) handler) & 0xFFFF;
-    interruptDescriptorTable[interrupt].handlerAddressHighBits = (((uint32_t) handler) >> 16) & 0xFFFF;
+    interruptDescriptorTable[interrupt].handlerAddressLowBits = ((common::uint32_t) handler) & 0xFFFF;
+    interruptDescriptorTable[interrupt].handlerAddressHighBits = (((common::uint32_t) handler) >> 16) & 0xFFFF;
     interruptDescriptorTable[interrupt].gdt_codeSegmentSelector = CodeSegment;
 
     const uint8_t IDT_DESC_PRESENT = 0x80;

@@ -1,8 +1,56 @@
 #include <multitasking.h>
-#include <memorymanager.h>
+#include <memorymanagement.h>
 
 using namespace myos;
 using namespace myos::common;
+
+
+void printf(char* str)
+{
+    static uint16_t* VideoMemory = (uint16_t*)0xb8000;
+
+    static uint8_t x=0,y=0;
+
+    for(int i = 0; str[i] != '\0'; ++i)
+    {
+        switch(str[i])
+        {
+            case '\n':
+                x = 0;
+                y++;
+                break;
+            default:
+                VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | str[i];
+                x++;
+                break;
+        }
+
+        if(x >= 80)
+        {
+            x = 0;
+            y++;
+        }
+
+        if(y >= 25)
+        {
+            for(y = 0; y < 25; y++)
+                for(x = 0; x < 80; x++)
+                    VideoMemory[80*y+x] = (VideoMemory[80*y+x] & 0xFF00) | ' ';
+            x = 0;
+            y = 0;
+        }
+    }
+}
+
+void printfHex(uint8_t key)
+{
+    char* foo = "00";
+    char* hex = "0123456789ABCDEF";
+    foo[0] = hex[(key >> 4) & 0xF];
+    foo[1] = hex[key & 0xF];
+    printf(foo);
+}
+
 
 // Helper function to copy a CPUState
 static void copyCPUState(CPUState* dest, const CPUState* src) {
@@ -120,7 +168,6 @@ bool TaskManager::Execve(const char* programName, CPUState* cpustate) {
     return true; 
 }
 
-
 int TaskManager::Waitpid(int pid, int* status, CPUState* cpustate) {
     // 1. Check if waiting for any child (pid == -1) or a specific child.
     bool waitForAnyChild = (pid == -1);
@@ -160,6 +207,10 @@ int TaskManager::Waitpid(int pid, int* status, CPUState* cpustate) {
     return childTask->pid; // Return the PID of the terminated child 
 }
 
+int TaskManager::Waitpid(int pid) {
+    return Waitpid(pid, nullptr, nullptr);
+}
+
 TaskManager::TaskManager() {
     numTasks = 0;
     currentTask = -1;
@@ -178,28 +229,71 @@ bool TaskManager::AddTask(Task* task)
     return true;
 }
 
-// src/multitasking.cpp
+Task* TaskManager::GetCurrentTask() {
+    if (currentTask >= 0 && currentTask < numTasks) {
+        return tasks[currentTask];
+    } 
+    return nullptr; // Or handle the error appropriately in your OS.
+}
 
 CPUState* TaskManager::Schedule(CPUState* cpustate) {
-    if (numTasks <= 0) return cpustate;
-
-    if (currentTask >= 0) {
-        tasks[currentTask]->cpustate = cpustate;
+    if (numTasks <= 1) { 
+        return cpustate;  // Nothing to schedule if there's only one or zero tasks
     }
 
-    // Find the next READY task or unblock a waiting parent
+    // 1. Save the current task's state 
+    if (currentTask >= 0) {
+        tasks[currentTask]->cpustate = cpustate; 
+    }
+
+    // 2. Round-Robin Scheduling: Move to the next task
     int nextTaskIndex = (currentTask + 1) % numTasks;
-    while (tasks[nextTaskIndex]->state != Task::READY) {
-        // ... (Check for blocked parents - same as before) ...
+
+    // 3. Handle blocked tasks (waiting for child processes)
+    int attempts = 0; // Prevent infinite loop if all tasks are blocked
+    while (tasks[nextTaskIndex]->state != Task::READY && attempts < numTasks) {
+        // If a task is BLOCKED, check if any child has terminated:
+        if (tasks[nextTaskIndex]->state == Task::BLOCKED && tasks[nextTaskIndex]->waitppid != -1) {
+            for (int i = 0; i < numTasks; ++i) {
+                if (tasks[i]->waitppid == tasks[nextTaskIndex]->pid && 
+                    tasks[i]->state == Task::TERMINATED) {
+                    tasks[nextTaskIndex]->state = Task::READY; // Unblock the parent
+                    tasks[nextTaskIndex]->waitppid = -1; // Reset the waitppid 
+                    break; 
+                }
+            }
+        }
 
         nextTaskIndex = (nextTaskIndex + 1) % numTasks;
-
-        // ... (Prevent infinite loop - same as before) ... 
+        attempts++;
     }
 
+    // 4. If no READY task is found after checking all tasks, 
+    //    we might have a deadlock situation. Handle it 
+    if (tasks[nextTaskIndex]->state != Task::READY) {
+        // Terminate a Deadlocked Task
+        // Find the a task in the BLOCKED state:
+        int oldestTaskIndex = -1;
+        for (int i = 0; i < numTasks; ++i) {
+            if (tasks[i]->state == Task::BLOCKED) {
+                oldestTaskIndex = i;
+                break;
+            }
+        }
+
+        if (oldestTaskIndex != -1) {
+            printf("Terminating task to resolve deadlock.\n");
+            TerminateTask(oldestTaskIndex);
+        } else {
+            // No blocked task found (this is unexpected in a deadlock). 
+            printf("Error: Deadlock detected, but no blocked task found!\n"); 
+        } 
+    }
+
+    // 5. Switch to the next task 
     currentTask = nextTaskIndex; 
 
-    // Print Process Table
+    // Print Process Table (Optional - for debugging)
     printf("----------------- Process Table -----------------\n");
     printf("PID\tState\t\tWait PID\n"); 
     for (int i = 0; i < numTasks; ++i) {
@@ -214,7 +308,22 @@ CPUState* TaskManager::Schedule(CPUState* cpustate) {
     }
     printf("-------------------------------------------------\n");
 
-    return tasks[currentTask]->cpustate; 
+    // 6. Return the cpustate of the next task
+    return tasks[currentTask]->cpustate;
+}
+
+void TaskManager::TerminateTask(int taskIndex) {
+    if (taskIndex < 0 || taskIndex >= numTasks) {
+        return; // Invalid task index
+    }
+
+    Task* task = tasks[taskIndex];
+
+    // 1. Mark the task as TERMINATED
+    task->state = Task::TERMINATED;
+
+    // 2. Reset waitppid for the task
+    task->waitppid = -1; 
 }
 
 int TaskManager::AssignNextPID() {
@@ -225,5 +334,13 @@ int TaskManager::AssignNextPID() {
     }
 }
 
+Task* TaskManager::FindTaskByPID(int pid) {
+    for (int i = 0; i < numTasks; ++i) {
+        if (tasks[i]->pid == pid) {
+            return tasks[i];
+        }
+    }
+    return nullptr; // Task not found
+}
 
-    
+TaskManager taskManager = TaskManager();

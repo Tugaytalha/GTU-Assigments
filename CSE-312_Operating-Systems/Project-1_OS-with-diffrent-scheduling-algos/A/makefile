@@ -28,9 +28,9 @@ objects = obj/loader.o \
 
 
 run: mykernel.iso
-	@VBoxManage list runningvms | grep "AYDIN Operating System" > /dev/null && \
-	(VBoxManage controlvm "AYDIN Operating System" poweroff && sleep 1) || true
-	@VirtualBox --startvm 'AYDIN Operating System' &
+	@VBoxManage list runningvms | grep "Talos Operating System" > /dev/null && \
+	(VBoxManage controlvm "Talos Operating System" poweroff && sleep 1) || true
+	@VirtualBox --startvm 'Talos Operating System' &
 
 obj/%.o: src/%.cpp
 	mkdir -p $(@D)

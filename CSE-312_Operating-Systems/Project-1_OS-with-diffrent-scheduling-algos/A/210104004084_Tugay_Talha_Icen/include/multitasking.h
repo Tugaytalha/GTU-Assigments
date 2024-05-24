@@ -59,6 +59,14 @@ namespace myos
         bool AddTask(Task* task);
         CPUState* Schedule(CPUState* cpustate);
         int AssignNextPID(); // Function to assign a new PID
+        Task* GetCurrentTask(); // Function to get the current task
+        Task* FindTaskByPID(int pid); // Function to find a task by PID
+        void TerminateTask(Task* task); // Function to terminate a task
+        int Fork(CPUState* cpustate); // Function to fork a task
+        int Waitpid(int pid); // Function to wait for a task to finish
+        int Waitpid(int pid, CPUState* cpustate); // Function to wait for a task to finish
+        int Waitpid(int pid, int *status, CPUState* cpustate); // Function to wait for a task to finish
+        bool Execve(const char* programName, CPUState* cpustate); // Function to execute a program
     };
     
     
