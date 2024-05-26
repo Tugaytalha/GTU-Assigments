@@ -10,6 +10,7 @@
 #include <semaphore.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <signal.h>
 
 #define PATH_MAX 4096
 
@@ -29,13 +30,19 @@ FilePair* buffer;
 int buffer_size;
 int buffer_count = 0;
 
-// Mutex and condition variables for buffer access
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+// Separate mutexes for fine-grained locking
+pthread_mutex_t buffer_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t total_files_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t total_bytes_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t file_types_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 pthread_cond_t cond_not_empty = PTHREAD_COND_INITIALIZER;
 pthread_cond_t cond_not_full = PTHREAD_COND_INITIALIZER;
 pthread_barrier_t barrier;
 
 int done = 0;  // Flag to indicate that the manager is done adding files to the buffer
+int managers = 0; // Counter for recursive manager calls 
+int stop = 0; // Flag to indicate that the program should stop
 
 // Statistics
 int total_files = 0;
@@ -44,6 +51,7 @@ int file_types[DT_UNKNOWN + 1] = {0}; // To keep track of file types
 
 void* manager_function(void* arg);
 void* worker_function(void* arg);
+void handle_sigint();
 
 int main(int argc, char* argv[]) {
     if (argc != 5) {
@@ -51,10 +59,35 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
+    struct sigaction sa;
+    sa.sa_handler = handle_sigint;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    if (sigaction(SIGINT, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(EXIT_FAILURE);
+    }
+
     buffer_size = atoi(argv[1]);
     int num_workers = atoi(argv[2]);
     char* source_dir = argv[3];
     char* dest_dir = argv[4];
+
+    // Check if the directories exists and numbers are valid
+    struct stat source_stat, dest_stat;
+    if (stat(source_dir, &source_stat) != 0 || !S_ISDIR(source_stat.st_mode)) {
+        fprintf(stderr, "Error: %s is not a valid directory\n", source_dir);
+        exit(EXIT_FAILURE);
+    }
+    if (stat(dest_dir, &dest_stat) != 0 || !S_ISDIR(dest_stat.st_mode)) {
+        fprintf(stderr, "Error: %s is not a valid directory\n", dest_dir);
+        exit(EXIT_FAILURE);
+    }
+    if (buffer_size <= 0 || num_workers <= 0) {
+        fprintf(stderr, "Error: buffer_size and num_workers must be positive integers\n");
+        exit(EXIT_FAILURE);
+    }
+
 
     // Dynamically allocate the buffer based on the user-provided buffer size
     buffer = (FilePair*)malloc(buffer_size * sizeof(FilePair));
@@ -67,8 +100,8 @@ int main(int argc, char* argv[]) {
     pthread_t worker_threads[num_workers];
 
     DirPair dirs;
-    strcpy(dirs.sourceDir, source_dir);
-    strcpy(dirs.destDir, dest_dir);
+    strncpy(dirs.sourceDir, source_dir, PATH_MAX - 1);
+    strncpy(dirs.destDir, dest_dir, PATH_MAX - 1);
 
     // Initialize the barrier
     pthread_barrier_init(&barrier, NULL, num_workers);
@@ -119,6 +152,8 @@ int main(int argc, char* argv[]) {
 }
 
 void* manager_function(void* arg) {
+    if (stop) return NULL;
+
     DirPair* dirs = (DirPair*)arg;
     char* source_dir = dirs->sourceDir;
     char* dest_dir = dirs->destDir;
@@ -130,7 +165,13 @@ void* manager_function(void* arg) {
         return NULL;
     }
 
+    pthread_mutex_lock(&buffer_mutex);
+    managers++;
+    pthread_mutex_unlock(&buffer_mutex);
+
     while ((entry = readdir(dp))) {
+        if (stop) break;
+
         if (entry->d_type == DT_DIR) {
             // Skip the "." and ".." directories
             if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
@@ -143,12 +184,19 @@ void* manager_function(void* arg) {
             snprintf(new_dest_path, sizeof(new_dest_path), "%s/%s", dest_dir, entry->d_name);
 
             // Create the directory in the destination
-            mkdir(new_dest_path, 0777);
+            if (mkdir(new_dest_path, 0777) != 0 && errno != EEXIST) {
+                perror("mkdir");
+                continue;
+            }
+
+            pthread_mutex_lock(&file_types_mutex);
+            file_types[entry->d_type]++;
+            pthread_mutex_unlock(&file_types_mutex);
 
             // Recursively read the new directory
             DirPair new_dirs = { .sourceDir = "", .destDir = "" };
-            strcpy(new_dirs.sourceDir, new_source_path);
-            strcpy(new_dirs.destDir, new_dest_path);
+            strncpy(new_dirs.sourceDir, new_source_path, PATH_MAX - 1);
+            strncpy(new_dirs.destDir, new_dest_path, PATH_MAX - 1);
             manager_function((void*)&new_dirs);
         } else {
             // Construct full file paths for the source and destination
@@ -157,45 +205,55 @@ void* manager_function(void* arg) {
             snprintf(source_path, sizeof(source_path), "%s/%s", source_dir, entry->d_name);
             snprintf(dest_path, sizeof(dest_path), "%s/%s", dest_dir, entry->d_name);
 
-            pthread_mutex_lock(&mutex);
+            pthread_mutex_lock(&buffer_mutex);
 
-            while (buffer_count == buffer_size) {
-                pthread_cond_wait(&cond_not_full, &mutex);
+            while (buffer_count == buffer_size && !stop) {
+                pthread_cond_wait(&cond_not_full, &buffer_mutex);
+            }
+
+            if (stop) {
+                pthread_mutex_unlock(&buffer_mutex);
+                break;
             }
 
             // Add file pair to buffer
-            strcpy(buffer[buffer_count].sourcePath, source_path);
-            strcpy(buffer[buffer_count].destPath, dest_path);
+            strncpy(buffer[buffer_count].sourcePath, source_path, PATH_MAX - 1);
+            strncpy(buffer[buffer_count].destPath, dest_path, PATH_MAX - 1);
             buffer_count++;
 
-            // Update statistics for file types
-            file_types[entry->d_type]++;
-
             pthread_cond_signal(&cond_not_empty);
-            pthread_mutex_unlock(&mutex);
+            pthread_mutex_unlock(&buffer_mutex);
+
+            // Update statistics for file types
+            pthread_mutex_lock(&file_types_mutex);
+            file_types[entry->d_type]++;
+            pthread_mutex_unlock(&file_types_mutex);
         }
     }
 
     closedir(dp);
 
-    pthread_mutex_lock(&mutex);
-    done = 1;
-    pthread_cond_broadcast(&cond_not_empty);
-    pthread_mutex_unlock(&mutex);
+    pthread_mutex_lock(&buffer_mutex);
+    managers--;
+    if (managers == 0) {
+        done = 1;
+        pthread_cond_broadcast(&cond_not_empty);
+    }
+    pthread_mutex_unlock(&buffer_mutex);
 
     return NULL;
 }
 
 void* worker_function(void* arg) {
     while (1) {
-        pthread_mutex_lock(&mutex);
+        pthread_mutex_lock(&buffer_mutex);
 
         while (buffer_count == 0 && !done) {
-            pthread_cond_wait(&cond_not_empty, &mutex);
+            pthread_cond_wait(&cond_not_empty, &buffer_mutex);
         }
 
         if (buffer_count == 0 && done) {
-            pthread_mutex_unlock(&mutex);
+            pthread_mutex_unlock(&buffer_mutex);
             break;
         }
 
@@ -203,7 +261,7 @@ void* worker_function(void* arg) {
         FilePair filePair = buffer[--buffer_count];
 
         pthread_cond_signal(&cond_not_full);
-        pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&buffer_mutex);
 
         // Open the source file for reading
         int src_fd = open(filePair.sourcePath, O_RDONLY);
@@ -215,24 +273,28 @@ void* worker_function(void* arg) {
         // Create or truncate the destination file
         int dest_fd = open(filePair.destPath, O_WRONLY | O_CREAT | O_TRUNC, 0666);
         if (dest_fd < 0) {
-            perror("open destination file");
+            char error_message[PATH_MAX + 50];
+            // Construct an error message with the source and destination paths and error no
+            snprintf(error_message, sizeof(error_message), "errno: %d, open destination file %s", errno, filePair.destPath);
+            perror(error_message);
             close(src_fd);
             continue;
         }
 
         // Copy the file contents
-        char buffer[8192];
+        char buf[8192];
         ssize_t bytes_read, bytes_written;
-        while ((bytes_read = read(src_fd, buffer, sizeof(buffer))) > 0) {
-            bytes_written = write(dest_fd, buffer, bytes_read);
+        while ((bytes_read = read(src_fd, buf, sizeof(buf))) > 0) {
+            bytes_written = write(dest_fd, buf, bytes_read);
             if (bytes_written != bytes_read) {
                 perror("write");
                 break;
             }
+
             // Update statistics for bytes copied
-            pthread_mutex_lock(&mutex);
+            pthread_mutex_lock(&total_bytes_mutex);
             total_bytes += bytes_written;
-            pthread_mutex_unlock(&mutex);
+            pthread_mutex_unlock(&total_bytes_mutex);
         }
 
         if (bytes_read < 0) {
@@ -243,9 +305,9 @@ void* worker_function(void* arg) {
         close(dest_fd);
 
         // Update the total files count
-        pthread_mutex_lock(&mutex);
+        pthread_mutex_lock(&total_files_mutex);
         total_files++;
-        pthread_mutex_unlock(&mutex);
+        pthread_mutex_unlock(&total_files_mutex);
 
         // Output the completion status
         printf("Copied %s to %s\n", filePair.sourcePath, filePair.destPath);
@@ -254,4 +316,12 @@ void* worker_function(void* arg) {
     // Synchronize with other threads
     pthread_barrier_wait(&barrier);
     return NULL;
+}
+
+
+void handle_sigint() {
+    stop = 1;
+
+    pthread_cond_broadcast(&cond_not_empty);
+    pthread_cond_broadcast(&cond_not_full);
 }
