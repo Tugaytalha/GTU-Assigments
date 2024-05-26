@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -pthread -Wall -Wextra
 TARGET = MWCp
 
-all: $(TARGET)
+all: clean $(TARGET)
 
 $(TARGET): main.o
 	$(CC) $(CFLAGS) -o $(TARGET) main.o

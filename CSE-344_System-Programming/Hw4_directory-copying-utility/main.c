@@ -9,8 +9,8 @@
 #include <errno.h>
 #include <semaphore.h>
 #include <sys/types.h>
+#include <sys/time.h>
 
-#define BUFFER_SIZE 10
 #define PATH_MAX 4096
 
 // Structure to hold source and destination file paths
@@ -25,7 +25,8 @@ typedef struct {
     char destDir[PATH_MAX];
 } DirPair;
 
-FilePair buffer[BUFFER_SIZE];
+FilePair* buffer;
+int buffer_size;
 int buffer_count = 0;
 
 // Mutex and condition variables for buffer access
@@ -36,9 +37,13 @@ pthread_barrier_t barrier;
 
 int done = 0;  // Flag to indicate that the manager is done adding files to the buffer
 
+// Statistics
+int total_files = 0;
+int total_bytes = 0;
+int file_types[DT_UNKNOWN + 1] = {0}; // To keep track of file types
+
 void* manager_function(void* arg);
 void* worker_function(void* arg);
-
 
 int main(int argc, char* argv[]) {
     if (argc != 5) {
@@ -46,10 +51,17 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    int buffer_size = atoi(argv[1]);
+    buffer_size = atoi(argv[1]);
     int num_workers = atoi(argv[2]);
     char* source_dir = argv[3];
     char* dest_dir = argv[4];
+
+    // Dynamically allocate the buffer based on the user-provided buffer size
+    buffer = (FilePair*)malloc(buffer_size * sizeof(FilePair));
+    if (buffer == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
 
     pthread_t manager_thread;
     pthread_t worker_threads[num_workers];
@@ -59,7 +71,10 @@ int main(int argc, char* argv[]) {
     strcpy(dirs.destDir, dest_dir);
 
     // Initialize the barrier
-    pthread_barrier_init(&barrier, NULL, num_workers + 1);
+    pthread_barrier_init(&barrier, NULL, num_workers);
+
+    struct timeval start_time, end_time;
+    gettimeofday(&start_time, NULL); // Start measuring time
 
     // Create the manager thread
     pthread_create(&manager_thread, NULL, manager_function, (void*)&dirs);
@@ -77,14 +92,31 @@ int main(int argc, char* argv[]) {
         pthread_join(worker_threads[i], NULL);
     }
 
+    gettimeofday(&end_time, NULL); // End measuring time
+
     // Destroy the barrier
     pthread_barrier_destroy(&barrier);
 
+    // Calculate the elapsed time
+    double elapsed_time = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_usec - start_time.tv_usec) / 1e6;
+
+    // Print statistics
+    printf("\n----- Statistics -----\n");
+    printf("Total files copied: %d\n", total_files);
+    printf("Total bytes copied: %d\n", total_bytes);
+    printf("Time taken: %.2f seconds\n", elapsed_time);
+    printf("File types copied:\n");
+    printf("  Regular files: %d\n", file_types[DT_REG]);
+    printf("  Directories: %d\n", file_types[DT_DIR]);
+    printf("  Symlinks: %d\n", file_types[DT_LNK]);
+    printf("  Others: %d\n", file_types[DT_UNKNOWN]);
+    printf("----------------------\n");
+
+    // Free the dynamically allocated buffer
+    free(buffer);
+
     return 0;
 }
-
-
-
 
 void* manager_function(void* arg) {
     DirPair* dirs = (DirPair*)arg;
@@ -127,7 +159,7 @@ void* manager_function(void* arg) {
 
             pthread_mutex_lock(&mutex);
 
-            while (buffer_count == BUFFER_SIZE) {
+            while (buffer_count == buffer_size) {
                 pthread_cond_wait(&cond_not_full, &mutex);
             }
 
@@ -135,6 +167,9 @@ void* manager_function(void* arg) {
             strcpy(buffer[buffer_count].sourcePath, source_path);
             strcpy(buffer[buffer_count].destPath, dest_path);
             buffer_count++;
+
+            // Update statistics for file types
+            file_types[entry->d_type]++;
 
             pthread_cond_signal(&cond_not_empty);
             pthread_mutex_unlock(&mutex);
@@ -150,8 +185,6 @@ void* manager_function(void* arg) {
 
     return NULL;
 }
-
-
 
 void* worker_function(void* arg) {
     while (1) {
@@ -196,6 +229,10 @@ void* worker_function(void* arg) {
                 perror("write");
                 break;
             }
+            // Update statistics for bytes copied
+            pthread_mutex_lock(&mutex);
+            total_bytes += bytes_written;
+            pthread_mutex_unlock(&mutex);
         }
 
         if (bytes_read < 0) {
@@ -204,6 +241,11 @@ void* worker_function(void* arg) {
 
         close(src_fd);
         close(dest_fd);
+
+        // Update the total files count
+        pthread_mutex_lock(&mutex);
+        total_files++;
+        pthread_mutex_unlock(&mutex);
 
         // Output the completion status
         printf("Copied %s to %s\n", filePair.sourcePath, filePair.destPath);
