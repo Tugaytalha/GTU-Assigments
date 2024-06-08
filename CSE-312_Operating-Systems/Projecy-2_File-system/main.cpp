@@ -41,7 +41,30 @@ int main(int argc, char* argv[]) {
         std::string path = argv[3];
         std::string password = argv[4];
         addPassword(path, password);
-    } else {
+    } else if (operation == "mkfs") {
+        std::string name = argv[3];
+        int blockSize = std::stoi(argv[4]);
+        createFileSystem(name, blockSize);
+    } else if (operation == "help") {
+        std::cout << "Operations:" << std::endl;
+        std::cout << "dir <path> - List directory contents" << std::endl;
+        std::cout << "mkdir <path> - Make a new directory" << std::endl;
+        std::cout << "rmdir <path> - Remove a directory" << std::endl;
+        std::cout << "dumpe2fs - Dump file system information" << std::endl;
+        std::cout << "write <path> <file> - Write a file to the file system" << std::endl;
+        std::cout << "read <path> <file> - Read a file from the file system" << std::endl;
+        std::cout << "del <path> - Delete a file" << std::endl;
+        std::cout << "chmod <path> <permissions> - Change file permissions" << std::endl;
+        std::cout << "addpw <path> <password> - Add a password to a file" << std::endl;
+        std::cout << "mkfs <name> <blockSize> - Create a new file system" << std::endl;
+    } else if (operation == "loadfs") {
+        std::string name = argv[3];
+        loadFileSystem(name);
+    } else if (operation == "savefs") {
+        std::string name = argv[3];
+        saveFileSystem(name);
+    }
+    else {
         std::cerr << "Unknown operation: " << operation << std::endl;
     }
 
