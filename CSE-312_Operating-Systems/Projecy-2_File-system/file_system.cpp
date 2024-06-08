@@ -7,10 +7,18 @@
 #include <iomanip>
 #include <sstream>
 #include <algorithm> // Added for std::find_if and std::remove_if
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fstream>
+#include <iostream>
+
 
 SuperBlock superBlock;
 std::vector<int> FAT; // Simulated FAT table
 std::vector<DirectoryEntry> rootDirectory; // Root directory
+
+
+
 
 uint16_t getCurrentTime() {
     std::time_t now = std::time(nullptr);
@@ -86,7 +94,7 @@ void makeDirectory(const std::string& path) {
 }
 
 int allocateBlock() {
-    for (size_t i = 2; i < FAT.size(); ++i) { // Skip reserved blocks
+    for (int i = 3; i < superBlock.totalBlocks; ++i) { // Skip reserved blocks
         if (FAT[i] == -1) { // Free block
             FAT[i] = 0; // Mark as used
             return i;
@@ -110,6 +118,28 @@ int writeFileData(const std::string& localPath, int blockSize, std::vector<int>&
         std::cerr << "Failed to open local file: " << localPath << std::endl;
         return -1;
     }
+
+    // Check for write permissions
+    auto it = std::find_if(rootDirectory.begin(), rootDirectory.end(), [&](const DirectoryEntry& entry) {
+        return strncmp(entry.name, localPath.c_str(), 8) == 0;
+    });
+    DirectoryEntry& fileEntry = *it;
+    if ((fileEntry.attributes & 0x02) == 0) {
+        std::cerr << "File does not have write permissions." << std::endl;
+        return -1;
+    }
+
+    // Password check
+    if (std::strlen(fileEntry.reserved) > 0) {
+        std::string password;
+        std::cout << "Enter password: ";
+        std::cin >> password;
+        if (password != fileEntry.reserved) {
+            std::cerr << "Incorrect password." << std::endl;
+            return -1;
+        }
+    }
+
 
     char* buffer = new char[blockSize];
     int previousBlock = -1;
@@ -154,10 +184,17 @@ void writeFile(const std::string& fsPath, const std::string& localPath) {
     ifs.seekg(0, std::ios::beg);
 
     DirectoryEntry newFile;
-    std::strncpy(newFile.name, fsPath.substr(0, 8).c_str(), 8);
+    // Parse file name and extension seperated by '.'
+    // Extension is optional
+    std::string::size_type dotPos = fsPath.find('.');
+    size_t pos = dotPos == std::string::npos ? fsPath.size() : dotPos;
+    std::strncpy(newFile.name, fsPath.substr(0, pos).c_str(), 8);
     newFile.name[7] = '\0';
-    std::strncpy(newFile.extension, fsPath.substr(9, 3).c_str(), 3);
-    newFile.extension[2] = '\0';
+    if (dotPos != std::string::npos) {
+        std::strncpy(newFile.extension, fsPath.substr(dotPos + 1).c_str(), 3);
+    } else {
+        std::fill(std::begin(newFile.extension), std::end(newFile.extension), ' ');
+    }
     newFile.attributes = 0x00; // Regular file attribute
     std::fill(std::begin(newFile.reserved), std::end(newFile.reserved), 0);
     newFile.time = getCurrentTime();
@@ -187,11 +224,29 @@ void readFile(const std::string& fsPath, const std::string& localPath) {
         return;
     }
 
+
     DirectoryEntry& fileEntry = *it;
     std::ofstream ofs(localPath, std::ios::binary);
     if (!ofs) {
         std::cerr << "Failed to open local file: " << localPath << std::endl;
         return;
+    }
+
+    // Check for read permissions
+    if ((fileEntry.attributes & 0x01) == 0) {
+        std::cerr << "File does not have read permissions." << std::endl;
+        return;
+    }
+
+    // Password check
+    if (std::strlen(fileEntry.reserved) > 0) {
+        std::string password;
+        std::cout << "Enter password: ";
+        std::cin >> password;
+        if (password != fileEntry.reserved) {
+            std::cerr << "Incorrect password." << std::endl;
+            return;
+        }
     }
 
     int currentBlock = fileEntry.firstBlock;
@@ -263,7 +318,15 @@ void removeDirectory(const std::string& path) {
 
 void listDirectory(const std::string& path) {
     for (const auto& entry : rootDirectory) {
-        std::cout << entry.name << "." << entry.extension << " " << entry.size << " bytes" << std::endl;
+        if (strncmp(entry.name, path.c_str(), 8) == 0) {
+            std::cout << "Name: " << entry.name << "." << entry.extension << std::endl;
+            std::cout << "Size: " << entry.size << " bytes" << std::endl;
+            std::cout << "First Block: " << entry.firstBlock << std::endl;
+            std::cout << "Attributes: " << static_cast<int>(entry.attributes) << std::endl;
+            std::cout << "Time: " << entry.time << std::endl;
+            std::cout << "Date: " << entry.date << std::endl;
+            std::cout << std::endl;
+        }
     }
 }
 

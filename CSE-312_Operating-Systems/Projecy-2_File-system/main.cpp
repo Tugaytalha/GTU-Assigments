@@ -12,36 +12,46 @@ int main(int argc, char* argv[]) {
     std::string operation = argv[2];
 
     if (operation == "dir") {
+        loadFileSystem(fileSystem);
         std::string path = argv[3];
         listDirectory(path);
     } else if (operation == "mkdir") {
+        loadFileSystem(fileSystem);
         std::string path = argv[3];
         makeDirectory(path);
     } else if (operation == "rmdir") {
+        loadFileSystem(fileSystem);
         std::string path = argv[3];
         removeDirectory(path);
     } else if (operation == "dumpe2fs") {
+        loadFileSystem(fileSystem);
         dumpFileSystemInfo();
     } else if (operation == "write") {
+        loadFileSystem(fileSystem);
         std::string path = argv[3];
         std::string linuxFile = argv[4];
         writeFile(path, linuxFile);
     } else if (operation == "read") {
+        loadFileSystem(fileSystem);
         std::string path = argv[3];
         std::string linuxFile = argv[4];
         readFile(path, linuxFile);
     } else if (operation == "del") {
+        loadFileSystem(fileSystem);
         std::string path = argv[3];
         deleteFile(path);
     } else if (operation == "chmod") {
+        loadFileSystem(fileSystem);
         std::string path = argv[3];
         std::string permissions = argv[4];
         changePermissions(path, permissions);
     } else if (operation == "addpw") {
+        loadFileSystem(fileSystem);
         std::string path = argv[3];
         std::string password = argv[4];
         addPassword(path, password);
     } else if (operation == "mkfs") {
+        loadFileSystem(fileSystem);
         std::string name = argv[3];
         int blockSize = std::stoi(argv[4]);
         createFileSystem(name, blockSize);
@@ -61,6 +71,7 @@ int main(int argc, char* argv[]) {
         std::string name = argv[3];
         loadFileSystem(name);
     } else if (operation == "savefs") {
+        loadFileSystem(fileSystem);
         std::string name = argv[3];
         saveFileSystem(name);
     }
@@ -70,3 +81,4 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
