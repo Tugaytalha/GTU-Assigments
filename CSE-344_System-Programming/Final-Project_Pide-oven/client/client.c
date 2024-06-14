@@ -6,7 +6,7 @@
 #include <time.h>
 #include "pide_shop.h"
 
-#define SERVER_PORT 8080 // You can change this to the port your server is listening on
+#define SERVER_PORT 8001 // You can change this to the port your server is listening on
 
 void send_order(int customer_id, int order_id, const char *server_ip) {
     int sockfd;
