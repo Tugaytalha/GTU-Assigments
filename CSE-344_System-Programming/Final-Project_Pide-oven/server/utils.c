@@ -9,6 +9,8 @@ int current_oven_load;
 FILE *log_file;
 int server_socket;
 sem_t oven_openings;
+pthread_mutex_t oven_lock;
+pthread_cond_t oven_cond;
 
 void initialize() {
     pthread_mutex_init(&order_queue.lock, NULL);

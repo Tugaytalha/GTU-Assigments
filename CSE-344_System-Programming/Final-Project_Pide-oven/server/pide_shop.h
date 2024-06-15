@@ -72,6 +72,9 @@ extern FILE *log_file;
 extern int server_socket;
 extern int delivery_speed;
 extern double invert_time;
+extern sem_t oven_openings;
+extern pthread_mutex_t oven_lock;
+extern pthread_cond_t oven_cond;
 
 void initialize();
 void setup_signal_handling();

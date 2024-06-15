@@ -62,42 +62,56 @@ void* cook_thread(void* arg) {
         sleep(invert_time * SLEEP_MULTIPLIER);
 
         // Acquire a cooking apparatus
-        acquire_cooking_apparatus(cook);
+        acquire_cooking_apparatus(cook, order);
+
+        // Wait for an available oven opening
+        sem_wait(&oven_openings);
         
-        // Simulate order to the oven time
-        sleep(invert_time * SLEEP_MULTIPLIER / 10.0);
-
-        // Release the cooking apparatus
-        
-
-        // Simulate cooking time
-        sleep(rand() % 3 + 1);
-
-
         pthread_mutex_lock(&oven_lock);
         while (current_oven_load >= OVEN_CAPACITY) {
             pthread_cond_wait(&oven_cond, &oven_lock);
         }
         current_oven_load++;
         pthread_mutex_unlock(&oven_lock);
+        // Simulate time to Place the order in to the oven
+        sleep(invert_time * SLEEP_MULTIPLIER / 10.0);
 
         fprintf(log_file, "Cook %d placed order %d in the oven\n", cook->id, order.order_id);
         fflush(log_file);
 
-        // Simulate oven cooking time
-        sleep(rand() % 3 + 1);
+        // Release the oven opening
+        sem_post(&oven_openings);
 
-        pthread_mutex_lock(&oven_lock);
+        // Release the cooking apparatus
+        release_cooking_apparatus(cook, order);        
+
+        // Simulate oven cooking time
+        sleep(invert_time * SLEEP_MULTIPLIER / 2.0);
+
+        // Acquire the apparatus again
+        acquire_cooking_apparatus(cook, order);
+
+        // Wait for an available oven opening
+        sem_wait(&oven_openings);
+
+        // Simulate time to take the order out of the oven
+        sleep(invert_time * SLEEP_MULTIPLIER / 10.0);
         current_oven_load--;
         pthread_cond_signal(&oven_cond);
-        pthread_mutex_unlock(&oven_lock);
 
         fprintf(log_file, "Cook %d finished order %d\n", cook->id, order.order_id);
         fflush(log_file);
 
+        // Release the oven opening
+        sem_post(&oven_openings);
+
         cook->is_available = 1;
 
         // Hand over to delivery personnel
+        pthread_mutex_lock(&order_queue.lock);
+        order_queue.orders[order_queue.count++] = order;
+        pthread_cond_signal(&order_queue.cond);
+        pthread_mutex_unlock(&order_queue.lock)
     }
     return NULL;
 }
