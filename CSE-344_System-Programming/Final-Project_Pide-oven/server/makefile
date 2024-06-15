@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -pthread
+CFLAGS = -Wall -pthread -lm
 TARGET = PideShop
 
 all: $(TARGET)

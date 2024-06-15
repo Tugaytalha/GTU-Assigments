@@ -1,7 +1,11 @@
 #include "pide_shop.h"
 
+int invert_time;
+
 void setup_server(int port) {
     struct sockaddr_in server_addr;
+
+    invert_time = calculate_invert_time();
 
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == -1) {
@@ -23,6 +27,7 @@ void setup_server(int port) {
         exit(EXIT_FAILURE);
     }
 
+    printf("Server ip: %s\n", inet_ntoa(server_addr.sin_addr));
     printf("Server listening on port %d\n", port);
 }
 
@@ -63,3 +68,4 @@ void accept_connections() {
         pthread_detach(thread);
     }
 }
+
