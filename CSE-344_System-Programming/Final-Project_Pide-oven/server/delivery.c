@@ -1,4 +1,5 @@
 #include "pide_shop.h"
+#include <math.h>
 
 void* delivery_thread(void* arg) {
     DeliveryPerson* delivery_person = (DeliveryPerson*)arg;
@@ -25,7 +26,7 @@ void* delivery_thread(void* arg) {
 
             // Simulate delivery time based on distance and velocity
             float distance = sqrt(orders[i].x * orders[i].x + orders[i].y * orders[i].y);
-            sleep(distance / delivery_person->velocity * SLEEP_MULTIPLIER);
+            sleep(distance / delivery_person->velocity);
 
             fprintf(log_file, "Delivery person %d delivered order %d\n", delivery_person->id, orders[i].order_id);
             fflush(log_file);

@@ -13,6 +13,7 @@
 #include <complex.h>
 #include <string.h>
 #include <semaphore.h>
+#include <math.h>
 
 #define MAX_COOKS 100
 #define MAX_DELIVERY_PERSONNEL 100
@@ -50,6 +51,8 @@ typedef struct {
     float velocity;  // Velocity of the delivery person
     Order orders[3]; // Orders currently being carried
     int order_count; // Current number of orders being carried
+    pthread_mutex_t lock;
+    pthread_cond_t cond;
 } DeliveryPerson;
 
 typedef struct {
@@ -73,6 +76,7 @@ typedef struct {
 
 extern Manager manager;
 extern OrderQueue order_queue;
+extern OrderQueue prepared_order_queue;
 extern Cook cooks[MAX_COOKS];
 extern DeliveryPerson delivery_personnel[MAX_DELIVERY_PERSONNEL];
 extern int current_oven_load;
@@ -94,6 +98,7 @@ void accept_connections();
 void* cook_thread(void* arg);
 void* delivery_thread(void* arg);
 void* client_handler(void* arg);
+void* manager_thread(void* arg);
 double calculate_invert_time();
 
 #endif

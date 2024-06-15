@@ -1,6 +1,7 @@
 #include "pide_shop.h"
 
 OrderQueue order_queue;
+OrderQueue prepared_order_queue;
 Cook cooks[MAX_COOKS];
 DeliveryPerson delivery_personnel[MAX_DELIVERY_PERSONNEL];
 Apparatus ovens[OVEN_CAPACITY];
@@ -20,6 +21,11 @@ void initialize() {
     order_queue.count = 0;
 
     current_oven_load = 0;
+
+    // Initialize prepared order queue
+    pthread_mutex_init(&prepared_order_queue.lock, NULL);
+    pthread_cond_init(&prepared_order_queue.cond, NULL);
+    prepared_order_queue.count = 0;
     
     for (int i = 0; i < OVEN_CAPACITY; i++) {
         pthread_mutex_init(&ovens[i].lock, NULL);
