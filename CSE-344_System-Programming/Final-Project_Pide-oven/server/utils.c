@@ -11,6 +11,8 @@ int server_socket;
 sem_t oven_openings;
 pthread_mutex_t oven_lock;
 pthread_cond_t oven_cond;
+Manager manager;
+
 
 void initialize() {
     pthread_mutex_init(&order_queue.lock, NULL);
@@ -36,10 +38,15 @@ void initialize() {
         cooks[i].is_available = 1;
     }
 
+    // Initialize delivery personnel
     for (int i = 0; i < MAX_DELIVERY_PERSONNEL; i++) {
         delivery_personnel[i].id = i;
         delivery_personnel[i].is_available = 1;
-        delivery_personnel[i].deliveries_made = 0;
+        delivery_personnel[i].order_count = 0;
+        delivery_personnel[i].max_orders = 3;
+        delivery_personnel[i].velocity = 1.0;  // Adjust the velocity as needed
+        pthread_mutex_init(&delivery_personnel[i].lock, NULL);
+        pthread_cond_init(&delivery_personnel[i].cond, NULL);
     }
 
     sem_init(&oven_openings, 0, OVEN_OPENINGS);
@@ -81,6 +88,9 @@ void start_threads(int cook_count, int delivery_count) {
     for (int i = 0; i < delivery_count; i++) {
         pthread_create(&delivery_personnel[i].thread, NULL, delivery_thread, &delivery_personnel[i]);
     }
+
+    // Start manager thread
+    pthread_create(&manager.thread, NULL, manager_thread, NULL);
 }
 
 

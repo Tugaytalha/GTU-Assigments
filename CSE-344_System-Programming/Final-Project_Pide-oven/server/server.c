@@ -1,6 +1,6 @@
 #include "pide_shop.h"
 
-int invert_time;
+double invert_time;
 
 void setup_server(int port) {
     struct sockaddr_in server_addr;

@@ -14,8 +14,8 @@
 #include <string.h>
 #include <semaphore.h>
 
-#define MAX_COOKS 10
-#define MAX_DELIVERY_PERSONNEL 10
+#define MAX_COOKS 100
+#define MAX_DELIVERY_PERSONNEL 100
 #define OVEN_CAPACITY 6
 #define OVEN_OPENINGS 2
 #define APPARATUS_COUNT 3
@@ -46,6 +46,10 @@ typedef struct {
     int id;
     int is_available;
     int deliveries_made;
+    int max_orders;  // Max orders a delivery person can carry
+    float velocity;  // Velocity of the delivery person
+    Order orders[3]; // Orders currently being carried
+    int order_count; // Current number of orders being carried
 } DeliveryPerson;
 
 typedef struct {
@@ -62,6 +66,12 @@ typedef struct {
 } Apparatus;
 
 
+typedef struct {
+    pthread_t thread;
+} Manager;
+
+
+extern Manager manager;
 extern OrderQueue order_queue;
 extern Cook cooks[MAX_COOKS];
 extern DeliveryPerson delivery_personnel[MAX_DELIVERY_PERSONNEL];

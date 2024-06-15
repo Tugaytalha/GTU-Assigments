@@ -107,11 +107,11 @@ void* cook_thread(void* arg) {
 
         cook->is_available = 1;
 
-        // Hand over to delivery personnel
-        pthread_mutex_lock(&order_queue.lock);
-        order_queue.orders[order_queue.count++] = order;
-        pthread_cond_signal(&order_queue.cond);
-        pthread_mutex_unlock(&order_queue.lock)
+        // Hand over to manager
+        pthread_mutex_lock(&prepared_order_queue.lock);
+        prepared_order_queue.orders[prepared_order_queue.count++] = order;
+        pthread_cond_signal(&prepared_order_queue.cond);
+        pthread_mutex_unlock(&prepared_order_queue.lock);
     }
     return NULL;
 }
