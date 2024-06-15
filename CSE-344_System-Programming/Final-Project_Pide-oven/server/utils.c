@@ -15,7 +15,7 @@ pthread_cond_t oven_cond;
 Manager manager;
 
 
-void initialize() {
+void initialize(int delivery_speed) {
     pthread_mutex_init(&order_queue.lock, NULL);
     pthread_cond_init(&order_queue.cond, NULL);
     order_queue.count = 0;
@@ -50,7 +50,7 @@ void initialize() {
         delivery_personnel[i].is_available = 1;
         delivery_personnel[i].order_count = 0;
         delivery_personnel[i].max_orders = 3;
-        delivery_personnel[i].velocity = 1.0;  // Adjust the velocity as needed
+        delivery_personnel[i].velocity = delivery_speed;
         pthread_mutex_init(&delivery_personnel[i].lock, NULL);
         pthread_cond_init(&delivery_personnel[i].cond, NULL);
     }
@@ -67,8 +67,39 @@ void initialize() {
 
 void handle_signal(int signal) {
     if (signal == SIGINT) {
+        //pthread_mutex_destroy(&order_queue.lock);
+        //pthread_cond_destroy(&order_queue.cond);
+
+        // pthread_mutex_destroy(&prepared_order_queue.lock);
+        // pthread_cond_destroy(&prepared_order_queue.cond);
+
+        // for (int i = 0; i < OVEN_CAPACITY; i++) {
+        //     pthread_mutex_destroy(&ovens[i].lock);
+        //     pthread_cond_destroy(&ovens[i].cond);
+        // }
+
+        // for (int i = 0; i < APPARATUS_COUNT; i++) {
+        //     pthread_mutex_destroy(&cooking_apparatus[i].lock);
+        //     pthread_cond_destroy(&cooking_apparatus[i].cond);
+        // }
+
+        // for (int i = 0; i < MAX_COOKS; i++) {
+        //     pthread_cancel(cooks[i].thread);
+        // }
+
+        // for (int i = 0; i < MAX_DELIVERY_PERSONNEL; i++) {
+        //     pthread_cancel(delivery_personnel[i].thread);
+        // }
+
+        // pthread_mutex_destroy(&oven_lock);
+        // pthread_cond_destroy(&oven_cond);
+
+        // sem_destroy(&oven_openings);
+        stop_server = 1;
+        
         fprintf(log_file, "Server shutting down...\n");
         fclose(log_file);
+        free(log_file);
         close(server_socket);
         exit(0);
     }

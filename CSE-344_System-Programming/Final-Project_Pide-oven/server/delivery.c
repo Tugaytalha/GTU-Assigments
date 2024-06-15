@@ -1,12 +1,12 @@
 #include "pide_shop.h"
-#include <math.h>
 
 void* delivery_thread(void* arg) {
-    DeliveryPerson* delivery_person = (DeliveryPerson*)arg;
-    while (1) {
+    DeliveryPerson* delivery_person = (DeliveryPerson*) arg;
+
+    while (!stop_server) {
         pthread_mutex_lock(&delivery_person->lock);
 
-        while (delivery_person->order_count == 0) {
+        while(delivery_person-> order_count == 0 || (delivery_person->order_count < delivery_person->max_orders && (order_queue.count > 0 || prepared_order_queue.count>0))) {
             pthread_cond_wait(&delivery_person->cond, &delivery_person->lock);
         }
 
@@ -16,6 +16,7 @@ void* delivery_thread(void* arg) {
             orders[i] = delivery_person->orders[i];
         }
         delivery_person->order_count = 0;
+
         delivery_person->is_available = 1;
 
         pthread_mutex_unlock(&delivery_person->lock);

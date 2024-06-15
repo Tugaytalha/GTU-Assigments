@@ -1,0 +1,30 @@
+Cook 0 started preparing order 1
+Received order 1 from customer 1
+Cook 0 acquired cooking apparatus 0 for order 1
+Cook 0 placed order 1 in the oven
+Cook 0 released cooking apparatus 0 for order 1
+Cook 0 acquired cooking apparatus 0 for order 1
+Cook 0 finished order 1
+Manager assigned order 1 to delivery person 0
+Delivery person 0 started delivering order 1
+Delivery person 0 delivered order 1
+Cook 1 started preparing order 2
+Received order 2 from customer 2
+Cook 1 acquired cooking apparatus 1 for order 2
+Cook 1 placed order 2 in the oven
+Cook 1 released cooking apparatus 0 for order 2
+Cook 1 acquired cooking apparatus 0 for order 2
+Cook 1 finished order 2
+Manager assigned order 2 to delivery person 0
+Delivery person 0 started delivering order 2
+Delivery person 0 delivered order 2
+Cook 2 started preparing order 3
+Cook 2 acquired cooking apparatus 2 for order 3
+Cook 2 placed order 3 in the oven
+Cook 2 released cooking apparatus 0 for order 3
+Cook 2 acquired cooking apparatus 0 for order 3
+Received order 3 from customer 3
+Cook 2 finished order 3
+Manager assigned order 3 to delivery person 0
+Delivery person 0 started delivering order 3
+Delivery person 0 delivered order 3

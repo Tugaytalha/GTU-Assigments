@@ -18,11 +18,12 @@ void* manager_thread(void* arg) {
 
         int order_assigned = 0;
         while (!order_assigned) {
-            for (int i = 0; i < MAX_DELIVERY_PERSONNEL; i++) {
+            for (int i = 0; i < delivery_count; i++) {
                 pthread_mutex_lock(&delivery_personnel[i].lock);
                 if (delivery_personnel[i].is_available && delivery_personnel[i].order_count < delivery_personnel[i].max_orders) {
                     delivery_personnel[i].orders[delivery_personnel[i].order_count++] = order;
-                    if (delivery_personnel[i].order_count == delivery_personnel[i].max_orders || prepared_order_queue.count == 0) {
+                    if (delivery_personnel[i].order_count == delivery_personnel[i].max_orders || (order_queue.count == 0 && prepared_order_queue.count == 0)) {
+                        printf("Signalling delivery person %d\n", delivery_personnel[i].id);
                         delivery_personnel[i].is_available = 0;
                         pthread_cond_signal(&delivery_personnel[i].cond);
                     }
@@ -31,11 +32,8 @@ void* manager_thread(void* arg) {
                     fprintf(log_file, "Manager assigned order %d to delivery person %d\n", order.order_id, delivery_personnel[i].id);
                     fflush(log_file);
                     break;
-                }
+                } 
                 pthread_mutex_unlock(&delivery_personnel[i].lock);
-            }
-            if (!order_assigned) {
-                usleep(100000);  // Wait 100ms before trying again
             }
         }
     }

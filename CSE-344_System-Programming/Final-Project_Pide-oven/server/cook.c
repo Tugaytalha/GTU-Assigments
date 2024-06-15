@@ -37,8 +37,8 @@ void release_cooking_apparatus(Cook* cook, Order order) {
 }
 
 void* cook_thread(void* arg) {
-    Cook* cook = (Cook*)arg;
-    while (1) {
+    Cook* cook = (Cook*) arg;
+    while (!stop_server) {
         pthread_mutex_lock(&order_queue.lock);
 
         while (order_queue.count == 0) {
@@ -110,8 +110,8 @@ void* cook_thread(void* arg) {
         // Hand over to manager
         pthread_mutex_lock(&prepared_order_queue.lock);
         prepared_order_queue.orders[prepared_order_queue.count++] = order;
-        pthread_cond_signal(&prepared_order_queue.cond);
         pthread_mutex_unlock(&prepared_order_queue.lock);
+        pthread_cond_signal(&prepared_order_queue.cond);
     }
     return NULL;
 }

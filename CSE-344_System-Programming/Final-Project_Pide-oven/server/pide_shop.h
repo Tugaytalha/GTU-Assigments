@@ -20,10 +20,11 @@
 #define OVEN_CAPACITY 6
 #define OVEN_OPENINGS 2
 #define APPARATUS_COUNT 3
-#define MAX_ORDER_QUEUE 100
+#define MAX_ORDER_QUEUE 1000
 #define ROWS 30
 #define COLS 40
 #define SLEEP_MULTIPLIER 100.0
+#define BUFFER_SIZE 1024
 
 
 typedef struct {
@@ -89,8 +90,11 @@ extern double invert_time;
 extern sem_t oven_openings;
 extern pthread_mutex_t oven_lock;
 extern pthread_cond_t oven_cond;
+extern int port, cook_count, delivery_count;
+extern int stop_server;
 
-void initialize();
+
+void initialize(int delivery_speed);
 void setup_signal_handling();
 void setup_server(int port);
 void start_threads(int cook_count, int delivery_count);

@@ -11,11 +11,13 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_COOKS 10
-#define MAX_DELIVERY_PERSONNEL 10
+#define MAX_COOKS 100
+#define MAX_DELIVERY_PERSONNEL 100
 #define OVEN_CAPACITY 6
 #define APPARATUS_COUNT 3
-#define MAX_ORDER_QUEUE 100
+#define MAX_ORDER_QUEUE 1000
+#define SLEEP_MULTIPLIER 100.0
+#define BUFFER_SIZE 1024
 
 typedef struct {
     int order_id;

@@ -43,6 +43,11 @@ void* client_handler(void* arg) {
     pthread_cond_signal(&order_queue.cond);
     pthread_mutex_unlock(&order_queue.lock);
 
+    char buffer[BUFFER_SIZE];
+    sprintf(buffer, "Received order.\n");
+    send(client_socket, buffer, BUFFER_SIZE, 0);  // Acknowledge the client
+
+
     fprintf(log_file, "Received order %d from customer %d\n", new_order.order_id, new_order.customer_id);
     fflush(log_file);
 
@@ -51,7 +56,7 @@ void* client_handler(void* arg) {
 }
 
 void accept_connections() {
-    while (1) {
+    while (!stop_server) {
         struct sockaddr_in client_addr;
         socklen_t client_addr_len = sizeof(client_addr);
         int client_socket = accept(server_socket, (struct sockaddr *)&client_addr, &client_addr_len);
@@ -66,6 +71,7 @@ void accept_connections() {
         pthread_t thread;
         pthread_create(&thread, NULL, client_handler, pclient);
         pthread_detach(thread);
+
     }
 }
 
