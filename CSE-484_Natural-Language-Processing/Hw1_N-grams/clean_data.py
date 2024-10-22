@@ -1,3 +1,15 @@
+def turkish_to_english(text):
+    # Define a mapping for Turkish characters to English
+    translation_table = str.maketrans({
+        'ç': 'c', 'Ç': 'C',
+        'ğ': 'g', 'Ğ': 'G',
+        'ı': 'i', 'İ': 'I',
+        'ö': 'o', 'Ö': 'O',
+        'ş': 's', 'Ş': 'S',
+        'ü': 'u', 'Ü': 'U'
+    })
+    return text.translate(translation_table)
+
 def clean_wiki_file(input_path, output_path):
     total_lines = 0
 
@@ -13,7 +25,9 @@ def clean_wiki_file(input_path, output_path):
 
             # Skip lines that are XML tags or empty
             if not (stripped_line.startswith("<doc") or stripped_line.startswith("</doc") or not stripped_line):
-                outfile.write(line)
+                # Convert Turkish characters to English
+                cleaned_line = turkish_to_english(line)
+                outfile.write(cleaned_line)
 
             # Calculate progress percentage
             if i % 1000 == 0 or i == total_lines:
@@ -24,5 +38,5 @@ def clean_wiki_file(input_path, output_path):
 input_file = './data/wiki_00'
 output_file = './data/wiki_cleaned'
 
-# Clean the file with progress tracing
+# Clean the file with progress tracing and Turkish to English conversion
 clean_wiki_file(input_file, output_file)
