@@ -30,7 +30,7 @@ def clean_wiki_file(input_path, output_path):
                 outfile.write(cleaned_line)
 
             # Calculate progress percentage
-            if i % 1000 == 0 or i == total_lines:
+            if i % 10000 == 0 or i == total_lines:
                 progress_percentage = (i / total_lines) * 100
                 print(f"Progress: {i}/{total_lines} lines processed. [{progress_percentage:.2f}% complete]")
 
