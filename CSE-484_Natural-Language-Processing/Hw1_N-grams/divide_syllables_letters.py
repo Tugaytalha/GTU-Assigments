@@ -2,7 +2,7 @@ from turkishnlp import detector
 
 # Initialize the TurkishNLP detector
 nlp = detector.TurkishNLP()
-nlp.download()  # Download the necessary resources for TurkishNLP
+#nlp.download()  # Download the necessary resources for TurkishNLP
 nlp.create_word_set()
 
 
@@ -41,7 +41,7 @@ def process_file(input_path, syllable_output_path, char_output_path):
                 syllable_line.append('-'.join(syllables))  # Join syllables with '-'
 
             # Join the syllabicated words into a new line and write to syllable-based output
-            syllable_outfile.write(' '.join(syllable_line) + '\n')
+            syllable_outfile.write('- -'.join(syllable_line) + '\n')
 
             # Calculate and display progress percentage
             if i % 10000 == 0 or i == total_lines:
@@ -50,7 +50,7 @@ def process_file(input_path, syllable_output_path, char_output_path):
 
 
 # File paths
-input_file = './data/wiki_00'
+input_file = './data/wiki_cleaned'
 syllable_output_file = './data/wiki_syllable_model'
 char_output_file = './data/wiki_character_model'
 
