@@ -48,7 +48,6 @@ def good_turing_smoothing(n_gram_dict):
             # Apply Good-Turing smoothing formula
             k_star = (k_plus_1 * n_k_plus_1) / n_k if n_k != 0 else k
             smoothed_n_grams[n_gram] = k_star
-
         else:
             # If no n_k+1, leave it as is (no smoothing)
             smoothed_n_grams[n_gram] = count
@@ -74,7 +73,8 @@ def create_n_gram(input_path, output_path, n, syllable_or_letter):
 
     # Create n-gram from the file with progress tracking
     with open(input_path, 'r', encoding='utf-8') as infile, \
-            open(output_path, 'w', encoding='utf-8') as outfile:
+            open(output_path, 'w', encoding='utf-8') as outfile, \
+            open(output_path + "_smoothed", 'w', encoding='utf-8') as smoothed_outfile:
 
         n_gram_dict = defaultdict(int)
 
@@ -97,6 +97,10 @@ def create_n_gram(input_path, output_path, n, syllable_or_letter):
 
         # Apply Good-Turing smoothing to the n-gram counts
         smoothed_n_grams = good_turing_smoothing(n_gram_dict)
+
+        # Write n-grams to the output file
+        for n_gram_str, count in n_gram_dict.items():
+            outfile.write(n_gram_to_string(n_gram_str, count))
 
         # Write smoothed n-grams to the output file
         for n_gram_str, count in smoothed_n_grams.items():
