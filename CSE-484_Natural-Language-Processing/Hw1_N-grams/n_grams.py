@@ -72,7 +72,7 @@ def good_turing_smoothing(n_gram_dict):
             k = count
             k_plus_1 = count + 1
             n_k = freq_of_freq[k]
-            n_k_plus_1 = freq_of_freq[k_plus_1]
+            n_k_plus_1 = freq_of_freq[k_plus_1] if k_plus_1 in freq_of_freq else 1
 
             # Apply Good-Turing smoothing formula
             k_star = (k_plus_1 * n_k_plus_1) / n_k if n_k != 0 else k
@@ -134,3 +134,24 @@ def create_n_gram(input_path, output_path, n, syllable_or_letter):
         # Write smoothed n-grams to the output file
         for n_gram_str, count in smoothed_n_grams.items():
             outfile.write(n_gram_to_string(n_gram_str, count))
+
+    return output_path
+
+def create_all_n_grams(syllable_input_path, char_input_path, syllable_output_base, char_output_base):
+    outputs = []
+
+    # Create syllable-based n-grams
+    print("Creating syllable-based n-grams...")
+    outputs.append(create_n_gram(syllable_input_path, syllable_output_base + "_1", 1, True))
+    outputs.append(create_n_gram(syllable_input_path, syllable_output_base + "_2", 2, True))
+    outputs.append(create_n_gram(syllable_input_path, syllable_output_base + "_3", 3, True))
+
+    # Create character-based n-grams
+    print("Creating character-based n-grams...")
+    outputs.append(create_n_gram(char_input_path, char_output_base + "_1", 1, False))
+    outputs.append(create_n_gram(char_input_path, char_output_base + "_2", 2, False))
+    outputs.append(create_n_gram(char_input_path, char_output_base + "_3", 3, False))
+
+    return outputs
+
+
