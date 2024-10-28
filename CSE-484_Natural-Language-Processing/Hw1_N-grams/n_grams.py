@@ -70,10 +70,8 @@ def count_of_counts_table(counts):
     return counts_of_counts
 
 
+# Function to perform log-linear regression on the counts of counts
 def log_linear_regression(counts_of_counts, sorted_counts):
-    """
-    Perform a log-linear regression of Z(r) on r for smoothing.
-    """
     rs = np.array(sorted_counts)
     zs = np.array([2 * counts_of_counts[r] / (sorted_counts[i + 1] - sorted_counts[i - 1]) if i != 0 and i != len(
         sorted_counts) - 1 else 0
@@ -90,12 +88,12 @@ def log_linear_regression(counts_of_counts, sorted_counts):
     return a, b
 
 
-def simple_good_turing_smoothing(n_gram_dict, confidence_level=1.96):
+# Function to apply simple Good-Turing smoothing to n-grams
+def simple_good_turing_smoothing_log(n_gram_dict, confidence_level=1.96):
     """
-    Apply Simple Good-Turing smoothing to a dictionary of n-grams.
     :param n_gram_dict: Dictionary of n-grams and their frequencies
     :param confidence_level: Controls the width of confidence interval (default 1.96 for 95% confidence)
-    :return: Dictionary of smoothed n-grams with probabilities
+    :return: Dictionary of smoothed n-grams with log probabilities
     """
     # Step 1: Count of counts table
     counts_of_counts = count_of_counts_table(n_gram_dict)
@@ -109,23 +107,25 @@ def simple_good_turing_smoothing(n_gram_dict, confidence_level=1.96):
 
     # Step 3: Apply smoothing for n-grams
     smoothed_ngrams = {}
-    r_smoothed = {}
+    r_smoothed_log = {}
     use_y = False
 
     for r in sorted_counts:
         if r == 0:  # Ignore zero counts
             continue
 
-        # Empirical Turing estimate for r
+        # Empirical Turing estimate for r (in logarithmic form)
         if r + 1 in counts_of_counts:
             x = (r + 1) * counts_of_counts[r + 1] / counts_of_counts[r]
+            log_x = np.log(x) if x > 0 else -np.inf
         else:
-            x = 0
+            log_x = -np.inf
 
         # Log-linear smoothing estimate for r
         y = (r + 1) * np.exp(a * np.log(r + 1) + b) / np.exp(a * np.log(r) + b)
+        log_y = np.log(y) if y > 0 else -np.inf
 
-        # Confidence interval for empirical Turing estimate
+        # Confidence interval for empirical Turing estimate (logarithmic space)
         if r + 1 in counts_of_counts and r in counts_of_counts:
             Nr = counts_of_counts[r]
             Nr1 = counts_of_counts[r + 1]
@@ -133,17 +133,20 @@ def simple_good_turing_smoothing(n_gram_dict, confidence_level=1.96):
         else:
             t = 0
 
-        # Step 4: Choose between the empirical estimate and the smoothed one
-        if np.abs(x - y) > t:
-            r_smoothed[r] = x
+        # Step 4: Choose between the empirical estimate and the smoothed one based on log-space confidence intervals
+        if abs(log_x - log_y) > t:
+            r_smoothed_log[r] = log_x
         else:
-            r_smoothed[r] = y
+            r_smoothed_log[r] = log_y
 
-    # Normalize the smoothed probabilities and adjust for unseen n-grams
-    total_smoothed = sum(counts_of_counts[r] * r_smoothed[r] for r in r_smoothed)
+    # Normalize the smoothed probabilities in log-space and adjust for unseen n-grams
+    log_total_smoothed = np.log(sum(counts_of_counts[r] * np.exp(r_smoothed_log[r]) for r in r_smoothed_log))
+
     for n_gram, count in n_gram_dict.items():
-        smoothed_ngrams[n_gram] = (1 - p0) * (
-                    r_smoothed[count] / total_smoothed) if count in r_smoothed else count / total_ngrams
+        if count in r_smoothed_log:
+            smoothed_ngrams[n_gram] = np.log(1 - p0) + r_smoothed_log[count] - log_total_smoothed
+        else:
+            smoothed_ngrams[n_gram] = np.log(count / total_ngrams)  # Direct log-probability for unseen n-grams
 
     return smoothed_ngrams
 
