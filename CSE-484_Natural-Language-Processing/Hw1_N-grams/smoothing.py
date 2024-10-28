@@ -1,6 +1,7 @@
 from collections import defaultdict
 import numpy as np
 from scipy import linalg
+from n_grams import n_gram_to_string
 
 def count_of_counts_table(counts):
     """
@@ -92,3 +93,67 @@ def simple_good_turing_smoothing(n_gram_dict, confidence_level=1.96):
             smoothed_ngrams[n_gram] = np.log(count / total_ngrams)  # Direct log-probability for unseen n-grams
 
     return smoothed_ngrams
+
+def string_to_n_gram(s):
+    """
+    Given a string s, return a list of n-grams of size n.
+    """
+    # Split the string by commas
+    elements = s.split(",")
+
+    # Take last element as count
+    count = int(elements[-1])
+
+    # Join the rest of the elements to form the n-gram key
+    n_gram = " ".join(elements[:-1])
+
+    return n_gram, count
+
+
+def smooth_and_save_n_gram(n_gram_path, outputh_path=None, confidence_level=1.96):
+    n_gram_dict = {}
+    with open(n_gram_path, 'r', encoding='utf-8') as infile:
+        for line in infile:
+            n_gram, count = string_to_n_gram(line)
+            n_gram_dict[n_gram] = count
+
+    smoothed_n_grams = simple_good_turing_smoothing(n_gram_dict, confidence_level)
+
+    if outputh_path is None:
+        outputh_path = n_gram_path + "_smoothed"
+
+    with open(outputh_path, 'w', encoding='utf-8') as outfile:
+        for n_gram, count in smoothed_n_grams.items():
+            outfile.write(n_gram_to_string(n_gram, count) + '\n')
+
+    return outputh_path
+
+
+def smooth_all_n_grams(syllable_path, char_path):
+    outputs = []
+
+    # Smooth syllable-based n-grams
+    print("Smoothing syllable-based n-grams...")
+    outputs.append(smooth_and_save_n_gram(syllable_path+"_1"))
+    outputs.append(smooth_and_save_n_gram(syllable_path+"_2"))
+    outputs.append(smooth_and_save_n_gram(syllable_path+"_3"))
+
+    # Smooth character-based n-grams
+    print("Smoothing character-based n-grams...")
+    outputs.append(smooth_and_save_n_gram(char_path+"_1"))
+    outputs.append(smooth_and_save_n_gram(char_path+"_2"))
+    outputs.append(smooth_and_save_n_gram(char_path+"_3"))
+
+    return outputs
+
+# File paths for the syllable-based and character-based models
+syllable_input_file = './data/wiki_syllable_train'
+char_input_file = './data/wiki_character_train'
+
+# Output paths for n-grams
+syllable_output_base = './models/syllable_ngram'
+char_output_base = './models/character_ngram'
+
+# Smooth n-grams
+if __name__ == '__main__':
+    print(smooth_all_n_grams(syllable_output_base, char_output_base))
