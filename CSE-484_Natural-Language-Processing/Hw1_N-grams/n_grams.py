@@ -133,7 +133,7 @@ def create_n_gram(input_path, output_path, n, syllable_or_letter):
 
         # Write smoothed n-grams to the output file
         for n_gram_str, count in smoothed_n_grams.items():
-            outfile.write(n_gram_to_string(n_gram_str, count))
+            smoothed_outfile.write(n_gram_to_string(n_gram_str, count))
 
     return output_path
 
@@ -154,4 +154,22 @@ def create_all_n_grams(syllable_input_path, char_input_path, syllable_output_bas
 
     return outputs
 
+# File paths for the syllable-based and character-based models
+syllable_input_file = './data/wiki_syllable_train'
+char_input_file = './data/wiki_character_train'
+
+# Output paths for n-grams
+syllable_output_base = './models/syllable_ngram'
+char_output_base = './models/character_ngram'
+
+if __name__ == '__main__':
+    # Create n-grams for syllable-based and character-based models
+    n_gram_files = create_all_n_grams(syllable_input_file, char_input_file, syllable_output_base, char_output_base)
+
+    # Print the paths of the saved n-gram files
+    for file in n_gram_files:
+        if file:
+            print(f"Saved n-gram file: {file}")
+        else:
+            print("Failed to save n-gram file.")
 
