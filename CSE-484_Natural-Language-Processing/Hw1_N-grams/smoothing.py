@@ -17,8 +17,9 @@ def count_of_counts_table(counts):
 # Function to perform log-linear regression on the counts of counts
 def log_linear_regression(counts_of_counts, sorted_counts):
     rs = np.array(sorted_counts)
-    zs = np.array([2 * counts_of_counts[r] / (sorted_counts[i + 1] - sorted_counts[i - 1]) if i != 0 and i != len(
-        sorted_counts) - 1 else (0 if i == 0 else 2 * counts_of_counts[r] / (sorted_counts[i + 1] - sorted_counts[i]))
+    zs = np.array([2 * counts_of_counts[r] / (
+            (sorted_counts[i + 1] if i < len(sorted_counts) - 1 else 2 * r - sorted_counts[i - 1]) - (
+                sorted_counts[i - 1] if i > 0 else 0))
                    for i, r in enumerate(sorted_counts)])
 
     # Filter out zero values for log transformation
