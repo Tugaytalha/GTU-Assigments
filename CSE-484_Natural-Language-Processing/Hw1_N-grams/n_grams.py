@@ -24,7 +24,9 @@ def n_gram_to_string(n_gram_string, count):
         if n_gram_str_list[i] == '' and n_gram_str_list[i - 1] == '':
             n_gram_str_list[i - 1] = ' '
             n_gram_str_list.pop(i)
-    return ','.join(n_gram_str_list) + f",{count}\n"
+    # Pop empty elements
+    n_gram_str_list = [x for x in n_gram_str_list if x != '']
+    return '<ayrim>'.join(n_gram_str_list) + f"<ayrim>{count}\n"
 
 
 # Function to calculate perplexity
@@ -75,8 +77,7 @@ def create_n_gram(input_path, output_path, n, syllable_or_letter):
 
     # Create n-gram from the file with progress tracking
     with open(input_path, 'r', encoding='utf-8') as infile, \
-            open(output_path, 'w', encoding='utf-8') as outfile, \
-            open(output_path + "_smoothed", 'w', encoding='utf-8') as smoothed_outfile:
+            open(output_path, 'w', encoding='utf-8') as outfile:
 
         n_gram_dict = defaultdict(int)
 

@@ -18,10 +18,9 @@ def count_of_counts_table(counts):
 def log_linear_regression(counts_of_counts, sorted_counts):
     rs = np.array(sorted_counts)
     zs = np.array([2 * counts_of_counts[r] / (
-            (sorted_counts[i + 1] if i < len(sorted_counts) - 1 else 2 * r - sorted_counts[i - 1]) - (
+            (sorted_counts[i + 1] if (i != len(sorted_counts) - 1) else 2 * r - sorted_counts[i - 1]) - (
                 sorted_counts[i - 1] if i > 0 else 0))
                    for i, r in enumerate(sorted_counts)])
-
     # Filter out zero values for log transformation
     rs = rs[zs > 0]
     zs = zs[zs > 0]
@@ -44,6 +43,7 @@ def simple_good_turing_smoothing(n_gram_dict, confidence_level=1.96):
     counts_of_counts = count_of_counts_table(n_gram_dict)
     sorted_counts = sorted(counts_of_counts.keys())
 
+    # Calculate p0 for unseen n-grams
     total_ngrams = sum(n_gram_dict.values())
     p0 = counts_of_counts[1] / total_ngrams if 1 in counts_of_counts else 0
 
@@ -79,7 +79,7 @@ def simple_good_turing_smoothing(n_gram_dict, confidence_level=1.96):
             t = 0
 
         # Step 4: Choose between the empirical estimate and the smoothed one based on log-space confidence intervals
-        if abs(log_x - log_y) > t:
+        if not use_y and abs(log_x - log_y) > t and log_x != -np.inf:
             r_smoothed_log[r] = log_x
         else:
             r_smoothed_log[r] = log_y
@@ -87,11 +87,13 @@ def simple_good_turing_smoothing(n_gram_dict, confidence_level=1.96):
     # Normalize the smoothed probabilities in log-space and adjust for unseen n-grams
     log_total_smoothed = np.log(sum(counts_of_counts[r] * np.exp(r_smoothed_log[r]) for r in r_smoothed_log))
 
+    print("Total smoothed log: ", log_total_smoothed)
+
     for n_gram, count in n_gram_dict.items():
         if count in r_smoothed_log:
-            smoothed_ngrams[n_gram] = np.log(1 - p0) + r_smoothed_log[count] - log_total_smoothed
+            smoothed_ngrams[n_gram] = np.exp(np.log(1 - p0) + r_smoothed_log[count] - log_total_smoothed)
         else:
-            smoothed_ngrams[n_gram] = np.log(count / total_ngrams)  # Direct log-probability for unseen n-grams
+            smoothed_ngrams[n_gram] = np.exp(np.log(count / total_ngrams))  # Direct log-probability for unseen n-grams
 
     return smoothed_ngrams
 
@@ -100,7 +102,7 @@ def string_to_n_gram(s):
     Given a string s, return a list of n-grams of size n.
     """
     # Split the string by commas
-    elements = s.split(",")
+    elements = s.strip().split("<ayrim>")
 
     # Take last element as count
     count = int(elements[-1])
@@ -125,7 +127,7 @@ def smooth_and_save_n_gram(n_gram_path, outputh_path=None, confidence_level=1.96
 
     with open(outputh_path, 'w', encoding='utf-8') as outfile:
         for n_gram, count in smoothed_n_grams.items():
-            outfile.write(n_gram_to_string(n_gram, count) + '\n')
+            outfile.write(n_gram_to_string(n_gram, count))
 
     return outputh_path
 
