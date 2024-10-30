@@ -120,7 +120,11 @@ def smooth_and_save_n_gram(n_gram_path, outputh_path=None, confidence_level=1.96
             n_gram, count = string_to_n_gram(line)
             n_gram_dict[n_gram] = count
 
+    # Perform simple Good-Turing smoothing
     smoothed_n_grams = simple_good_turing_smoothing(n_gram_dict, confidence_level)
+
+    # Print sum of smoothed n-grams
+    print("Sum of smoothed n-grams: ", sum(smoothed_n_grams.values()))
 
     if outputh_path is None:
         outputh_path = n_gram_path + "_smoothed"
@@ -148,10 +152,6 @@ def smooth_all_n_grams(syllable_path, char_path):
     outputs.append(smooth_and_save_n_gram(char_path+"_3"))
 
     return outputs
-
-# File paths for the syllable-based and character-based models
-syllable_input_file = './data/wiki_syllable_train'
-char_input_file = './data/wiki_character_train'
 
 # Output paths for n-grams
 syllable_output_base = './models/syllable_ngram'

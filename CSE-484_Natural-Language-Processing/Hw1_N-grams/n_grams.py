@@ -29,36 +29,6 @@ def n_gram_to_string(n_gram_string, count):
     return '<ayrim>'.join(n_gram_str_list) + f"<ayrim>{count}\n"
 
 
-# Function to calculate perplexity
-def calculate_perplexity(n_gram_dict, smoothed_n_grams, test_file_path, n, syllable_or_letter):
-    total_log_prob = 0
-    total_ngrams = 0
-
-    with open(test_file_path, 'r', encoding='utf-8') as infile:
-        for line in infile:
-            parts = syllable_line(line, syllable_or_letter)
-
-            for j in range(len(parts) - n + 1):
-                n_gram = parts[j:j + n]
-                n_gram_str = ' '.join(n_gram)
-
-                # Get the smoothed probability of the n-gram
-                count = smoothed_n_grams.get(n_gram_str, 0)
-                total_count = sum(smoothed_n_grams.values())
-
-                if count > 0:
-                    prob = count / total_count
-                else:
-                    prob = 1 / total_count  # Backoff for unseen n-grams
-
-                total_log_prob += math.log(prob)
-                total_ngrams += 1
-
-    # Calculate perplexity
-    perplexity = math.exp(-total_log_prob / total_ngrams)
-    return perplexity
-
-
 # Function to create n-grams from a cleaned dataset and save them to a new file
 def create_n_gram(input_path, output_path, n, syllable_or_letter):
     '''
