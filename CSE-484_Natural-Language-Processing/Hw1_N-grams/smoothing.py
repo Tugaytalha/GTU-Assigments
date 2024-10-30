@@ -95,6 +95,9 @@ def simple_good_turing_smoothing(n_gram_dict, confidence_level=1.96):
         else:
             smoothed_ngrams[n_gram] = np.exp(np.log(count / total_ngrams))  # Direct log-probability for unseen n-grams
 
+    # Add unseen n-grams to the smoothed n-grams
+    smoothed_ngrams['<UNK>'] = p0
+
     return smoothed_ngrams
 
 def string_to_n_gram(s):

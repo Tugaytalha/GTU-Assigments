@@ -1,5 +1,4 @@
 from collections import defaultdict
-import math
 
 # Function to split a line into parts
 def syllable_line(line, syllable_or_letter):
