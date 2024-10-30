@@ -32,21 +32,21 @@ def calculate_perplexity(n_gram_dict, smoothed_n_grams, test_file_path, n, sylla
 test_file_syllable = './data/wiki_syllable_test'
 test_file_char = './data/wiki_character_test'
 
-# Load the smoothed n-grams
-smoothed_n_grams = {}
-with open('./data/wiki_syllable_model_1_smoothed', 'r', encoding='utf-8') as infile:
-    for line in infile:
-        n_gram, count = string_to_n_gram(line)
-        smoothed_n_grams[n_gram] = count
+# Define the smoothed n-gram files
+syllable_models = ['./models/syllable_ngram_1_smoothed', './models/syllable_ngram_2_smoothed',
+                   './models/syllable_ngram_3_smoothed']
+char_models = ['./models/character_ngram_1_smoothed', './models/character_ngram_2_smoothed',
+               './models/character_ngram_3_smoothed']
 
 # Calculate perplexity for syllable-based model
 if __name__ == "__main__":
-    n_gram_dict = {}
-    with open('./data/wiki_syllable_model_1', 'r', encoding='utf-8') as infile:
-        for line in infile:
-            n_gram, count = string_to_n_gram(line)
-            n_gram_dict[n_gram] = count
+    for i, model in enumerate(syllable_models, start=1):
+        n_gram_dict = {}
+        with open(model, 'r', encoding='utf-8') as infile:
+            for line in infile:
+                n_gram, count = string_to_n_gram(line)
+                n_gram_dict[n_gram] = count
 
-    # Calculate perplexity
-    perplexity = calculate_perplexity(n_gram_dict, smoothed_n_grams, test_file_path, 1, True)
-    print(f"Syllable-based model perplexity: {perplexity}")
+        # Calculate perplexity for the model
+        perplexity = calculate_perplexity(n_gram_dict, n_gram_dict, test_file_syllable, i, True)
+        print(f"Syllable-based model with n={i} has perplexity: {perplexity:.2f}")
