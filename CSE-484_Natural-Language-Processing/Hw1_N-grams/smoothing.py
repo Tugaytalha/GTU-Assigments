@@ -108,7 +108,13 @@ def string_to_n_gram(s):
     elements = s.strip().split("<ayrim>")
 
     # Take last element as count
-    count = int(elements[-1])
+    count = float(elements[-1])
+
+    # If is there a empty string, make it a space
+    for i in range(len(elements) - 1, 0, -1):
+        if elements[i] == '' and elements[i - 1] == '':
+            elements[i - 1] = ' '
+            elements.pop(i)
 
     # Join the rest of the elements to form the n-gram key
     n_gram = " ".join(elements[:-1])

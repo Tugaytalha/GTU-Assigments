@@ -50,3 +50,15 @@ if __name__ == "__main__":
         # Calculate perplexity for the model
         perplexity = calculate_perplexity(n_gram_dict, n_gram_dict, test_file_syllable, i, True)
         print(f"Syllable-based model with n={i} has perplexity: {perplexity:.2f}")
+
+    # Calculate perplexity for character-based model
+    for i, model in enumerate(char_models, start=1):
+        n_gram_dict = {}
+        with open(model, 'r', encoding='utf-8') as infile:
+            for line in infile:
+                n_gram, count = string_to_n_gram(line)
+                n_gram_dict[n_gram] = count
+
+        # Calculate perplexity for the model
+        perplexity = calculate_perplexity(n_gram_dict, n_gram_dict, test_file_char, i, False)
+        print(f"Character-based model with n={i} has perplexity: {perplexity:.2f}")
