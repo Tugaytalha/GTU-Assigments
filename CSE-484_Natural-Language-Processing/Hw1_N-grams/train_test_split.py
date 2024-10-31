@@ -1,4 +1,3 @@
-import os
 
 def split_data(input_path, train_output_path, test_output_path, split_ratio=0.95):
     # First, count the total number of lines
