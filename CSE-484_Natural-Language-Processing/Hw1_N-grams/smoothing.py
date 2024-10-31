@@ -102,7 +102,7 @@ def simple_good_turing_smoothing(n_gram_dict, confidence_level=1.96):
 
 def string_to_n_gram(s):
     """
-    Given a string s, return a list of n-grams of size n.
+    Given an n_gram file string s, return a list of n-grams of size n.
     """
     # Split the string by commas
     elements = s.strip().split("<ayrim>")
@@ -111,10 +111,9 @@ def string_to_n_gram(s):
     count = float(elements[-1])
 
     # If is there a empty string, make it a space
-    for i in range(len(elements) - 1, 0, -1):
-        if elements[i] == '' and elements[i - 1] == '':
-            elements[i - 1] = ' '
-            elements.pop(i)
+    for i in range(len(elements)):
+        if elements[i] == '':
+            elements[i] = ' '
 
     # Join the rest of the elements to form the n-gram key
     n_gram = " ".join(elements[:-1])
