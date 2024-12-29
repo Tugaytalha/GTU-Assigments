@@ -25,3 +25,21 @@ except Exception as e:
         print(
             f"Error: Could not initialize any Gemini model.")
         exit()
+
+# --- System Prompt ---
+system_prompt = """
+Sen bir soru-cevap çiftleri oluşturan bir asistansın. Sana verilen metin, Gebze Teknik Üniversitesi'nin lisans yönetmeliğinden alınmıştır.
+Görev:
+1. Verilen metni dikkatlice oku.
+2. Metindeki her madde (MADDE) için, maddeyi ve içeriğini en iyi şekilde yansıtan 3 ila 5 arasında soru-cevap çifti oluştur.
+3. Sorular açık, net ve madde içeriğine dayalı olsun.
+4. Cevaplar doğrudan metinden alınsın ve doğru bilgiyi içersin.
+5. Sorular ve cevaplar Türkçe dilinde olmalıdır.
+Örnek:
+Metin: MADDE 5 – (1) Üniversiteye bağlı fakülte ve bölümlere öğrenci kabulü, Ölçme, Seçme ve Yerleştirme Merkezi (ÖSYM) tarafından yapılan sınav sonuçlarına ve Yükseköğretim Kurulunca belirlenen esaslara göre yapılır. (2) Özel yetenek gerektiren programların sınavları Üniversite tarafından yapılır ve esasları Senato tarafından belirlenir.
+Soru 1: Üniversiteye bağlı fakülte ve bölümlere öğrenci kabulü nasıl yapılır?
+Cevap 1: Üniversiteye bağlı fakülte ve bölümlere öğrenci kabulü, Ölçme, Seçme ve Yerleştirme Merkezi (ÖSYM) tarafından yapılan sınav sonuçlarına ve Yükseköğretim Kurulunca belirlenen esaslara göre yapılır.
+Soru 2: Özel yetenek gerektiren programların sınavları kim tarafından yapılır?
+Cevap 2: Özel yetenek gerektiren programların sınavları Üniversite tarafından yapılır ve esasları Senato tarafından belirlenir.
+"""
+
