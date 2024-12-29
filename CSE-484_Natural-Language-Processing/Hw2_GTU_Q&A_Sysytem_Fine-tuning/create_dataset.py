@@ -115,3 +115,30 @@ def save_to_csv(qa_data, filename="qa_dataset.csv"):
         for item in qa_data:
             writer.writerow(item)
 
+
+if __name__ == "__main__":
+    # 1. Read PDF files from the current directory
+    regulations_text = read_pdfs("./data")
+
+    # 2. Chunk the text by "MADDE"
+    regulation_chunks = chunk_text(regulations_text)
+
+    # 3. Generate Q&A pairs for each chunk
+    qa_data = []
+    chunk_id = 1
+    for chunk in regulation_chunks:
+        print(f"Processing chunk {chunk_id}...")
+        qa_pairs = generate_qa_pairs(chunk)
+        for qa in qa_pairs:
+            qa_data.append({
+                "id": chunk_id,
+                "context": chunk,
+                "question": qa["question"],
+                "answers": json.dumps([{"text": qa["answer"], "answer_start": chunk.find(qa["answer"])}],
+                                      ensure_ascii=False)  # Store answer as a JSON string
+            })
+        chunk_id += 1
+
+    # 4. Save the Q&A data to a CSV file
+    save_to_csv(qa_data)
+    print("Q&A dataset saved to qa_dataset.csv")
