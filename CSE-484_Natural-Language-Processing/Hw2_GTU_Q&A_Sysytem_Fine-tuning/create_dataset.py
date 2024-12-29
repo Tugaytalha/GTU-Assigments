@@ -113,14 +113,17 @@ def generate_qa_pairs(chunk, max_retries=3):
     return []
 
 
-def save_to_csv(qa_data, filename="qa_dataset.csv"):
+def append_to_csv(qa_data, last_id, filename="qa_dataset.csv"):
     """Saves the Q&A data to a CSV file."""
-    with open(filename, "w", newline="", encoding="utf-8") as csvfile:
+    with open(filename, "a", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["id", "context", "question", "answers"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        for item in qa_data:
+        if csvfile.tell() == 0:
+            writer.writeheader()
+        for item in qa_data[last_id:]:
             writer.writerow(item)
+
+    return len(qa_data)
 
 
 if __name__ == "__main__":
@@ -132,13 +135,16 @@ if __name__ == "__main__":
 
     # 3. Generate Q&A pairs for each chunk
     qa_data = []
-    chunk_id = 1
-    for chunk in regulation_chunks[0:3]:
+    START_CHUNK = 0
+    chunk_id = START_CHUNK + 1
+    last_chunk_id = 0
+    for chunk in regulation_chunks[START_CHUNK:]:
         print(f"Processing chunk {chunk_id}...")
         # Calculate the time taken to generate Q&A pairs for each chunk
         start_time = time.time()
         qa_pairs = generate_qa_pairs(chunk)
-        print(qa_pairs[0])
+        if len(qa_pairs) > 0:
+            print(qa_pairs[0])
 
         # Append the Q&A pairs to the dataset with deleting new line characters
         for qa in qa_pairs:
@@ -154,6 +160,8 @@ if __name__ == "__main__":
         # Wait for 7 - Time taken seconds before processing the next chunk to not exceed the rate limit
         time.sleep(max(7 - (time.time() - start_time), 0))
 
-    # 4. Save the Q&A data to a CSV file
-    save_to_csv(qa_data)
+        if chunk_id % 50 == 0 or chunk_id >= len(regulation_chunks):
+            # 4. Save the Q&A data to a CSV file
+            last_chunk_id = append_to_csv(qa_data, last_chunk_id)
+
     print("Q&A dataset saved to qa_dataset.csv")
