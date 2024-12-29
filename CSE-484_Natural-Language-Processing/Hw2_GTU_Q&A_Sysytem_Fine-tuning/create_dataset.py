@@ -135,8 +135,11 @@ if __name__ == "__main__":
     chunk_id = 1
     for chunk in regulation_chunks[0:3]:
         print(f"Processing chunk {chunk_id}...")
+        # Calculate the time taken to generate Q&A pairs for each chunk
+        start_time = time.time()
         qa_pairs = generate_qa_pairs(chunk)
         print(qa_pairs[0])
+
         # Append the Q&A pairs to the dataset with deleting new line characters
         for qa in qa_pairs:
             qa_data.append({
@@ -146,6 +149,10 @@ if __name__ == "__main__":
                 "answers": qa["answer"].replace(",", " ")
             })
         chunk_id += 1
+        print(f"Time taken: {time.time() - start_time:.2f} seconds")
+
+        # Wait for 7 - Time taken seconds before processing the next chunk to not exceed the rate limit
+        time.sleep(max(7 - (time.time() - start_time), 0))
 
     # 4. Save the Q&A data to a CSV file
     save_to_csv(qa_data)
