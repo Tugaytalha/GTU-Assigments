@@ -43,3 +43,28 @@ Soru 2: Özel yetenek gerektiren programların sınavları kim tarafından yapı
 Cevap 2: Özel yetenek gerektiren programların sınavları Üniversite tarafından yapılır ve esasları Senato tarafından belirlenir.
 """
 
+
+def read_pdfs(directory):
+    """Reads all PDF files in a directory and returns their text content."""
+    all_text = ""
+    for filename in os.listdir(directory):
+        if filename.endswith(".pdf"):
+            try:
+                reader = PdfReader(os.path.join(directory, filename))
+                for page in reader.pages:
+                    all_text += page.extract_text()
+            except Exception as e:
+                print(f"Error reading PDF {filename}: {e}")
+    return all_text
+
+
+def chunk_text(text):
+    """Chunks the text by 'MADDE' (case-insensitive)."""
+    # Add a line before the title of the madde.
+    text = re.sub(r"\n(MADDE \d+)", r"\n\n\1", text)
+    # Split by "MADDE" (case-insensitive) and keep delimiters
+    chunks = re.split(r"(?i)(\nMADDE \d+.*?)(?=\nMADDE \d+|$)", text)
+    # Remove empty strings and combine madde header with its content
+    chunks = [chunks[i] + chunks[i + 1] for i in range(1, len(chunks), 2)]
+    return chunks
+
