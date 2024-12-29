@@ -68,3 +68,50 @@ def chunk_text(text):
     chunks = [chunks[i] + chunks[i + 1] for i in range(1, len(chunks), 2)]
     return chunks
 
+
+def generate_qa_pairs(chunk, max_retries=3):
+    """Generates Q&A pairs from a text chunk using the Gemini API."""
+    retries = 0
+    while retries < max_retries:
+        try:
+            messages = [
+                {"role": "system", "parts": [system_prompt]},
+                {"role": "user", "parts": [chunk]}
+            ]
+
+            response = model.generate_content(messages)
+
+            # Check if response has text content
+            if response.text:
+                qa_pairs = []
+                # Use regex to find question-answer pairs
+                matches = re.findall(r"Soru \d+: (.*?)\nCevap \d+: (.*?)(?=\n|$)", response.text, re.DOTALL)
+                for match in matches:
+                    qa_pairs.append({
+                        "question": match[0].strip(),
+                        "answer": match[1].strip()
+                    })
+                return qa_pairs
+            else:
+                print(f"Warning: Empty response received from API. Retrying... (Attempt {retries + 1})")
+                retries += 1
+                time.sleep(2)  # Wait before retrying
+
+        except Exception as e:
+            print(f"Error during API call: {e}")
+            retries += 1
+            time.sleep(2)  # Wait before retrying
+
+    print(f"Failed to generate Q&A pairs after {max_retries} retries.")
+    return []
+
+
+def save_to_csv(qa_data, filename="qa_dataset.csv"):
+    """Saves the Q&A data to a CSV file."""
+    with open(filename, "w", newline="", encoding="utf-8") as csvfile:
+        fieldnames = ["id", "context", "question", "answers"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for item in qa_data:
+            writer.writerow(item)
+
