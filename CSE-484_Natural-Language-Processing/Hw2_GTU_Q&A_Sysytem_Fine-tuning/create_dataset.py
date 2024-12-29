@@ -12,15 +12,15 @@ load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
 
-# --- Model Selection ---
-# Try Gemini Experimental 1206 first, fallback to Gemini 2.0 Flash if not available
+
+# Try Gemini 2.0 Flash first, fallback to Gemini Experimental 1206 if not available
 try:
-    model = genai.GenerativeModel('gemini-experimental-1206')  # Gemini Experimental 1206 (if available)
-    print("Using model: gemini-exp-1206")
+    model = genai.GenerativeModel('gemini-2.0-flash-exp')  # Gemini 1.5 Flash Experimental
+    print("Using model: gemini-2.0-flash-exp")
 except Exception as e:
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')  # Gemini 1.5 Flash Experimental
-        print("Using model: gemini-2.0-flash-exp")
+        model = genai.GenerativeModel('gemini-exp-1206')  # Gemini Experimental 1206 (if available)
+        print("Using model: gemini-exp-1206")
     except Exception as e:
         print(
             f"Error: Could not initialize any Gemini model.")
@@ -35,6 +35,7 @@ Görev:
 3. Sorular açık, net ve madde içeriğine dayalı olsun.
 4. Cevaplar doğrudan metinden alınsın ve doğru bilgiyi içersin.
 5. Sorular ve cevaplar Türkçe dilinde olmalıdır.
+6. Sorular ve cevaplar "Soru 1:", "Cevap 1:", "Soru 2:", "Cevap 2:", vb. şeklinde numaralandırılıp aşağıdaki format gibi olmalıdır ve formata "*" ve benzeri karakterler eklenmemelidir.
 Örnek:
 Metin: MADDE 5 – (1) Üniversiteye bağlı fakülte ve bölümlere öğrenci kabulü, Ölçme, Seçme ve Yerleştirme Merkezi (ÖSYM) tarafından yapılan sınav sonuçlarına ve Yükseköğretim Kurulunca belirlenen esaslara göre yapılır. (2) Özel yetenek gerektiren programların sınavları Üniversite tarafından yapılır ve esasları Senato tarafından belirlenir.
 Soru 1: Üniversiteye bağlı fakülte ve bölümlere öğrenci kabulü nasıl yapılır?
@@ -60,10 +61,16 @@ def read_pdfs(directory):
 
 def chunk_text(text):
     """Chunks the text by 'MADDE' (case-insensitive)."""
+    old_text = text
+
     # Add a line before the title of the madde.
-    text = re.sub(r"\n(MADDE \d+)", r"\n\n\1", text)
+    text = re.sub(r"(?i)\n(MADDE \d+)", r"\n\n\1", text)
+
     # Split by "MADDE" (case-insensitive) and keep delimiters
-    chunks = re.split(r"(?i)(\nMADDE \d+.*?)(?=\nMADDE \d+|$)", text)
+    chunks = re.split(r"(?i)(\nMADDE \d+)", text)
+
+    print(len(chunks))
+
     # Remove empty strings and combine madde header with its content
     chunks = [chunks[i] + chunks[i + 1] for i in range(1, len(chunks), 2)]
     return chunks
@@ -75,12 +82,11 @@ def generate_qa_pairs(chunk, max_retries=3):
     while retries < max_retries:
         try:
             messages = [
-                {"role": "system", "parts": [system_prompt]},
+                {"role": "model", "parts": [system_prompt]},
                 {"role": "user", "parts": [chunk]}
             ]
 
             response = model.generate_content(messages)
-
             # Check if response has text content
             if response.text:
                 qa_pairs = []
@@ -91,6 +97,7 @@ def generate_qa_pairs(chunk, max_retries=3):
                         "question": match[0].strip(),
                         "answer": match[1].strip()
                     })
+                print(f"Generated {len(qa_pairs)} Q&A pairs.")
                 return qa_pairs
             else:
                 print(f"Warning: Empty response received from API. Retrying... (Attempt {retries + 1})")
@@ -118,7 +125,7 @@ def save_to_csv(qa_data, filename="qa_dataset.csv"):
 
 if __name__ == "__main__":
     # 1. Read PDF files from the current directory
-    regulations_text = read_pdfs("./data")
+    regulations_text = read_pdfs("./data/")
 
     # 2. Chunk the text by "MADDE"
     regulation_chunks = chunk_text(regulations_text)
@@ -126,16 +133,17 @@ if __name__ == "__main__":
     # 3. Generate Q&A pairs for each chunk
     qa_data = []
     chunk_id = 1
-    for chunk in regulation_chunks:
+    for chunk in regulation_chunks[0:3]:
         print(f"Processing chunk {chunk_id}...")
         qa_pairs = generate_qa_pairs(chunk)
+        print(qa_pairs[0])
+        # Append the Q&A pairs to the dataset with deleting new line characters
         for qa in qa_pairs:
             qa_data.append({
                 "id": chunk_id,
-                "context": chunk,
-                "question": qa["question"],
-                "answers": json.dumps([{"text": qa["answer"], "answer_start": chunk.find(qa["answer"])}],
-                                      ensure_ascii=False)  # Store answer as a JSON string
+                "context": chunk.replace("\n", " ").replace(",", " "),
+                "question": qa["question"].replace(",", " "),
+                "answers": qa["answer"].replace(",", " ")
             })
         chunk_id += 1
 
