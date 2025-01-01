@@ -6,7 +6,10 @@ from sklearn.model_selection import train_test_split
 
 # --- Model and Tokenizer ---
 model_name = "WiroAI/wiroai-turkish-llm-9b"
-model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="auto")
+model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map="cpu")
+# Move model to empty tensors
+model = model.to_empty(device=torch.device("cuda"))
+
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 tokenizer.pad_token = tokenizer.eos_token # Set pad token same as eos
 
@@ -32,7 +35,7 @@ train_data, val_data = train_test_split(tokenized_data['input_ids'], test_size=0
 peft_config = LoraConfig(
     task_type=TaskType.CAUSAL_LM,
     inference_mode=False,
-    r=8,  # LoRA rank
+    r=2,  # LoRA rank
     lora_alpha=32,  # LoRA alpha
     lora_dropout=0.1,  # LoRA dropout
 )
@@ -43,7 +46,7 @@ model.print_trainable_parameters()
 # --- Training Arguments ---
 training_args = TrainingArguments(
     output_dir="./model/gtu-q&a-llm-9b-finetuned",
-    evaluation_strategy="steps",
+    eval_strategy="steps",
     eval_steps=100,  # Evaluate every 100 steps
     save_steps= 500,
     save_total_limit= 2,
@@ -53,7 +56,7 @@ training_args = TrainingArguments(
     num_train_epochs=3,
     weight_decay=0.01,
     logging_dir="./logs",
-    fp16=True,
+    bf16=True,
 )
 
 # --- Data Collator ---

@@ -2,7 +2,6 @@ import os
 import re
 import csv
 import time
-import json
 from PyPDF2 import PdfReader
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -113,7 +112,7 @@ def generate_qa_pairs(chunk, max_retries=3):
     return []
 
 
-def append_to_csv(qa_data, last_id, filename="qa_dataset.csv"):
+def append_to_csv(qa_data, last_id, filename="./data/qa_dataset.csv"):
     """Saves the Q&A data to a CSV file."""
     with open(filename, "a", newline="", encoding="utf-8") as csvfile:
         fieldnames = ["id", "context", "question", "answers"]
