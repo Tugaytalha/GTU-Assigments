@@ -1,0 +1,11 @@
+transformers
+datasets
+accelerate
+peft
+bitsandbytes
+trl
+PyPDF2  # create_dataset
+google-generativeai  #create_dataset
+python-dotenv  # create_dataset
+pandas
+torch  # Optional for finetune
