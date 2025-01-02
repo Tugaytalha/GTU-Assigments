@@ -32,7 +32,7 @@ bnb_config = BitsAndBytesConfig(
 name_addition = ""
 loc_model = ("gtu-qa-llm-finetuned-context" if WITH_CONTEXT else "gtu-qa-llm-finetuned-no-context")
 local_model = loc_model + name_addition
-from_trained = False
+from_trained = True
 modelName = "anilguven/Llama3.2-1b-instruct-OpenOrcaTr-unsloth" if not from_trained else "./models/" + local_model
 tokenizer = AutoTokenizer.from_pretrained(modelName)
 model = AutoModelForCausalLM.from_pretrained(modelName, quantization_config=bnb_config, device_map="auto")

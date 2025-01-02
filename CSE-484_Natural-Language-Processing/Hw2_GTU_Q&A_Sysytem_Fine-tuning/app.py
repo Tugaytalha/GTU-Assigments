@@ -1,5 +1,6 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+import gradio as gr
 
 WITH_CONTEXT = False
 
@@ -36,17 +37,20 @@ Sen, Gebze Teknik Üniversitesi'nin lisans yönetmeliği hakkında geniş bir bi
 """
 input_texts = ["Teorik dersler için devam zorunluluğu % kaçtır?", "Staj komisyonu gerekli gördüğü durumlarda ne gibi işlemler yapabilir?", "Diploma numaraları her yıl sıfırlanır mı?", "Hangi durumlarda yarıyıl içinde izin verilebilir?"]
 
-for input_text in input_texts:
+
+def generate_response(input_text):
+    """
+    Generate response using the loaded model
+    """
     # Tokenize input
     inputs = tokenizer(input_text, return_tensors="pt").to(model.device)
-
-
+    
     # Generate text
     outputs = model.generate(
         inputs["input_ids"],
         max_length=150,
         num_return_sequences=1,
-        do_sample=False,
+        # do_sample=False,
         temperature=0.001,
         top_k=50,
         top_p=0.95,
@@ -59,11 +63,35 @@ for input_text in input_texts:
         diversity_penalty=0.0,
         length_penalty=0.6,
         early_stopping=True,
-        use_cache=True,          
+        use_cache=True,
     )
+    
+    # Decode the generated text
+    generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    return generated_text
 
-    # Decode and print the generated text
-    for i, output in enumerate(outputs):
-        generated_text = tokenizer.decode(output, skip_special_tokens=True)
-        print(f"Generated Text for input '{input_text}': \n{generated_text}\n\n")
+# Create Gradio interface
+demo = gr.Interface(
+    fn=generate_response,
+    inputs=gr.Textbox(
+        lines=2, 
+        placeholder="GTÜ yönetmeliği hakkında bir soru sorun...",
+        label="Sorunuz"
+    ),
+    outputs=gr.Textbox(
+        lines=4,
+        label="Cevap"
+    ),
+    title="GTÜ Yönetmelik Soru-Cevap Sistemi",
+    description="Gebze Teknik Üniversitesi yönetmeliği hakkında sorularınızı yanıtlayan yapay zeka asistanı.",
+    examples=[
+        ["Teorik dersler için devam zorunluluğu % kaçtır?"],
+        ["Staj komisyonu gerekli gördüğü durumlarda ne gibi işlemler yapabilir?"],
+        ["Diploma numaraları her yıl sıfırlanır mı?"],
+        ["Hangi durumlarda yarıyıl içinde izin verilebilir?"]
+    ]
+)
 
+# Launch the interface
+if __name__ == "__main__":
+    demo.launch(share=True)
