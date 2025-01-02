@@ -17,8 +17,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # --- Lora Configuration ---
 lora_config = LoraConfig(
-    r=32,
-    lora_alpha=32,
+    r=64,
+    lora_alpha=64,
     target_modules=["q_proj", "o_proj", "k_proj", "v_proj", "gate_proj", "up_proj", "down_proj"],
     task_type=TaskType.CAUSAL_LM,
 )
@@ -29,9 +29,11 @@ bnb_config = BitsAndBytesConfig(
 )
 
 # --- Model and Tokenizer ---
-from_trained = True
-modelName = "anilguven/Llama3.2-1b-instruct-OpenOrcaTr-unsloth" if not from_trained else "./models/gtu-qa-llm-9b-finetuned-context" if WITH_CONTEXT else "./models/gtu-qa-llm-9b-finetuned-no-context"
-
+name_addition = ""
+loc_model = ("gtu-qa-llm-finetuned-context" if WITH_CONTEXT else "gtu-qa-llm-finetuned-no-context")
+local_model = loc_model + name_addition
+from_trained = False
+modelName = "anilguven/Llama3.2-1b-instruct-OpenOrcaTr-unsloth" if not from_trained else "./models/" + local_model
 tokenizer = AutoTokenizer.from_pretrained(modelName)
 model = AutoModelForCausalLM.from_pretrained(modelName, quantization_config=bnb_config, device_map="auto")
 
@@ -66,13 +68,12 @@ Unutma, senin görevin GTU lisans yönetmeliği ile sınırlı.
 alpaca_prompt_non_context = """Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
 
 ### Instruction:
-
-Sen, Gebze Teknik Üniversitesi'nin lisans yönetmeliği de dahil olmak üzere geniş bir bilgi birikimine sahip bir yapay zeka asistanısın.
+Sen, Gebze Teknik Üniversitesi'nin lisans yönetmeliği hakkında geniş bir bilgi birikimine sahip bir yapay zeka asistanısın.
 1. Soruyu dikkatlice oku.
-2. Kendi bilgi birikimini kullanarak soruyu en doğru ve eksiksiz şekilde yanıtla.
+2. Soruyu en doğru ve eksiksiz şekilde yanıtla.
 3. Cevabını açık ve anlaşılır bir şekilde formüle et.
-4. Eğer sorunun cevabını kesin olarak bilmiyorsan, tahminde bulun ve cevabını sonuna "Bu sorunun cevabından emin değilim." yaz.
-5. GTU lisans yönetmeliği hakkındaki sorulara, yönetmelik güncel ve doğruymuş gibi cevap vermeye çalış.
+4. Cevabı kesin olarak bilmiyorsan, tahminde bulun ve cevabın sonuna "Bu sorunun cevabından emin değilim." yaz
+5. Cevapları Türkçe ver.
 
 ### Input:
 {}
@@ -126,15 +127,15 @@ print(dataset["text"][0])
 print("\n\n\n")
 
 # --- Training Arguments ---
-epoch = 4
+epoch = 6
 train_args = TrainingArguments(
-        per_device_train_batch_size = 8,
+        per_device_train_batch_size = 3,
         gradient_accumulation_steps = 4,
         warmup_steps = 5,
         #max_steps = 150,
         num_train_epochs = epoch,
         gradient_checkpointing = True,
-        learning_rate = 2e-4,
+        learning_rate = 6e-3,
         fp16 = False,
         bf16 = True,
         logging_steps = 1,
@@ -157,12 +158,10 @@ trainer.train()
 
 # --- Save Model ---
 username = "Tugaytalha"
-finetuned_model_name = "gtu-qa-llm-9b-finetuned-context" if WITH_CONTEXT else "gtu-qa-llm-9b-finetuned-no-context"
-if from_trained:
-    finetuned_model_name = finetuned_model_name + "-" + str(epoch)
+finetuned_model_name = loc_model if not from_trained else local_model + "-" + str(epoch)
 # Save model and tokenizer locally
-model.save_pretrained(f"./models/{finetuned_model_name}")
-tokenizer.save_pretrained(f"./models/{finetuned_model_name}")
+model.save_pretrained("./models/" +finetuned_model_name)
+tokenizer.save_pretrained("./models/" +finetuned_model_name)
 # Save model and tokenizer to the Hugging Face hub
 model.push_to_hub(username + "/" + finetuned_model_name)
 tokenizer.push_to_hub(username + "/" + finetuned_model_name)

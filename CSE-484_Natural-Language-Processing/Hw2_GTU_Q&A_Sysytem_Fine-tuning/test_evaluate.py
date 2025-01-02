@@ -4,7 +4,7 @@ import torch
 WITH_CONTEXT = False
 
 # Define model and tokenizer paths
-model_name = "gtu-qa-llm-9b-finetuned-context" if WITH_CONTEXT else "gtu-qa-llm-9b-finetuned-no-context-4"
+model_name = "gtu-qa-llm-finetuned-context" if WITH_CONTEXT else "gtu-qa-llm-finetuned-no-context"
 model_name = f"./models/{model_name}"
 
 # Load the tokenizer
@@ -21,12 +21,12 @@ model = AutoModelForCausalLM.from_pretrained(
 alpaca_prompt_non_context = """Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.
 
 ### Instruction:
-Sen, Gebze Teknik Üniversitesi'nin lisans yönetmeliği de dahil olmak üzere geniş bir bilgi birikimine sahip bir yapay zeka asistanısın.
+Sen, Gebze Teknik Üniversitesi'nin lisans yönetmeliği hakkında geniş bir bilgi birikimine sahip bir yapay zeka asistanısın.
 1. Soruyu dikkatlice oku.
-2. Kendi bilgi birikimini kullanarak soruyu en doğru ve eksiksiz şekilde yanıtla.
+2. Soruyu en doğru ve eksiksiz şekilde yanıtla.
 3. Cevabını açık ve anlaşılır bir şekilde formüle et.
-4. Eğer sorunun cevabını kesin olarak bilmiyorsan, tahminde bulun ve cevabını sonuna "Bu sorunun cevabından emin değilim." yaz.
-5. GTU lisans yönetmeliği hakkındaki sorulara, yönetmelik güncel ve doğruymuş gibi cevap vermeye çalış.
+4. Cevabı kesin olarak bilmiyorsan, tahminde bulun ve cevabın sonuna "Bu sorunun cevabından emin değilim." yaz
+5. Cevapları Türkçe ver.
 
 ### Input:
 {}
@@ -44,11 +44,12 @@ for input_text in input_texts:
     # Generate text
     outputs = model.generate(
         inputs["input_ids"],
-        max_length=100,             # Maximum length of the generated text
+        max_length=150,             # Maximum length of the generated text
         num_return_sequences=1,    # Number of sequences to generate
-        temperature=1.0,           # Adjust temperature for creativity
+        do_sample=False,            # Enable sampling
+        temperature=0.001,           # Adjust temperature for creativity
         top_k=50,                  # Limit the top-k tokens to sample from
-        top_p=0.90,                # Limit the cumulative probability when sampling
+        top_p=0.95,                # Limit the cumulative probability when sampling
         pad_token_id=tokenizer.eos_token_id,  # Set the pad token ID
         bos_token_id=tokenizer.bos_token_id,  # Set the beginning of sequence token ID
         eos_token_id=tokenizer.eos_token_id,  # Set the end of sequence token ID
@@ -64,5 +65,5 @@ for input_text in input_texts:
     # Decode and print the generated text
     for i, output in enumerate(outputs):
         generated_text = tokenizer.decode(output, skip_special_tokens=True)
-        print(f"Generated Text for input '{input_text}': {generated_text}")
+        print(f"Generated Text for input '{input_text}': \n{generated_text}\n\n")
 
