@@ -9,4 +9,4 @@ google-generativeai  #create_dataset
 python-dotenv  # create_dataset
 pandas
 huggingface-hub
-torch  # Optional for finetune, if you don't have cuda GPU you can delete this line and import torch, torch.device lines in finetune.py
+torch  # Optional for finetune, if you don't have cuda GPU you can delete this line and import torch, torch.device lines in finetune_qlora.py
