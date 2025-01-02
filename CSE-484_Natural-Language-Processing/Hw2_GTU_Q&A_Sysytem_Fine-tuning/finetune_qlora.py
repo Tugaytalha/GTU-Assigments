@@ -127,7 +127,7 @@ print(dataset["text"][0])
 print("\n\n\n")
 
 # --- Training Arguments ---
-epoch = 6
+epoch = 3
 train_args = TrainingArguments(
         per_device_train_batch_size = 3,
         gradient_accumulation_steps = 4,
@@ -135,7 +135,7 @@ train_args = TrainingArguments(
         #max_steps = 150,
         num_train_epochs = epoch,
         gradient_checkpointing = True,
-        learning_rate = 6e-3,
+        learning_rate = 1e-3,
         fp16 = False,
         bf16 = True,
         logging_steps = 1,
@@ -162,6 +162,10 @@ finetuned_model_name = loc_model if not from_trained else local_model + "-" + st
 # Save model and tokenizer locally
 model.save_pretrained("./models/" +finetuned_model_name)
 tokenizer.save_pretrained("./models/" +finetuned_model_name)
+
+# Draw the training plot
+trainer.plot()
+
 # Save model and tokenizer to the Hugging Face hub
 model.push_to_hub(username + "/" + finetuned_model_name)
 tokenizer.push_to_hub(username + "/" + finetuned_model_name)

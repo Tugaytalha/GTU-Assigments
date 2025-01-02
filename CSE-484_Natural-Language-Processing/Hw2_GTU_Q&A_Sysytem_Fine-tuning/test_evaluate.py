@@ -44,10 +44,10 @@ for input_text in input_texts:
     # Generate text
     outputs = model.generate(
         inputs["input_ids"],
-        max_length=150,
+        max_length=100,
         num_return_sequences=1,
-        do_sample=False,
-        temperature=0.001,
+        # do_sample=False,
+        temperature=0.6,
         top_k=50,
         top_p=0.95,
         pad_token_id=tokenizer.eos_token_id,
@@ -59,7 +59,7 @@ for input_text in input_texts:
         diversity_penalty=0.0,
         length_penalty=0.6,
         early_stopping=True,
-        use_cache=True,          
+        use_cache=True,
     )
 
     # Decode and print the generated text

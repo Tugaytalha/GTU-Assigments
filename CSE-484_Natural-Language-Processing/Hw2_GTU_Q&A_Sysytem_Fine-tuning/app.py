@@ -7,13 +7,14 @@ WITH_CONTEXT = False
 # Define model and tokenizer paths
 model_name = "gtu-qa-llm-finetuned-context" if WITH_CONTEXT else "gtu-qa-llm-finetuned-no-context"
 model_name = f"./models/{model_name}"
+hub_model = "Tugaytalha/gtu-qa-llm-finetuned-no-context"
 
 # Load the tokenizer
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 # Load the model
 model = AutoModelForCausalLM.from_pretrained(
-    model_name,
+    hub_model,
     torch_dtype=torch.float16,  # Use float16 for reduced memory usage (if supported)
     device_map="auto"          # Automatically assign layers to available devices (e.g., GPU)
 )
@@ -51,7 +52,7 @@ def generate_response(input_text):
         max_length=150,
         num_return_sequences=1,
         # do_sample=False,
-        temperature=0.001,
+        temperature=0.1,
         top_k=50,
         top_p=0.95,
         pad_token_id=tokenizer.eos_token_id,
