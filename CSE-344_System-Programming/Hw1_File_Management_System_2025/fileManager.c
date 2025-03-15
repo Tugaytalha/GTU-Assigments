@@ -196,6 +196,10 @@ void list_files_by_extension(const char *dir_name, const char *extension) {
             printf("Error: Could not open directory \"%s\".\n", dir_name);
             exit(EXIT_FAILURE);
         }
+        if ((strlrn(extension) < 2) || extension[0] != '.') {
+            printf("Error: Extension must start with a period (e.g. \".txt\").\n");
+            exit(EXIT_FAILURE);
+        }
         
         printf("Files with extension \"%s\" in directory \"%s\":\n", extension, dir_name);
         
