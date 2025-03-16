@@ -290,7 +290,7 @@ void append_to_file(const char *file_name, const char *content) {
     int fd = open(file_name, O_WRONLY | O_APPEND);
     if (fd == -1) {
         perror("Error opening file");
-        sprintf(log_message, "Failed to append to file \"%s\". %s", file_name, strerror(errno));
+        sprintf(log_message, "Error: Cannot write to \"%s\". File is locked or read-only.\n", file_name);
         log_operation(log_message);
         return;
     }
