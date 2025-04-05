@@ -23,6 +23,9 @@
 #define TIMEOUT_SECONDS 30 // Timeout for detecting inactive children (adjust as needed)
 #define CHILD_SLEEP_DURATION 10
 #define DAEMON_LOOP_SLEEP 2
+#define INT_MAX 2147483647 // Max int value for range checking
+#define INT_MIN (-INT_MAX - 1) // Min int value for range checking
+
 
 // --- Global Variables ---
 // Use volatile sig_atomic_t for variables modified in signal handlers and accessed elsewhere
@@ -535,7 +538,7 @@ int main(int argc, char *argv[]) {
         int fd1_c1 = -1, fd2_c1 = -1;
         log_message("CHILD 1 (PID %d): Started.", mypid);
 
-        // Sleep for specified duration
+        // Sleep for specified duration (10 seconds)
         log_message("CHILD 1 (PID %d): Sleeping for %d seconds.", mypid, CHILD_SLEEP_DURATION);
         sleep(CHILD_SLEEP_DURATION);
         log_message("CHILD 1 (PID %d): Woke up.", mypid);
@@ -717,7 +720,7 @@ int main(int argc, char *argv[]) {
 
 
     // === Parent Process: Become Daemon ===
-    log_message("PARENT (PID %d): Initial tasks complete. Converting to daemon...", getpid());
+    log_message("PARENT (PID %d): Initial tasks complete. Converting to daemon...\n", getpid());
     if (become_daemon() == -1) {
         // Error should have been logged by become_daemon
         // If become_daemon failed before exit(), this process might still be running.
