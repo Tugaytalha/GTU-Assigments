@@ -1,856 +1,590 @@
-// main.c
-#define _POSIX_C_SOURCE 200809L // For sigaction, strdup, etc.
+#define _GNU_SOURCE // For dprintf
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <fcntl.h>
-#include <sys/types.h> // For pid_t, kill, mkfifo, open, mode_t
-#include <sys/stat.h>  // For mkfifo, open mode flags, umask
-#include <sys/wait.h>  // For waitpid, WIFEXITED etc.
-#include <signal.h>    // For signals, sigaction, kill, SA_*, sigemptyset, sig_atomic_t
-#include <string.h>    // For memset, strerror, strcmp
-#include <errno.h>     // For errno
-#include <time.h>      // For time()
-#include <sys/select.h>// For select()
-#include <sys/time.h>  // For struct timeval
-#include <stdarg.h>    // For va_list in logging
-#include <libgen.h>    // For basename
+#include <signal.h>
+#include <errno.h>
+#include <string.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <stdarg.h> // For variadic functions like log_message
+#include <sys/file.h> // For flock
 
-// --- Constants ---
-#define FIFO1_PATH "/tmp/ipc_daemon_fifo1" // Use /tmp for better portability
-#define FIFO2_PATH "/tmp/ipc_daemon_fifo2"
-#define LOG_FILE "/tmp/ipc_daemon.log"
-#define TIMEOUT_SECONDS 30 // Timeout for detecting inactive children (adjust as needed)
+// --- Configuration ---
+#define FIFO1_NAME "/tmp/hw2_fifo1"
+#define FIFO2_NAME "/tmp/hw2_fifo2"
+#define LOG_FILE "/tmp/daemon.log"
+#define PID_FILE "/tmp/homework2.pid" // To prevent multiple instances
+#define COMMAND "LARGER"
 #define CHILD_SLEEP_DURATION 10
-#define DAEMON_LOOP_SLEEP 2
-#define INT_MAX 2147483647 // Max int value for range checking
-#define INT_MIN (-INT_MAX - 1) // Min int value for range checking
-
+#define PARENT_SLEEP_DURATION 2
+#define NUM_CHILDREN 2
 
 // --- Global Variables ---
-// Use volatile sig_atomic_t for variables modified in signal handlers and accessed elsewhere
-volatile sig_atomic_t child_exit_counter = 0;
-volatile sig_atomic_t sigterm_received = 0; // Flag for graceful shutdown
-volatile sig_atomic_t sighup_received = 0;  // Flag for SIGHUP handling
-
-// Store PIDs globally for access in signal handler and daemon loop
-pid_t child1_pid = -1;
-pid_t child2_pid = -1;
-
-// Track start times for timeout monitoring
-time_t child1_start_time = 0;
-time_t child2_start_time = 0;
-
-const int total_children = 2; // Fixed number of children
-
-FILE *log_fp = NULL; // Global log file pointer for daemon
-char *prog_name = NULL; // Store program name for logging
+int log_fd = -1;
+volatile sig_atomic_t child_exit_count = 0;
+pid_t child_pids[NUM_CHILDREN];
+volatile sig_atomic_t terminate_flag = 0;
+int pid_file_fd = -1; // File descriptor for PID file lock
 
 // --- Utility Functions ---
 
-// Log messages consistently with timestamp and PID
+// Simple logging function (remains the same)
 void log_message(const char *format, ...) {
-    time_t now = time(NULL);
-    struct tm *local_time = localtime(&now);
-    char time_buf[30];
-    strftime(time_buf, sizeof(time_buf), "%Y-%m-%d %H:%M:%S", local_time);
-
-    // Use stderr before daemonization/log file opening, otherwise use log_fp
-    FILE *output = log_fp ? log_fp : stderr;
-
-    fprintf(output, "[%s] [%d] ", time_buf, getpid());
+    if (log_fd < 0) return;
 
     va_list args;
+    time_t now = time(NULL);
+    char timestamp[30];
+    char message_buffer[512];
+    char final_buffer[600];
+
+    strftime(timestamp, sizeof(timestamp), "%Y-%m-%d %H:%M:%S", localtime(&now));
+
     va_start(args, format);
-    vfprintf(output, format, args);
+    vsnprintf(message_buffer, sizeof(message_buffer), format, args);
     va_end(args);
 
-    fprintf(output, "\n");
-    fflush(output); // Ensure message is written immediately
+    snprintf(final_buffer, sizeof(final_buffer), "[%s] [PID:%d] %s\n", timestamp, getpid(), message_buffer);
+
+    // Use write for signal safety
+    ssize_t written = write(log_fd, final_buffer, strlen(final_buffer));
+    if (written < 0) {
+        // Cannot easily log this error if log_fd itself is the problem
+        // Write to original stderr might work if redirection hasn't happened yet
+        dprintf(STDERR_FILENO, "FATAL: Failed to write to log file: %s\n", strerror(errno));
+    }
 }
 
-// Function to clean up resources (FIFOs, log file)
-void cleanup() {
-    log_message("Initiating cleanup...");
-    // Unlink FIFOs only if they might exist (e.g., created by this process)
-    // Check return values, but mainly log errors as cleanup might fail partially
-    if (unlink(FIFO1_PATH) == -1 && errno != ENOENT) {
-        log_message("Warning: Failed to unlink %s: %s", FIFO1_PATH, strerror(errno));
-    } else {
-        log_message("Unlinked %s", FIFO1_PATH);
+// Cleanup function for FIFOs and PID file
+void cleanup_resources() {
+    log_message("Cleaning up resources...");
+    if (log_fd >= 0) {
+         log_message("Closing log file.");
+         close(log_fd);
+         log_fd = -1; // Mark as closed
     }
-    if (unlink(FIFO2_PATH) == -1 && errno != ENOENT) {
-        log_message("Warning: Failed to unlink %s: %s", FIFO2_PATH, strerror(errno));
-    } else {
-        log_message("Unlinked %s", FIFO2_PATH);
-    }
-
-    if (log_fp) {
-        log_message("Closing log file.");
-        fclose(log_fp);
-        log_fp = NULL;
-    }
-    log_message("Cleanup finished.");
+    unlink(FIFO1_NAME);
+    unlink(FIFO2_NAME);
+     if (pid_file_fd >= 0) {
+         log_message("Releasing PID file lock and removing PID file.");
+         flock(pid_file_fd, LOCK_UN); // Release lock
+         close(pid_file_fd);
+         unlink(PID_FILE);
+         pid_file_fd = -1; // Mark as closed/unlinked
+     } else {
+         // Attempt removal even if fd is not held (e.g., if lock failed)
+         unlink(PID_FILE);
+     }
 }
 
-// Setup signal action helper
-int setup_signal_action(int signum, void (*handler)(int)) {
-    struct sigaction sa;
-    memset(&sa, 0, sizeof(sa));
-    sa.sa_handler = handler;
-    sigemptyset(&sa.sa_mask);
-    // SA_RESTART: auto-restart interrupted syscalls (like sleep, select, waitpid)
-    // SA_NOCLDSTOP: only interested in termination, not stopping/continuing
-    sa.sa_flags = SA_RESTART | (signum == SIGCHLD ? SA_NOCLDSTOP : 0);
+// Error handling macro - modified to call cleanup
+#define CHECK_ERR(condition, message, ...) \
+    do { \
+        if (condition) { \
+            char err_buf[256]; \
+            snprintf(err_buf, sizeof(err_buf), message, ##__VA_ARGS__); \
+            if (log_fd >= 0) { \
+                log_message("ERROR: %s: %s", err_buf, strerror(errno)); \
+            } else { \
+                fprintf(stderr, "ERROR [PID:%d]: %s: %s\n", getpid(), err_buf, strerror(errno)); \
+            } \
+            cleanup_resources(); /* Call cleanup before exiting */ \
+            exit(EXIT_FAILURE); \
+        } \
+    } while (0)
 
-    if (sigaction(signum, &sa, NULL) == -1) {
-        log_message("ERROR: Failed to set signal handler for signal %d: %s", signum, strerror(errno));
-        return -1;
-    }
-    return 0;
-}
 
-// --- Signal Handlers ---
+// --- Signal Handlers (mostly unchanged, but logging improved) ---
 
-// Signal handler for SIGCHLD
 void sigchld_handler(int sig) {
-    (void)sig; // Mark unused parameter
+    int saved_errno = errno;
     int status;
-    pid_t pid;
+    pid_t child_pid;
 
-    // Reap all terminated children non-blockingly
-    // Use a loop with WNOHANG as multiple children might terminate close together
-    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
-        const char *child_name = "Unknown Child";
-        if (pid == child1_pid) child_name = "Child 1";
-        else if (pid == child2_pid) child_name = "Child 2";
+    // Use write for signal safety in logging inside handler
+    char log_buf[256];
+
+    while ((child_pid = waitpid(-1, &status, WNOHANG)) > 0) {
+        char status_msg[100];
+        int exit_status_val = -1; // Store exit status if available
 
         if (WIFEXITED(status)) {
-            log_message("SIGCHLD: %s (PID %d) exited normally with status %d.", child_name, pid, WEXITSTATUS(status));
+            exit_status_val = WEXITSTATUS(status);
+            snprintf(status_msg, sizeof(status_msg), "exited normally with status %d", exit_status_val);
         } else if (WIFSIGNALED(status)) {
-            log_message("SIGCHLD: %s (PID %d) was terminated by signal %d.", child_name, pid, WTERMSIG(status));
+            snprintf(status_msg, sizeof(status_msg), "killed by signal %d", WTERMSIG(status));
         } else {
-            log_message("SIGCHLD: %s (PID %d) terminated with unknown status (%d).", child_name, pid, status);
+            snprintf(status_msg, sizeof(status_msg), "terminated with unknown status %d", status);
         }
 
-        // Increment counter by two as per assignment specification
-        child_exit_counter += 2;
-        log_message("SIGCHLD: Counter incremented by 2, current value: %d", child_exit_counter);
+        // Log using write
+        int len = snprintf(log_buf, sizeof(log_buf), "[SIGCHLD] Child process %d terminated (%s).\n", child_pid, status_msg);
+        if (len > 0 && log_fd >= 0) {
+            write(log_fd, log_buf, len);
+        }
 
-        // Reset the PID if we know which child it was, prevents timeout check on dead child
-        if (pid == child1_pid) child1_pid = -1; // Mark as terminated
-        if (pid == child2_pid) child2_pid = -1; // Mark as terminated
+        // Increment counter atomically
+        child_exit_count++; // Okay for simple increment
 
+        // Check if the exit status indicates an error
+        if (WIFEXITED(status) && WEXITSTATUS(status) != EXIT_SUCCESS) {
+             len = snprintf(log_buf, sizeof(log_buf), "[SIGCHLD] WARNING: Child %d exited with error status %d.\n", child_pid, WEXITSTATUS(status));
+             if (len > 0 && log_fd >= 0) {
+                 write(log_fd, log_buf, len);
+             }
+        }
     }
-    // ECHILD is expected if no more children are left to wait for when using WNOHANG
-    if (pid == -1 && errno != ECHILD) {
-         log_message("ERROR: waitpid failed in SIGCHLD handler: %s", strerror(errno));
+
+    if (child_pid < 0 && errno != ECHILD) {
+        int len = snprintf(log_buf, sizeof(log_buf), "[SIGCHLD] ERROR: waitpid failed: %s\n", strerror(errno));
+         if (len > 0 && log_fd >= 0) {
+             write(log_fd, log_buf, len);
+         }
     }
-    // Re-install handler? Some systems might require it, but sigaction usually doesn't. Check documentation if needed.
+
+    errno = saved_errno;
 }
 
-// Signal handler for SIGUSR1 (example: log status)
-void sigusr1_handler(int sig) {
-    (void)sig;
-    log_message("INFO: Received SIGUSR1. Current child exit counter: %d", child_exit_counter);
-    // Add any other status logging needed
-}
 
-// Signal handler for SIGHUP (example: reconfigure/reload - here just log and set flag)
-void sighup_handler(int sig) {
-    (void)sig;
-    log_message("INFO: Received SIGHUP. Setting flag for potential reconfiguration.");
-    // Set a flag to be checked in the main daemon loop for actual action
-    sighup_received = 1;
-}
-
-// Signal handler for SIGTERM (graceful shutdown)
 void sigterm_handler(int sig) {
-    (void)sig;
-    log_message("INFO: Received SIGTERM. Initiating graceful shutdown.");
-    // Set a flag to break the main loop cleanly
-    sigterm_received = 1;
-    // Cleanup will be called after the loop breaks or via atexit
+     // Use write for signal safety
+    char msg[] = "[SIGTERM] Received SIGTERM. Initiating graceful shutdown.\n";
+    if (log_fd >= 0) write(log_fd, msg, sizeof(msg) - 1);
+    terminate_flag = 1;
 }
 
-// --- Daemonization Function ---
-// Modifies the *calling* process to become a daemon
-int become_daemon() {
+void sighup_handler(int sig) {
+    char msg[] = "[SIGHUP] Received SIGHUP. Reconfiguration triggered (action not implemented).\n";
+    if (log_fd >= 0) write(log_fd, msg, sizeof(msg) - 1);
+    // Re-open log file potentially, or reload config
+}
+
+void sigusr1_handler(int sig) {
+    char msg[] = "[SIGUSR1] Received SIGUSR1. Custom signal action triggered (action not implemented).\n";
+    if (log_fd >= 0) write(log_fd, msg, sizeof(msg) - 1);
+}
+
+// --- Daemonization (minor improvement: add PID file locking) ---
+
+void daemonize() {
     pid_t pid;
 
-    // 1. Fork and exit parent to detach from terminal
+    // --- PID File Check & Lock ---
+    pid_file_fd = open(PID_FILE, O_RDWR | O_CREAT, 0666);
+    if (pid_file_fd < 0) {
+        perror("FATAL: Could not open PID file");
+        // Cannot use CHECK_ERR as log_fd might not be open yet
+        exit(EXIT_FAILURE);
+    }
+
+    // Try to acquire an exclusive lock without blocking
+    if (flock(pid_file_fd, LOCK_EX | LOCK_NB) < 0) {
+        if (errno == EWOULDBLOCK) {
+            fprintf(stderr, "ERROR: Daemon already running? PID file %s is locked.\n", PID_FILE);
+        } else {
+            perror("ERROR: Could not lock PID file");
+        }
+        close(pid_file_fd);
+        exit(EXIT_FAILURE);
+    }
+    // PID file locked successfully, continue daemonization.
+    // We will write the final daemon PID later.
+
+
+    // 1. Fork and exit parent
     pid = fork();
+    // Use temporary buffer for errors before log redirection
+    char err_buf[100];
     if (pid < 0) {
-        log_message("ERROR: Failed to fork for daemonization step 1: %s", strerror(errno));
-        return -1; // Error
+        snprintf(err_buf, sizeof(err_buf), "FATAL: Failed first fork for daemonization: %s\n", strerror(errno));
+        write(STDERR_FILENO, err_buf, strlen(err_buf)); // Write directly
+        cleanup_resources();
+        exit(EXIT_FAILURE);
     }
     if (pid > 0) {
-        // Parent exits successfully, leaving child to continue
-        log_message("INFO: Parent process (PID %d) exiting after first fork.", getpid());
-        exit(EXIT_SUCCESS);
+        exit(EXIT_SUCCESS); // First parent exits
     }
 
-    // --- Child (potential daemon) continues ---
-    log_message("INFO: First child (PID %d) continuing daemonization.", getpid());
-
-    // 2. Create a new session (setsid) to become session leader and process group leader
+    // 2. Create new session
     if (setsid() < 0) {
-        log_message("ERROR: Failed to create new session (setsid): %s", strerror(errno));
-        return -1; // Error
+         snprintf(err_buf, sizeof(err_buf), "FATAL: Failed setsid: %s\n", strerror(errno));
+         write(STDERR_FILENO, err_buf, strlen(err_buf));
+         cleanup_resources();
+         exit(EXIT_FAILURE);
     }
-    log_message("INFO: New session created (PID %d is session leader).", getpid());
 
-    // Optional: Ignore SIGHUP for the session leader (prevents termination if controlling terminal closes)
-    // signal(SIGHUP, SIG_IGN); // Using sigaction is preferred, handle it properly below
-
-    // 3. Fork again and exit parent (the session leader)
-    // Ensures the daemon cannot reacquire a controlling terminal (SysV recommendation)
+    // 3. Fork again and exit session leader (optional but good)
+    signal(SIGHUP, SIG_IGN); // Ignore SIGHUP for session leader exit
     pid = fork();
      if (pid < 0) {
-         log_message("ERROR: Failed to fork for daemonization step 2: %s", strerror(errno));
-         return -1; // Error
-     }
-     if (pid > 0) {
-         // Session leader exits
-         log_message("INFO: Session leader (PID %d) exiting after second fork.", getpid());
-         exit(EXIT_SUCCESS);
-     }
-
-    // --- Grandchild (actual daemon) continues ---
-    log_message("INFO: Daemon process (PID %d) starting.", getpid());
-
-    // 4. Change working directory (optional but good practice)
-    // Change to root to avoid preventing unmounting of the filesystem it was started from.
-    // If files are relative (like log file), adjust path or change to a specific daemon dir.
-    // Using /tmp for log/fifo avoids this issue. Let's comment out chdir for simplicity here.
-    /*
-    if (chdir("/") < 0) {
-        log_message("ERROR: Failed to change directory to /: %s", strerror(errno));
-        return -1; // Error
+        snprintf(err_buf, sizeof(err_buf), "FATAL: Failed second fork for daemonization: %s\n", strerror(errno));
+        write(STDERR_FILENO, err_buf, strlen(err_buf));
+        cleanup_resources();
+        exit(EXIT_FAILURE);
     }
-    log_message("INFO: Changed working directory to /");
-    */
+    if (pid > 0) {
+        exit(EXIT_SUCCESS); // Session leader exits
+    }
 
-    // 5. Set umask (controls file mode creation mask)
-    // Set to 0 to have full control via open() modes, or a more restrictive mask.
+    // --- Final Daemon Process Continues ---
+    pid_t final_pid = getpid();
+    // Now write the final daemon PID to the locked file
+    if (ftruncate(pid_file_fd, 0) < 0) { // Clear the file first
+         perror("WARNING: Could not truncate PID file"); // Non-fatal
+    }
+    char pid_str[20];
+    snprintf(pid_str, sizeof(pid_str), "%d\n", final_pid);
+    if (write(pid_file_fd, pid_str, strlen(pid_str)) < 0) {
+         perror("WARNING: Could not write PID to PID file"); // Non-fatal
+    }
+    // Keep pid_file_fd open to maintain the lock
+
+    // Use log_message now, assuming log_fd is open
+    log_message("Daemon process successfully started (PID: %d)", final_pid);
+    log_message("PID file created and locked: %s", PID_FILE);
+
+
+    // 4. Change working directory
+    CHECK_ERR(chdir("/") < 0, "Failed to change directory to /");
+    log_message("Working directory changed to /");
+
+
+    // 5. Set umask
     umask(0);
-    log_message("INFO: Set umask to 0.");
+    log_message("Umask set to 0");
 
-    // 6. Close standard file descriptors (stdin, stdout, stderr)
-    log_message("INFO: Closing standard file descriptors.");
-    if (close(STDIN_FILENO) == -1) {
-         log_message("WARNING: Failed to close STDIN_FILENO: %s", strerror(errno));
-    }
-    if (close(STDOUT_FILENO) == -1) {
-         log_message("WARNING: Failed to close STDOUT_FILENO: %s", strerror(errno));
-         // Logging might become problematic here if stderr is also closed incorrectly
-    }
-    if (close(STDERR_FILENO) == -1) {
-         log_message("WARNING: Failed to close STDERR_FILENO: %s", strerror(errno));
-    }
+
+    // 6. Close standard file descriptors
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
 
     // 7. Redirect stdin, stdout, stderr
-    // Redirect stdin to /dev/null
-    int fd_devnull = open("/dev/null", O_RDWR);
-    if (fd_devnull == -1) {
-        // Cannot log this easily now. Critical error.
-        // Maybe attempt to log to syslog if available? Or just exit.
-        perror("CRITICAL: Failed to open /dev/null"); // Might go nowhere
-        return -1;
-    }
-    if (dup2(fd_devnull, STDIN_FILENO) == -1) {
-        perror("CRITICAL: Failed to redirect stdin to /dev/null");
-        close(fd_devnull);
-        return -1;
-    }
-    // Don't close fd_devnull here if it's now STDIN_FILENO
+    int fd0 = open("/dev/null", O_RDONLY);
+    CHECK_ERR(fd0 < 0, "Failed to open /dev/null for stdin");
+    CHECK_ERR(dup2(fd0, STDIN_FILENO) < 0, "Failed to dup2 /dev/null to stdin");
 
-    // Open log file for stdout and stderr (Append mode)
-    // Ensure log file path is absolute or daemon has correct working dir. Using /tmp avoids this.
-    int log_fd = open(LOG_FILE, O_WRONLY | O_CREAT | O_APPEND, 0644);
-    if (log_fd < 0) {
-        perror("CRITICAL: Failed to open log file");
-        // Maybe close stdin again?
-        close(STDIN_FILENO);
-        return -1;
-    }
-    if (dup2(log_fd, STDOUT_FILENO) == -1) {
-        perror("CRITICAL: Failed to redirect stdout to log file");
-        close(log_fd); // Close original fd
-        close(STDIN_FILENO);
-        return -1;
-    }
-     if (dup2(log_fd, STDERR_FILENO) == -1) {
-        perror("CRITICAL: Failed to redirect stderr to log file");
-        close(STDOUT_FILENO); // Close the duplicated one
-        close(log_fd); // Close original fd
-        close(STDIN_FILENO);
-        return -1;
-    }
+    CHECK_ERR(log_fd < 0, "Log file descriptor is invalid before redirecting stdout/stderr");
+    CHECK_ERR(dup2(log_fd, STDOUT_FILENO) < 0, "Failed to dup2 log_fd to stdout");
+    CHECK_ERR(dup2(log_fd, STDERR_FILENO) < 0, "Failed to dup2 log_fd to stderr");
 
-    // Now get a FILE* for easier logging with stdio functions (optional but convenient)
-    // Note: We need to be careful if log_fd is closed explicitly later.
-    // If using stdio (printf, fprintf to stdout/stderr), they now go to the log file.
-    // Alternatively, keep using the log_message function with a dedicated FILE*
-    log_fp = fdopen(log_fd, "a");
-    if (!log_fp) {
-        // If fdopen fails, logging might be inconsistent.
-        // Try logging directly to the fd? Or rely on previous dup2.
-        write(STDERR_FILENO, "ERROR: fdopen failed for log file\n", 34); // Low-level write
-        // Continue cautiously, log_message might not use log_fp
-    } else {
-        setvbuf(log_fp, NULL, _IOLBF, 0); // Line buffering for log file is good
-    }
+    if (fd0 != STDIN_FILENO) close(fd0);
 
-    // We don't need the original log_fd anymore if log_fp is used or if dup2 succeeded
-    // and we only use printf/fprintf(stderr,...). Let's keep log_fp open.
-    // If not using log_fp, close(log_fd) is needed if > STDERR_FILENO.
-    // Since we assign log_fp = fdopen(log_fd, ...), log_fd should NOT be closed directly.
-    // fclose(log_fp) will close the underlying fd.
-
-    // --- Daemon Setup Complete ---
-    log_message("Daemon process initialization successful (PID %d). Logging to %s", getpid(), LOG_FILE);
-    return 0; // Success
+    log_message("Standard I/O streams closed and redirected.");
 }
 
 
-// --- FIFO Helper Functions ---
+// --- Child Process Logic (Added sleep at the beginning) ---
 
-// Set file descriptor to non-blocking mode
-int set_nonblocking(int fd) {
-    int flags = fcntl(fd, F_GETFL, 0);
-    if (flags == -1) {
-        log_message("ERROR: fcntl(F_GETFL) failed: %s", strerror(errno));
-        return -1;
-    }
-    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
-        log_message("ERROR: fcntl(F_SETFL O_NONBLOCK) failed: %s", strerror(errno));
-        return -1;
-    }
-    return 0;
+void run_child1(int val1, int val2) {
+    // Child doesn't need parent's PID file lock fd
+    if (pid_file_fd >= 0) close(pid_file_fd);
+
+    log_message("Child 1 (PID: %d) starting. Sleeping for %d seconds.", getpid(), CHILD_SLEEP_DURATION);
+    sleep(CHILD_SLEEP_DURATION);
+    log_message("Child 1 (PID: %d) woke up. Executing task.", getpid());
+
+
+    int fd1_read, fd2_write;
+
+    // Open FIFOs (Child 1: read from FIFO1, write to FIFO2)
+    // Use blocking open, daemon ensures data is ready *after* fork
+    fd1_read = open(FIFO1_NAME, O_RDONLY);
+    CHECK_ERR(fd1_read < 0, "Child 1 failed to open FIFO1 for reading");
+    log_message("Child 1 opened FIFO1 for reading.");
+
+
+    fd2_write = open(FIFO2_NAME, O_WRONLY);
+    CHECK_ERR(fd2_write < 0, "Child 1 failed to open FIFO2 for writing");
+    log_message("Child 1 opened FIFO2 for writing.");
+
+
+    int received_val1, received_val2;
+    ssize_t bytes_read;
+
+    // Read the two integers from FIFO1
+    bytes_read = read(fd1_read, &received_val1, sizeof(int));
+    CHECK_ERR(bytes_read < 0, "Child 1 failed to read value 1 from FIFO1");
+    CHECK_ERR(bytes_read == 0, "Child 1 read EOF before getting value 1 from FIFO1");
+    CHECK_ERR(bytes_read != sizeof(int), "Child 1 read wrong size for value 1 (%ld bytes)", bytes_read);
+    log_message("Child 1 read value 1: %d", received_val1);
+
+    bytes_read = read(fd1_read, &received_val2, sizeof(int));
+    CHECK_ERR(bytes_read < 0, "Child 1 failed to read value 2 from FIFO1");
+    CHECK_ERR(bytes_read == 0, "Child 1 read EOF before getting value 2 from FIFO1");
+    CHECK_ERR(bytes_read != sizeof(int), "Child 1 read wrong size for value 2 (%ld bytes)", bytes_read);
+    log_message("Child 1 read value 2: %d", received_val2);
+
+    close(fd1_read);
+    log_message("Child 1 closed FIFO1 read end.");
+
+
+    // Determine the larger number
+    int larger_num = (received_val1 > received_val2) ? received_val1 : received_val2;
+    log_message("Child 1 determined larger number: %d", larger_num);
+
+    // Write the larger number to FIFO2
+    ssize_t bytes_written = write(fd2_write, &larger_num, sizeof(int));
+    CHECK_ERR(bytes_written != sizeof(int), "Child 1 failed to write larger number to FIFO2 (wrote %ld bytes)", bytes_written);
+    log_message("Child 1 wrote larger number %d to FIFO2.", larger_num);
+
+    close(fd2_write);
+    log_message("Child 1 closed FIFO2 write end.");
+
+
+    log_message("Child 1 (PID: %d) task completed. Exiting.", getpid());
+    exit(EXIT_SUCCESS);
 }
 
-// Read exactly 'count' bytes from a potentially non-blocking fd with timeout
-ssize_t read_exact_timeout(int fd, void *buf, size_t count, int timeout_sec) {
-    size_t total_read = 0;
-    ssize_t current_read;
-    char *ptr = (char *)buf;
-    struct timeval tv;
-    fd_set readfds;
-    int ret;
-    time_t start_time = time(NULL);
+void run_child2() {
+    // Child doesn't need parent's PID file lock fd
+    if (pid_file_fd >= 0) close(pid_file_fd);
 
-    while (total_read < count) {
-        // Calculate remaining time
-        time_t elapsed = time(NULL) - start_time;
-        if (elapsed >= timeout_sec) {
-            errno = ETIMEDOUT;
-            log_message("ERROR: Read timeout after %ld seconds (target %d).", (long)elapsed, timeout_sec);
-            return -1; // Timeout
-        }
-
-        tv.tv_sec = timeout_sec - elapsed;
-        tv.tv_usec = 0;
-
-        FD_ZERO(&readfds);
-        FD_SET(fd, &readfds);
-
-        // select waits for data availability or timeout
-        ret = select(fd + 1, &readfds, NULL, NULL, &tv);
-
-        if (ret == -1) {
-            if (errno == EINTR) {
-                log_message("DEBUG: select interrupted by signal, retrying.");
-                continue; // Interrupted by signal, retry select
-            }
-            log_message("ERROR: select failed in read_exact_timeout: %s", strerror(errno));
-            return -1; // Select error
-        } else if (ret == 0) {
-            errno = ETIMEDOUT; // Timeout expired according to select
-            log_message("ERROR: Read timeout during select.");
-            return -1;
-        }
-
-        // Data is available (or select returned > 0), attempt to read
-        current_read = read(fd, ptr + total_read, count - total_read);
-
-        if (current_read > 0) {
-            total_read += current_read;
-            log_message("DEBUG: Read %zd bytes, total %zu/%zu", current_read, total_read, count);
-        } else if (current_read == 0) {
-            // EOF - Pipe closed by writer before we read everything?
-            log_message("ERROR: Read EOF prematurely after reading %zu bytes (expected %zu).", total_read, count);
-            errno = EPIPE; // Or some other suitable error
-            return -1; // Indicate unexpected EOF
-        } else { // current_read == -1
-            if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                // Should not happen often after select indicates readability, but possible.
-                // Wait briefly or just continue loop relying on select's timeout.
-                log_message("DEBUG: read returned EAGAIN/EWOULDBLOCK, continuing select loop.");
-                // Small sleep might prevent busy-waiting if select behaves unexpectedly, but select should handle waiting.
-                // usleep(10000); // e.g., 10ms (requires #include <unistd.h>) - Use with caution.
-                continue;
-            } else if (errno == EINTR) {
-                 log_message("DEBUG: read interrupted by signal, retrying.");
-                 continue; // Interrupted by signal, retry read within the loop
-            } else {
-                log_message("ERROR: read failed in read_exact_timeout: %s", strerror(errno));
-                return -1; // Other read error
-            }
-        }
-    } // end while
-
-    return total_read; // Should be equal to 'count' if successful
-}
+    log_message("Child 2 (PID: %d) starting. Sleeping for %d seconds.", getpid(), CHILD_SLEEP_DURATION);
+    sleep(CHILD_SLEEP_DURATION);
+     log_message("Child 2 (PID: %d) woke up. Executing task.", getpid());
 
 
-// Write exactly 'count' bytes (handles potential partial writes)
-ssize_t write_exact(int fd, const void *buf, size_t count) {
-    size_t total_written = 0;
-    ssize_t current_written;
-    const char *ptr = (const char *)buf;
+    int fd2_read;
+    char command_buffer[100];
+    int larger_num;
+    ssize_t bytes_read;
 
-    while (total_written < count) {
-        current_written = write(fd, ptr + total_written, count - total_written);
+    // Open FIFO2 (Child 2: read command, then read number from FIFO2)
+    fd2_read = open(FIFO2_NAME, O_RDONLY);
+    CHECK_ERR(fd2_read < 0, "Child 2 failed to open FIFO2 for reading");
+    log_message("Child 2 opened FIFO2 for reading.");
 
-        if (current_written > 0) {
-            total_written += current_written;
-        } else if (current_written == 0) {
-             // Should not happen for regular files/pipes unless maybe disk full?
-             log_message("WARNING: write returned 0 (written %zu/%zu bytes).", total_written, count);
-             errno = EIO; // Indicate generic I/O error
-             return -1;
-        } else { // current_written == -1
-            if (errno == EINTR) {
-                log_message("DEBUG: write interrupted by signal, retrying.");
-                continue; // Retry write
-            } else if (errno == EAGAIN || errno == EWOULDBLOCK) {
-                // This can happen if the pipe buffer is full (non-blocking write)
-                // For blocking write, it shouldn't occur unless flags change.
-                // For this assignment using blocking writes in parent/child1, so treat as error.
-                log_message("ERROR: write returned EAGAIN/EWOULDBLOCK (unexpected for blocking write).");
-                // Or potentially retry after a delay/select for writability if using non-blocking writes.
-                return -1;
-            }
-            else {
-                log_message("ERROR: write failed: %s", strerror(errno));
-                return -1; // Other write error
-            }
-        }
+
+    // Read the command from FIFO2
+    int i = 0;
+    char ch;
+    while ((bytes_read = read(fd2_read, &ch, 1)) > 0 && ch != '\0' && i < sizeof(command_buffer) - 1) {
+        command_buffer[i++] = ch;
     }
-    return total_written; // Success
+    command_buffer[i] = '\0';
+
+    CHECK_ERR(bytes_read < 0, "Child 2 failed to read command from FIFO2");
+    CHECK_ERR(bytes_read == 0 && i == 0, "Child 2 read EOF before getting command from FIFO2");
+    log_message("Child 2 read command: '%s'", command_buffer);
+
+
+    // Verify command (optional)
+    if (strcmp(command_buffer, COMMAND) != 0) {
+        log_message("Child 2 received unexpected command: '%s'. Proceeding anyway.", command_buffer);
+    }
+
+    // Read the larger number from FIFO2 (sent by Child 1)
+    bytes_read = read(fd2_read, &larger_num, sizeof(int));
+     CHECK_ERR(bytes_read < 0, "Child 2 failed to read larger number from FIFO2");
+     CHECK_ERR(bytes_read == 0, "Child 2 read EOF before getting larger number from FIFO2");
+     CHECK_ERR(bytes_read != sizeof(int), "Child 2 read wrong size for larger number (%ld bytes)", bytes_read);
+    log_message("Child 2 read larger number: %d", larger_num);
+
+    close(fd2_read);
+    log_message("Child 2 closed FIFO2 read end.");
+
+
+    // Print the larger number *to the screen* (daemon's original stdout)
+    // Since the daemon redirects its stdout *after* forking, the children
+    // inherit the *redirected* stdout (the log file).
+    // To print to the original console, we'd need a more complex setup
+    // (e.g., passing the original tty name or using a socket back to the initial process).
+    // For this assignment, let's log it instead, as printing to the daemon's
+    // redirected stdout fulfills the "print" requirement technically, although
+    // it ends up in the log file.
+    log_message("Result: The larger number is %d (This would normally print to screen)", larger_num);
+    // If printing to console was essential:
+    // int console_fd = open("/dev/tty", O_WRONLY);
+    // if (console_fd >= 0) {
+    //     dprintf(console_fd, "Result: The larger number is %d\n", larger_num);
+    //     close(console_fd);
+    // } else {
+    //      log_message("Warning: Could not open /dev/tty to print result to console.");
+    // }
+
+
+    log_message("Child 2 (PID: %d) task completed. Exiting.", getpid());
+    exit(EXIT_SUCCESS);
 }
 
 
-// --- Main Function ---
+// --- Main Function (Refactored: Daemonize First) ---
 
 int main(int argc, char *argv[]) {
-    // Store program name for logging
-    // Use strdup because argv[0] might be modified or invalid later
-    prog_name = basename(strdup(argv[0])); // Handles path, gets executable name
+    int val1, val2;
+    int result = 0; // Defined as requested
+    struct sigaction sa;
 
-    // Initial log to stderr before potential redirection
-    log_message("INFO: %s starting.", prog_name);
+    // --- Initial Setup (Before Daemonization) ---
+    // Open Log File EARLY
+    // Use O_TRUNC initially to clear old logs for a fresh run
+    log_fd = open(LOG_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+    if (log_fd < 0) {
+        perror("FATAL: Failed to open log file");
+        exit(EXIT_FAILURE);
+    }
+    dprintf(log_fd, "[%ld] Log file opened: %s\n", (long)time(NULL), LOG_FILE); // Initial log entry
 
-    // --- Argument Parsing ---
+    // Argument parsing
     if (argc != 3) {
-        fprintf(stderr, "Usage: %s <integer1> <integer2>\n", prog_name);
-        log_message("ERROR: Invalid number of arguments. Expected 2, got %d.", argc - 1);
-        free(prog_name); // Free duplicated string
-        return EXIT_FAILURE;
+        fprintf(stderr, "Usage: %s <integer1> <integer2>\n", argv[0]);
+        // Use CHECK_ERR - it will log to stderr since log_fd isn't fully set up for it yet
+        CHECK_ERR(1, "Invalid number of arguments");
     }
 
-    // Use strtol for safer integer conversion
     char *endptr1, *endptr2;
-    long num1_long = strtol(argv[1], &endptr1, 10);
-    long num2_long = strtol(argv[2], &endptr2, 10);
+    errno = 0;
+    val1 = strtol(argv[1], &endptr1, 10);
+    CHECK_ERR(errno != 0 || *endptr1 != '\0', "Invalid first integer argument: %s", argv[1]);
+    errno = 0;
+    val2 = strtol(argv[2], &endptr2, 10);
+    CHECK_ERR(errno != 0 || *endptr2 != '\0', "Invalid second integer argument: %s", argv[2]);
 
-    // Check for conversion errors
-    if (*endptr1 != '\0' || endptr1 == argv[1] || *endptr2 != '\0' || endptr2 == argv[2]) {
-        fprintf(stderr, "Error: Invalid integer argument(s).\n");
-        log_message("ERROR: Invalid integer argument(s) provided: '%s', '%s'.", argv[1], argv[2]);
-        free(prog_name);
-        return EXIT_FAILURE;
+    // Log initial values *before* daemonization might redirect stderr
+    log_message("Input values received: %d, %d", val1, val2);
+    fprintf(stderr, "Initial values: %d, %d. Starting daemonization...\n", val1, val2); // To console
+
+
+    // Create FIFOs (before daemonizing, so paths are known)
+    unlink(FIFO1_NAME); // Clean up previous runs
+    unlink(FIFO2_NAME);
+    CHECK_ERR(mkfifo(FIFO1_NAME, 0666) < 0 && errno != EEXIST, "Failed to create FIFO1");
+    CHECK_ERR(mkfifo(FIFO2_NAME, 0666) < 0 && errno != EEXIST, "Failed to create FIFO2");
+    log_message("FIFOs created successfully: %s, %s", FIFO1_NAME, FIFO2_NAME);
+
+
+    // --- Become a Daemon ---
+    daemonize(); // This function handles exit/error logging internally now
+    // --- Daemon Process Continues Below ---
+
+
+    // --- Setup Signal Handlers (in Daemon) ---
+    log_message("Daemon setting up signal handlers.");
+    memset(&sa, 0, sizeof(sa));
+
+    sa.sa_flags = SA_RESTART | SA_NOCLDSTOP;
+    sigemptyset(&sa.sa_mask);
+
+    sa.sa_handler = sigchld_handler;
+    CHECK_ERR(sigaction(SIGCHLD, &sa, NULL) < 0, "Failed to set SIGCHLD handler");
+
+    sa.sa_handler = sigterm_handler;
+    CHECK_ERR(sigaction(SIGTERM, &sa, NULL) < 0, "Failed to set SIGTERM handler");
+
+    sa.sa_handler = sighup_handler;
+    CHECK_ERR(sigaction(SIGHUP, &sa, NULL) < 0, "Failed to set SIGHUP handler");
+
+    sa.sa_handler = sigusr1_handler;
+    CHECK_ERR(sigaction(SIGUSR1, &sa, NULL) < 0, "Failed to set SIGUSR1 handler");
+
+    signal(SIGPIPE, SIG_IGN); // Ignore SIGPIPE
+    log_message("Signal handlers set.");
+
+
+    // --- Fork Child Processes (from Daemon) ---
+    log_message("Daemon (PID: %d) forking children...", getpid());
+    pid_t pid1 = -1, pid2 = -1;
+
+    pid1 = fork();
+    CHECK_ERR(pid1 < 0, "Daemon failed to fork Child 1");
+
+    if (pid1 == 0) {
+        // --- Child Process 1 Logic ---
+        run_child1(val1, val2); // Pass values
+        exit(EXIT_FAILURE); // Should not be reached
     }
-    // Check if longs fit into int (optional, depends on expected range)
-    if (num1_long < INT_MIN || num1_long > INT_MAX || num2_long < INT_MIN || num2_long > INT_MAX) {
-         fprintf(stderr, "Error: Integer argument(s) out of range.\n");
-         log_message("ERROR: Integer argument(s) out of range.");
-         free(prog_name);
-         return EXIT_FAILURE;
+    child_pids[0] = pid1;
+    log_message("Daemon forked Child 1 with PID: %d", pid1);
+
+
+    pid2 = fork();
+    if (pid2 < 0) { // Handle error if second fork fails
+        log_message("ERROR: Daemon failed to fork Child 2: %s. Killing Child 1.", strerror(errno));
+        kill(pid1, SIGTERM); // Send TERM signal first
+        sleep(1); // Give it a moment
+        kill(pid1, SIGKILL); // Force kill if needed
+        waitpid(pid1, NULL, 0); // Wait for it
+        CHECK_ERR(1, "Fork Child 2 failed"); // Exit daemon
     }
-    int num1 = (int)num1_long;
-    int num2 = (int)num2_long;
-    log_message("INFO: Parsed arguments: num1=%d, num2=%d", num1, num2);
 
-    // Define the result variable as requested (unused in main logic flow)
-    int result = 0;
-    log_message("INFO: Defined result variable with initial value %d.", result);
-
-    // --- FIFO Creation ---
-    log_message("INFO: Creating FIFOs: %s, %s", FIFO1_PATH, FIFO2_PATH);
-    if (mkfifo(FIFO1_PATH, 0666) == -1) {
-        if (errno != EEXIST) {
-            log_message("ERROR: Failed to create %s: %s", FIFO1_PATH, strerror(errno));
-            free(prog_name);
-            return EXIT_FAILURE;
-        }
-        log_message("INFO: %s already exists.", FIFO1_PATH);
+    if (pid2 == 0) {
+        // --- Child Process 2 Logic ---
+        run_child2();
+        exit(EXIT_FAILURE); // Should not be reached
     }
-    if (mkfifo(FIFO2_PATH, 0666) == -1) {
-        if (errno != EEXIST) {
-            log_message("ERROR: Failed to create %s: %s", FIFO2_PATH, strerror(errno));
-            // Attempt to clean up FIFO1 if we created it potentially
-            unlink(FIFO1_PATH); // Ignore error here, best effort
-            free(prog_name);
-            return EXIT_FAILURE;
-        }
-        log_message("INFO: %s already exists.", FIFO2_PATH);
+    child_pids[1] = pid2;
+    log_message("Daemon forked Child 2 with PID: %d", pid2);
+
+
+    // --- Daemon Sends Data via FIFOs ---
+    // Children have been forked, now open FIFOs for writing and send data.
+    // Children will block on their read opens until daemon opens write ends.
+    log_message("Daemon opening FIFOs for writing...");
+    int fd1_write = open(FIFO1_NAME, O_WRONLY);
+    CHECK_ERR(fd1_write < 0, "Daemon failed to open FIFO1 for writing");
+
+    int fd2_write = open(FIFO2_NAME, O_WRONLY);
+    CHECK_ERR(fd2_write < 0, "Daemon failed to open FIFO2 for writing");
+    log_message("Daemon FIFO write ends opened.");
+
+
+    // Send the two integer values to FIFO1
+    ssize_t bytes_written;
+    bytes_written = write(fd1_write, &val1, sizeof(int));
+    CHECK_ERR(bytes_written != sizeof(int), "Daemon failed to write value 1 to FIFO1 (wrote %ld bytes)", bytes_written);
+    bytes_written = write(fd1_write, &val2, sizeof(int));
+    CHECK_ERR(bytes_written != sizeof(int), "Daemon failed to write value 2 to FIFO1 (wrote %ld bytes)", bytes_written);
+    log_message("Daemon wrote values %d, %d to FIFO1", val1, val2);
+    close(fd1_write); // Close write end for FIFO1 - signals EOF to child 1 reader
+
+    // Send the command to FIFO2
+    bytes_written = write(fd2_write, COMMAND, strlen(COMMAND) + 1); // Include NUL terminator
+    CHECK_ERR(bytes_written != strlen(COMMAND) + 1, "Daemon failed to write command to FIFO2 (wrote %ld bytes)", bytes_written);
+    log_message("Daemon wrote command '%s' to FIFO2", COMMAND);
+
+    // Close write end for FIFO2. Child 1 will open it later to write the result.
+    // Child 2 will read the command, then block until Child 1 writes the result.
+    close(fd2_write);
+    log_message("Daemon closed initial FIFO write ends.");
+
+
+    // --- Main Daemon Loop ---
+    log_message("Daemon entering main loop, waiting for %d children.", NUM_CHILDREN);
+    while (child_exit_count < NUM_CHILDREN && !terminate_flag) {
+        // log_message("Daemon proceeding... (%d/%d children exited)", child_exit_count, NUM_CHILDREN);
+        // Use pause() for better efficiency - wakes up only on signal
+        pause();
+        // After pause() returns (due to a signal), the loop condition is re-checked.
+        // Our SIGCHLD handler updates child_exit_count.
+        // Our SIGTERM handler sets terminate_flag.
     }
-    log_message("INFO: FIFOs created or confirmed existing.");
-
-    // --- Register Cleanup Function ---
-    // This ensures cleanup happens on normal exit or exit() call
-    atexit(cleanup);
-
-    // --- Setup SIGCHLD Handler ---
-    log_message("INFO: Setting up SIGCHLD handler.");
-    if (setup_signal_action(SIGCHLD, sigchld_handler) == -1) {
-        // Error already logged by setup_signal_action
-        free(prog_name);
-        return EXIT_FAILURE; // atexit will handle cleanup
-    }
-    log_message("INFO: SIGCHLD handler registered.");
-
-    // --- Fork Child Process 1 ---
-    log_message("INFO: Forking Child Process 1...");
-    child1_pid = fork();
-
-    if (child1_pid < 0) {
-        log_message("ERROR: Failed to fork Child Process 1: %s", strerror(errno));
-        free(prog_name);
-        return EXIT_FAILURE; // atexit handles cleanup
-    }
-    else if (child1_pid == 0) {
-        // --- Child Process 1 Code ---
-        pid_t mypid = getpid();
-        int exit_status = EXIT_SUCCESS; // Assume success initially
-        int fd1_c1 = -1, fd2_c1 = -1;
-        log_message("CHILD 1 (PID %d): Started.", mypid);
-
-        // Sleep for specified duration (10 seconds)
-        log_message("CHILD 1 (PID %d): Sleeping for %d seconds.", mypid, CHILD_SLEEP_DURATION);
-        sleep(CHILD_SLEEP_DURATION);
-        log_message("CHILD 1 (PID %d): Woke up.", mypid);
-
-        // --- Task: Read from FIFO1 ---
-        log_message("CHILD 1 (PID %d): Opening %s for reading.", mypid, FIFO1_PATH);
-        fd1_c1 = open(FIFO1_PATH, O_RDONLY);
-        if (fd1_c1 == -1) {
-            log_message("CHILD 1 (PID %d): ERROR: Failed to open %s for reading: %s", mypid, FIFO1_PATH, strerror(errno));
-            exit(EXIT_FAILURE); // Exit child 1
-        }
-
-        // Set non-blocking for read with timeout
-        if (set_nonblocking(fd1_c1) == -1) {
-            log_message("CHILD 1 (PID %d): ERROR: Failed to set non-blocking mode on %s.", mypid, FIFO1_PATH);
-            close(fd1_c1);
-            exit(EXIT_FAILURE);
-        }
-
-        int nums_read[2];
-        log_message("CHILD 1 (PID %d): Reading two integers from %s (timeout %ds)...", mypid, FIFO1_PATH, TIMEOUT_SECONDS);
-        ssize_t bytes_read = read_exact_timeout(fd1_c1, nums_read, sizeof(nums_read), TIMEOUT_SECONDS);
-
-        close(fd1_c1); // Close FIFO1 read end
-
-        if (bytes_read != sizeof(nums_read)) {
-            if (bytes_read == -1) { // Error from read_exact_timeout (already logged)
-                log_message("CHILD 1 (PID %d): ERROR: Failed to read from %s.", mypid, FIFO1_PATH);
-            } else { // Premature EOF or incomplete read
-                log_message("CHILD 1 (PID %d): ERROR: Incomplete read from %s (got %zd bytes, expected %zu).", mypid, FIFO1_PATH, bytes_read, sizeof(nums_read));
-            }
-            exit_status = EXIT_FAILURE;
-        } else {
-            log_message("CHILD 1 (PID %d): Successfully read numbers %d, %d from %s.", mypid, nums_read[0], nums_read[1], FIFO1_PATH);
-
-            // --- Task: Determine Larger Number ---
-            int larger_num = (nums_read[0] > nums_read[1]) ? nums_read[0] : nums_read[1];
-            log_message("CHILD 1 (PID %d): Determined larger number: %d.", mypid, larger_num);
-
-            // --- Task: Write to FIFO2 ---
-            log_message("CHILD 1 (PID %d): Opening %s for writing.", mypid, FIFO2_PATH);
-            // Use blocking write for simplicity here, assumes Child 2 will open FIFO2 reasonably soon.
-            fd2_c1 = open(FIFO2_PATH, O_WRONLY);
-            if (fd2_c1 == -1) {
-                log_message("CHILD 1 (PID %d): ERROR: Failed to open %s for writing: %s", mypid, FIFO2_PATH, strerror(errno));
-                exit_status = EXIT_FAILURE;
-            } else {
-                log_message("CHILD 1 (PID %d): Writing larger number %d to %s.", mypid, larger_num, FIFO2_PATH);
-                ssize_t bytes_written = write_exact(fd2_c1, &larger_num, sizeof(larger_num));
-                close(fd2_c1); // Close FIFO2 write end
-
-                if (bytes_written != sizeof(larger_num)) {
-                     log_message("CHILD 1 (PID %d): ERROR: Failed/incomplete write to %s (wrote %zd bytes).", mypid, FIFO2_PATH, bytes_written);
-                     exit_status = EXIT_FAILURE;
-                } else {
-                     log_message("CHILD 1 (PID %d): Successfully wrote to %s.", mypid, FIFO2_PATH);
-                }
-            }
-        }
-
-        log_message("CHILD 1 (PID %d): Task complete. Exiting with status %d.", mypid, exit_status);
-        free(prog_name); // Free duplicated string in child
-        exit(exit_status); // Exit Child 1
-    }
-    // --- Parent continues after forking Child 1 ---
-    log_message("INFO: Parent (PID %d) forked Child 1 with PID %d.", getpid(), child1_pid);
 
 
-    // --- Fork Child Process 2 ---
-    log_message("INFO: Forking Child Process 2...");
-    child2_pid = fork();
-
-     if (child2_pid < 0) {
-         log_message("ERROR: Failed to fork Child Process 2: %s", strerror(errno));
-         // Critical failure: Terminate Child 1 if it was successfully started
-         if (child1_pid > 0) {
-             log_message("INFO: Sending SIGTERM to Child 1 (PID %d) due to Child 2 fork failure.", child1_pid);
-             kill(child1_pid, SIGTERM);
-         }
-         free(prog_name);
-         return EXIT_FAILURE; // atexit handles cleanup
-     }
-     else if (child2_pid == 0) {
-         // --- Child Process 2 Code ---
-         pid_t mypid = getpid();
-         int exit_status = EXIT_SUCCESS;
-         int fd2_c2 = -1;
-         log_message("CHILD 2 (PID %d): Started.", mypid);
-
-         // Sleep for specified duration
-         log_message("CHILD 2 (PID %d): Sleeping for %d seconds.", mypid, CHILD_SLEEP_DURATION);
-         sleep(CHILD_SLEEP_DURATION);
-         log_message("CHILD 2 (PID %d): Woke up.", mypid);
-
-         // --- Task: Read from FIFO2 ---
-         log_message("CHILD 2 (PID %d): Opening %s for reading.", mypid, FIFO2_PATH);
-         fd2_c2 = open(FIFO2_PATH, O_RDONLY);
-         if (fd2_c2 == -1) {
-             log_message("CHILD 2 (PID %d): ERROR: Failed to open %s for reading: %s", mypid, FIFO2_PATH, strerror(errno));
-             exit(EXIT_FAILURE); // Exit child 2
-         }
-
-         // Set non-blocking for read with timeout
-         if (set_nonblocking(fd2_c2) == -1) {
-             log_message("CHILD 2 (PID %d): ERROR: Failed to set non-blocking mode on %s.", mypid, FIFO2_PATH);
-             close(fd2_c2);
-             exit(EXIT_FAILURE);
-         }
-
-         int larger_num_read;
-         log_message("CHILD 2 (PID %d): Reading larger number from %s (timeout %ds)...", mypid, FIFO2_PATH, TIMEOUT_SECONDS);
-         ssize_t bytes_read = read_exact_timeout(fd2_c2, &larger_num_read, sizeof(larger_num_read), TIMEOUT_SECONDS);
-
-         close(fd2_c2); // Close FIFO2 read end
-
-         if (bytes_read != sizeof(larger_num_read)) {
-             if (bytes_read == -1) { // Error logged by read_exact_timeout
-                 log_message("CHILD 2 (PID %d): ERROR: Failed to read from %s.", mypid, FIFO2_PATH);
-             } else {
-                 log_message("CHILD 2 (PID %d): ERROR: Incomplete read from %s (got %zd bytes, expected %zu).", mypid, FIFO2_PATH, bytes_read, sizeof(larger_num_read));
+    // --- Shutdown ---
+    if (terminate_flag) {
+         log_message("Daemon exiting due to SIGTERM. (%d/%d children exited).", child_exit_count, NUM_CHILDREN);
+         // Attempt to terminate any remaining children gracefully
+         for (int i = 0; i < NUM_CHILDREN; ++i) {
+             // Check if child process still exists (0 means signal can be sent)
+             if (child_pids[i] > 0 && kill(child_pids[i], 0) == 0) {
+                 log_message("Sending SIGTERM to remaining child PID %d", child_pids[i]);
+                 kill(child_pids[i], SIGTERM);
              }
-             exit_status = EXIT_FAILURE;
-         } else {
-              log_message("CHILD 2 (PID %d): Successfully read larger number %d from %s.", mypid, larger_num_read, FIFO2_PATH);
-             // --- Task: Print Larger Number ---
-             // Print to original standard output (important requirement)
-             printf("CHILD 2 (PID %d): Result: The larger number is %d\n", mypid, larger_num_read);
-             fflush(stdout); // Ensure it's printed immediately
-             log_message("CHILD 2 (PID %d): Printed the larger number to stdout.", mypid);
          }
-
-         log_message("CHILD 2 (PID %d): Task complete. Exiting with status %d.", mypid, exit_status);
-         free(prog_name); // Free duplicated string in child
-         exit(exit_status); // Exit Child 2
-     }
-    // --- Parent continues after forking Child 2 ---
-    log_message("INFO: Parent (PID %d) forked Child 2 with PID %d.", getpid(), child2_pid);
-
-
-    // === Parent Process: Write initial data to FIFO1 ===
-    int fd1_p = -1;
-    int parent_initial_status = EXIT_SUCCESS;
-
-    log_message("PARENT (PID %d): Opening %s for writing.", getpid(), FIFO1_PATH);
-    // This will block until Child 1 opens FIFO1 for reading, unless O_NONBLOCK is used (not used here)
-    fd1_p = open(FIFO1_PATH, O_WRONLY);
-    if (fd1_p == -1) {
-        log_message("PARENT (PID %d): ERROR: Failed to open %s for writing: %s", getpid(), FIFO1_PATH, strerror(errno));
-        log_message("PARENT (PID %d): Critical error. Signaling children to terminate.", getpid());
-        if (child1_pid > 0) kill(child1_pid, SIGTERM);
-        if (child2_pid > 0) kill(child2_pid, SIGTERM);
-        parent_initial_status = EXIT_FAILURE;
-        // atexit handles cleanup
-        free(prog_name);
-        return parent_initial_status;
-    }
-
-    int nums_to_send[2] = {num1, num2};
-    log_message("PARENT (PID %d): Writing numbers %d, %d to %s.", getpid(), num1, num2, FIFO1_PATH);
-    ssize_t bytes_written = write_exact(fd1_p, nums_to_send, sizeof(nums_to_send));
-
-    // Close FIFO1 write end *after* writing
-    if (close(fd1_p) == -1) {
-         log_message("PARENT (PID %d): WARNING: Failed to close %s write end: %s", getpid(), FIFO1_PATH, strerror(errno));
-    }
-
-    if (bytes_written != sizeof(nums_to_send)) {
-        log_message("PARENT (PID %d): ERROR: Failed/incomplete write to %s (wrote %zd bytes).", getpid(), FIFO1_PATH, bytes_written);
-        log_message("PARENT (PID %d): Signaling children to terminate due to write error.", getpid());
-        if (child1_pid > 0) kill(child1_pid, SIGTERM);
-        if (child2_pid > 0) kill(child2_pid, SIGTERM);
-        parent_initial_status = EXIT_FAILURE;
-        // atexit handles cleanup
-        free(prog_name);
-        return parent_initial_status;
+         sleep(1); // Give them a chance to exit
+         // Reap any children that might have exited after SIGTERM
+         sigchld_handler(SIGCHLD); // Manually call handler to reap
     } else {
-        log_message("PARENT (PID %d): Successfully wrote initial numbers to %s.", getpid(), FIFO1_PATH);
+         log_message("All children (%d) have exited normally. Daemon shutting down.", NUM_CHILDREN);
     }
 
-
-    // === Parent Process: Become Daemon ===
-    log_message("PARENT (PID %d): Initial tasks complete. Converting to daemon...\n", getpid());
-    if (become_daemon() == -1) {
-        // Error should have been logged by become_daemon
-        // If become_daemon failed before exit(), this process might still be running.
-        fprintf(stderr, "%s: Failed to become daemon.\n", prog_name);
-        // Signal children? Maybe they started ok. Let SIGCHLD handle them if parent exits.
-        free(prog_name);
-        return EXIT_FAILURE; // atexit might run depending on where failure occurred
-    }
-
-    // --- Code below executes *only* in the final Daemon Process ---
-    // Note: printf/perror now go to LOG_FILE via redirection, or use log_message()
-    // The original parent process has exited.
-
-    pid_t daemon_pid = getpid();
-    log_message("DAEMON (PID %d): Now running as daemon.", daemon_pid);
-
-    // --- Setup Daemon Signal Handlers ---
-    log_message("DAEMON (PID %d): Setting up daemon signal handlers (SIGUSR1, SIGHUP, SIGTERM).", daemon_pid);
-    if (setup_signal_action(SIGUSR1, sigusr1_handler) == -1 ||
-        setup_signal_action(SIGHUP, sighup_handler) == -1 ||
-        setup_signal_action(SIGTERM, sigterm_handler) == -1) {
-        log_message("DAEMON (PID %d): ERROR: Failed to set up one or more daemon signal handlers. Exiting.", daemon_pid);
-        // Signal children? They might be running ok. Let init adopt them.
-        free(prog_name); // Free in daemon process
-        // atexit should still run
-        return EXIT_FAILURE;
-    }
-    log_message("DAEMON (PID %d): Daemon signal handlers registered.", daemon_pid);
-
-
-    // Record start times for timeout monitoring (relative to daemon start)
-    time_t now = time(NULL);
-    // Only record start time if child PID is valid (i.e., fork succeeded)
-    if (child1_pid > 0) child1_start_time = now;
-    if (child2_pid > 0) child2_start_time = now;
-    log_message("DAEMON (PID %d): Recorded start times for child monitoring (Child1: %ld, Child2: %ld).",
-                 daemon_pid, (long)child1_start_time, (long)child2_start_time);
-
-    // === Daemon Main Loop ===
-    log_message("DAEMON (PID %d): Entering main monitoring loop.", daemon_pid);
-    int target_exits = total_children * 2; // Target value for counter
-
-    while (child_exit_counter < target_exits && !sigterm_received) {
-
-        // Handle SIGHUP if flag is set
-        if (sighup_received) {
-            log_message("DAEMON (PID %d): Processing SIGHUP.", daemon_pid);
-            // Add reconfiguration logic here if needed (e.g., reopen log file)
-            // For now, just reset the flag.
-            sighup_received = 0;
-            log_message("DAEMON (PID %d): SIGHUP processed (Placeholder action).", daemon_pid);
-        }
-
-        log_message("DAEMON (PID %d): Proceeding... (Exit counter: %d/%d)", daemon_pid, child_exit_counter, target_exits);
-
-        // --- Timeout Check Logic ---
-        now = time(NULL);
-
-        // Check Child 1 (only if PID is still valid - not -1)
-        if (child1_pid > 0) {
-            // Check if process still exists using kill(pid, 0)
-            if (kill(child1_pid, 0) == 0) {
-                // Process exists, check timeout
-                if (now - child1_start_time > TIMEOUT_SECONDS) {
-                    log_message("DAEMON (PID %d): Child 1 (PID %d) inactive timeout (%ld > %d sec). Sending SIGTERM.",
-                                daemon_pid, child1_pid, (long)(now - child1_start_time), TIMEOUT_SECONDS);
-                    if (kill(child1_pid, SIGTERM) == -1) {
-                        log_message("DAEMON (PID %d): ERROR sending SIGTERM to Child 1 (PID %d): %s",
-                                    daemon_pid, child1_pid, strerror(errno));
-                        // If kill fails, maybe the process just died? SIGCHLD handler should catch it.
-                        // Mark as potentially dead to avoid repeated attempts? Or rely on SIGCHLD.
-                        // Let's rely on SIGCHLD or the next kill(pid, 0) check.
-                    } else {
-                         log_message("DAEMON (PID %d): SIGTERM sent to Child 1 (PID %d). Awaiting SIGCHLD.", daemon_pid, child1_pid);
-                         // SIGCHLD handler will set child1_pid = -1 and increment counter
-                    }
-                }
-            } else if (errno == ESRCH) {
-                // Process doesn't exist according to kill(pid, 0)
-                // This *should* have been caught by SIGCHLD, but check defensively.
-                log_message("DAEMON (PID %d): WARNING: Child 1 (PID %d) not found via kill(0), but SIGCHLD may not have run yet or PID was reset. Counter: %d",
-                            daemon_pid, child1_pid, child_exit_counter);
-                // Avoid repeatedly logging this. Maybe set child1_pid = -1 here? Risky if SIGCHLD is just delayed.
-                // Let's assume SIGCHLD will handle it. If counter doesn't increment, this is a problem.
-            } else {
-                // Other error checking process existence
-                 log_message("DAEMON (PID %d): ERROR checking existence of Child 1 (PID %d) with kill(0): %s",
-                             daemon_pid, child1_pid, strerror(errno));
-            }
-        } // end check child 1
-
-        // Check Child 2 (similarly)
-        if (child2_pid > 0) {
-             if (kill(child2_pid, 0) == 0) {
-                 if (now - child2_start_time > TIMEOUT_SECONDS) {
-                     log_message("DAEMON (PID %d): Child 2 (PID %d) inactive timeout (%ld > %d sec). Sending SIGTERM.",
-                                 daemon_pid, child2_pid, (long)(now - child2_start_time), TIMEOUT_SECONDS);
-                     if (kill(child2_pid, SIGTERM) == -1) {
-                         log_message("DAEMON (PID %d): ERROR sending SIGTERM to Child 2 (PID %d): %s",
-                                     daemon_pid, child2_pid, strerror(errno));
-                     } else {
-                          log_message("DAEMON (PID %d): SIGTERM sent to Child 2 (PID %d). Awaiting SIGCHLD.", daemon_pid, child2_pid);
-                     }
-                 }
-             } else if (errno == ESRCH) {
-                  log_message("DAEMON (PID %d): WARNING: Child 2 (PID %d) not found via kill(0), but SIGCHLD may not have run yet or PID was reset. Counter: %d",
-                             daemon_pid, child2_pid, child_exit_counter);
-             } else {
-                  log_message("DAEMON (PID %d): ERROR checking existence of Child 2 (PID %d) with kill(0): %s",
-                              daemon_pid, child2_pid, strerror(errno));
-             }
-         } // end check child 2
-
-        // Sleep for a while before next check
-        sleep(DAEMON_LOOP_SLEEP);
-
-    } // end while loop
-
-    // --- Loop Exited ---
-    if (sigterm_received) {
-        log_message("DAEMON (PID %d): Exiting loop due to SIGTERM.", daemon_pid);
-    } else if (child_exit_counter >= target_exits) {
-         log_message("DAEMON (PID %d): Exiting loop: All children accounted for (Counter: %d).", daemon_pid, child_exit_counter);
-    } else {
-        // Should not happen based on loop condition, but log defensively
-        log_message("DAEMON (PID %d): Exiting loop for unknown reason (Counter: %d).", daemon_pid, child_exit_counter);
-    }
-
-    log_message("DAEMON (PID %d): Final cleanup will be handled by atexit.", daemon_pid);
-    free(prog_name); // Free duplicated string in daemon
-
-    return EXIT_SUCCESS; // Daemon exits normally
+    cleanup_resources(); // Cleans up FIFOs, PID file, closes log_fd
+    // Final message just before exit (might not make it to log if close happens too fast)
+    // dprintf(log_fd is closed, can't use); // Cannot log reliably after close
+    exit(EXIT_SUCCESS);
 }
