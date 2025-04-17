@@ -14,8 +14,8 @@
 /* -------------------- constants & helpers ------------------------- */
 #define NUM_ENGINEERS          3
 #define CONNECTION_WINDOW_MS   5000
-#define PROCESS_TIME_MIN_MS    1500
-#define PROCESS_TIME_MAX_MS    3000
+#define PROCESS_TIME_MIN_MS    4000
+#define PROCESS_TIME_MAX_MS    9000
 
 /* fast itoa (positive only, we never pass negatives) */
 static int u32_to_str(unsigned v, char *buf) {
@@ -74,11 +74,11 @@ static volatile int    stopEngineers = 0;
 /* priority‑ordered linked‑list helpers */
 static void queue_push(Request *r)
 {
-    if (!queueHead || queueHead->priority < r->priority) {
+    if (!queueHead || queueHead->priority >= r->priority) {
         r->next = queueHead; queueHead = r; return;
     }
     Request *c = queueHead;
-    while (c->next && c->next->priority >= r->priority) c = c->next;
+    while (c->next && c->next->priority < r->priority) c = c->next;
     r->next = c->next; c->next = r;
 }
 static Request* queue_pop(void)

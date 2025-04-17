@@ -1,4 +1,3 @@
-# -------------------- Makefile ---------------------------------------
 CC      := gcc
 CFLAGS  := -Wall -Wextra -pedantic -std=c11 -pthread -O2
 LDFLAGS := -pthread
