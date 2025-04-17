@@ -1,7 +1,3 @@
-/***********************************************************************
- *  hw3  – satellite ground‑station simulation (pure C, no stdio.h)
- *         *** corrected version – 17‑Apr‑2025 ***
- **********************************************************************/
 #define _POSIX_C_SOURCE 200809L   /* clock_gettime(), sem_timedwait() */
 #include <stdlib.h>
 #include <unistd.h>
@@ -70,6 +66,7 @@ static Request        *queueHead  = NULL;          /* linked list (prio order) *
 static pthread_mutex_t queueLock  = PTHREAD_MUTEX_INITIALIZER;
 static sem_t           newRequest;
 static volatile int    stopEngineers = 0;
+static int             availableEngineers = NUM_ENGINEERS;
 
 /* priority‑ordered linked‑list helpers */
 static void queue_push(Request *r)
@@ -127,6 +124,8 @@ static void* engineer(void *arg)
 
         pthread_mutex_lock(&queueLock);
         Request *req = queue_pop();
+        if (req && !req->aborted)
+            --availableEngineers;
         pthread_mutex_unlock(&queueLock);
         if (!req) continue;          /* could wake spuriously */
 
@@ -145,6 +144,9 @@ static void* engineer(void *arg)
         usleep((useconds_t)dur * 1000);
 
         log_finished(eng, req->id);
+        pthread_mutex_lock(&queueLock);
+        ++availableEngineers;
+        pthread_mutex_unlock(&queueLock);
         sem_destroy(&req->handled);
         free(req);
     }
@@ -181,6 +183,15 @@ int main(int argc, char **argv)
     stopEngineers = 1;
     for (int i=0;i<NUM_ENGINEERS;i++) sem_post(&newRequest);
     for (int i=0;i<NUM_ENGINEERS;i++) pthread_join(engThread[i], NULL);
+
+    pthread_mutex_lock(&queueLock);
+    while (queueHead) {
+        Request *tmp = queueHead;
+        queueHead = queueHead->next;
+        sem_destroy(&tmp->handled);
+        free(tmp);
+    }
+    pthread_mutex_unlock(&queueLock);
 
     free(satThread); free(satId);
     sem_destroy(&newRequest);
