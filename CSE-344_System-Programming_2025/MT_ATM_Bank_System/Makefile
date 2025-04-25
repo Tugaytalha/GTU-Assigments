@@ -1,22 +1,15 @@
-CC      = cc
-CFLAGS  = -std=c17 -Wall -Wextra -pedantic -O2 -fsanitize=address,undefined
-LDFLAGS = -pthread -lrt
-
-OBJ_SRV = server.o teller.o
-OBJ_CL  = client.o
+CC      = gcc
+CFLAGS  = -std=c99 -Wall -Wextra -pedantic
+LDFLAGS = -pthread                    # pthread needed by POSIX semaphores
 
 all: BankServer BankClient
 
-BankServer: $(OBJ_SRV)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+BankServer: bank_server.c teller.c teller_actions.c common.h teller.h
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-BankClient: $(OBJ_CL)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
-
-%.o: %.c bank_common.h teller.h
-	$(CC) $(CFLAGS) -c $<
+BankClient: bank_client.c common.h
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
 clean:
-	rm -f *.o BankServer BankClient AdaBank.bankLog /tmp/bankcli_* /tmp/SRV_FIFO
-
+	rm -f BankServer BankClient AdaBank*.bankLog AdaBankFIFO *.o
 .PHONY: all clean
