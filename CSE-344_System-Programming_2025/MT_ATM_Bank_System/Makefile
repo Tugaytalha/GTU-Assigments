@@ -1,49 +1,51 @@
-CC = gcc
-CFLAGS = -Wall -g -pthread
-LDFLAGS = -lrt
+#–––– compiler & flags ––––
+CC      ?= gcc                # override on the CLI if you prefer clang
+CFLAGS  := -Wall -Wextra -pedantic -std=c11 -Iinclude
+LDFLAGS := -pthread
+LDLIBS_SERVER := -lrt         # POSIX shm / semaphores
 
-# Primary targets
-all: bank_server bank_client advanced_server
+#–––– source files ––––
+SRC_SERVER := src/bank_server.c src/teller.c src/teller_lib.c src/utils.c
+SRC_CLIENT := src/bank_client.c src/utils.c
 
-# Standard version
-bank_server: bank_server.o
-	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+OBJ_SERVER := $(SRC_SERVER:.c=.o)
+OBJ_CLIENT := $(SRC_CLIENT:.c=.o)
 
-bank_client: bank_client.o
-	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+BIN_SERVER := bank_server
+BIN_CLIENT := bank_client
 
-# Advanced version with shared memory and semaphores
-advanced_server: advanced_server.o
-	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
+.PHONY: all server client clean run valgrind test
 
-# Object files
-bank_server.o: bank_server.c common.h
-	$(CC) $(CFLAGS) -c $<
+all: $(BIN_SERVER) $(BIN_CLIENT)
 
-bank_client.o: bank_client.c common.h
-	$(CC) $(CFLAGS) -c $<
+#–––– linking rules ––––
+$(BIN_SERVER): $(OBJ_SERVER)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS_SERVER)
 
-advanced_server.o: advanced_server.c common.h
-	$(CC) $(CFLAGS) -c $<
+$(BIN_CLIENT): $(OBJ_CLIENT)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-# Clean
+#–––– pattern rule for objects ––––
+src/%.o: src/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+#–––– convenience targets ––––
+run: $(BIN_SERVER) $(BIN_CLIENT)
+	@echo "Starting AdaBank server …"
+	@./$(BIN_SERVER) &                       \
+	SERVER_PID=$$!;                         \
+	sleep 1;                                \
+	echo "→ Running sample clients";        \
+	./$(BIN_CLIENT) tests/client01.file &   \
+	./$(BIN_CLIENT) tests/client02.file &   \
+	wait;                                   \
+	echo "→ Shutting server";               \
+	kill -SIGTERM $$SERVER_PID;             \
+	wait $$SERVER_PID
+
+valgrind: $(BIN_SERVER)
+	valgrind --leak-check=full --show-leak-kinds=all ./$(BIN_SERVER)
+
 clean:
-	rm -f *.o bank_server bank_client advanced_server
-
-# Run targets
-run_server:
-	./bank_server AdaBank ServerFIFO_1
-
-run_advanced:
-	./advanced_server AdaBank ServerFIFO_1
-
-run_client1:
-	./bank_client Client01.file ServerFIFO_1
-
-run_client2:
-	./bank_client Client02.file ServerFIFO_1
-
-run_client3:
-	./bank_client Client03.file ServerFIFO_1
-
-.PHONY: all clean run_server run_advanced run_client1 run_client2 run_client3 
+	$(RM) $(OBJ_SERVER) $(OBJ_CLIENT) $(BIN_SERVER) $(BIN_CLIENT) \
+	       Adabank.fifo AdaBank.bankLog /tmp/adabank_*.fifo
