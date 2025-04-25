@@ -50,8 +50,7 @@ static void log_db(void)
 /* ───────────────── Shared memory setup ───────────────── */
 static ShmRing *ring;
 static sem_t *empty,*full,*mutex;
-
-static int shm_ready = 0;
+static int    shm_ready = 0;
 
 static void shm_sem_init(void)
 {
@@ -65,6 +64,52 @@ static void shm_sem_init(void)
     full  = sem_open(SEM_FULL_NAME ,O_CREAT,0666,0);
     mutex = sem_open(SEM_MUTEX_NAME, O_CREAT, 0666, 1);
     shm_ready = 1;
+}
+
+/* ─────────────────  Helpers  ───────────────── */
+
+/* consume every ready request and wake its Teller */
+static void process_requests(void)
+{
+    if (!shm_ready) return;
+    while (sem_trywait(full) == 0) {          /* 0 ⇒ we just consumed one slot */
+        sem_wait(mutex);
+
+        size_t slot = ring->tail % BUFSZ;
+        BankRequest rq = ring->req[slot];
+
+        BankReply rp = { .status = 0,
+                         .account_id = rq.account_id,
+                         .balance = -1 };
+
+        int idx = (rq.account_id == -1) ? -1 : find_acc(rq.account_id);
+
+        if (rq.op == 'D' || rq.op == 'd') {           /* deposit */
+            if (idx == -1) {                          /* new account */
+                int id = new_account(rq.amount);
+                rp.account_id = id;
+                rp.balance   = rq.amount;
+            } else {
+                db[idx].bal += rq.amount;
+                rp.balance   = db[idx].bal;
+            }
+        } else {                                     /* withdraw */
+            if (idx == -1 || db[idx].bal < rq.amount) {
+                rp.status = -1;       /* insufficient or no such acc */
+            } else {
+                db[idx].bal -= rq.amount;
+                rp.balance   = db[idx].bal;
+                if (db[idx].bal == 0)                 /* close acc */
+                    db[idx] = db[--db_used];
+            }
+        }
+
+        ring->rep[slot] = rp;
+        ring->tail++;
+
+        sem_post(mutex);
+        kill(rq.teller_pid, SIGUSR1);                 /* wake teller */
+    }
 }
 
 /* ───────────────── Clean up ───────────────── */
@@ -104,68 +149,91 @@ int main(int argc,char*argv[])
 
     printf("BankServer AdaBank %s\nAdaBank is active…\n",server_fifo);
 
-    char buf[256];
-    while(!stop){
-        ssize_t n = read(srvfd,buf,sizeof(buf));
-        if (n<=0){ usleep(100000); continue; }
+    char buf[512];
+ while (!stop) {
+        ssize_t n = read(srvfd, buf, sizeof(buf)-1);
+        if (n > 0) {
+            buf[n] = '\0';
 
-        /* expected line: <op> <accountId|'N'> <amount> <clientFIFO> */
-        char op; char idtok[32]; long amt; char fifo[128];
-        buf[n]=0;
-        if (sscanf(buf,"%c %31s %ld %127s",&op,idtok,&amt,fifo)!=4)continue;
-        int acc_id = -1;
-        if (idtok[0]!='N') acc_id = atoi(idtok);
+            /* multiple lines may have arrived at once */
+            char *save = NULL;
+            for (char *line = strtok_r(buf, "\n", &save);
+                 line;
+                 line = strtok_r(NULL, "\n", &save))
+            {
+                char op; char idtok[64]; long amt; char fifo[128];
+                if (sscanf(line, " %c %63s %ld %127s",
+                           &op, idtok, &amt, fifo) != 4)
+                    continue;                       /* malformed */
 
-        extern void launch_teller_process(char,int,long,const char*);
-        launch_teller_process(op,acc_id,amt,fifo);
-    }
+                /* translate account-token */
+                int acc_id = -1;
+                if (idtok[0] == 'N' || idtok[0] == 'n') {
+                    acc_id = -1;
+                } else if (!strncmp(idtok, "BankID_", 7)) {
+                    acc_id = atoi(idtok + 7);
+                } else {
+                    acc_id = atoi(idtok);
+                }
 
+                extern void launch_teller_process(char,int,long,const char*);
+                launch_teller_process(op, acc_id, amt, fifo);
+            }
+        } else {
+            /* no FIFO input – still check for finished requests */
+            usleep(20 * 1000);
+        }
+        process_requests();                           /* NEW – live apply */
+     }
+
+    /* graceful exit: drain the queue once more */
+    process_requests();
     printf("Signal received… shutting down.\n");
     cleanup();
     return 0;
 }
 
 /* ───────────────── Server consumer thread (runs in parent) ─────────── */
-__attribute__((destructor))
-static void ring_consumer(void)
-{
-    if (!shm_ready) return; 
+    __attribute__((destructor))
+    static void ring_consumer(void)
+    {
+        if (!shm_ready) return; 
 
-    /* we run after main, but in same process */
-    while(!stop || sem_trywait(full)==0){
-        sem_wait(full);
-        sem_wait(mutex);
+        /* we run after main, but in same process */
+        while(!stop || sem_trywait(full)==0){
+            sem_wait(full);
+            sem_wait(mutex);
 
-        size_t slot = ring->tail % BUFSZ;
-        BankRequest rq = ring->req[slot];
+            size_t slot = ring->tail % BUFSZ;
+            BankRequest rq = ring->req[slot];
 
-        BankReply rp={.status=0,.account_id=rq.account_id,.balance=-1};
+            BankReply rp={.status=0,.account_id=rq.account_id,.balance=-1};
 
-        int idx = (rq.account_id==-1)?-1:find_acc(rq.account_id);
-        if (rq.op=='D' || rq.op=='d'){
-            if (idx==-1) {                     /* new account */
-                int id=new_account(rq.amount);
-                rp.account_id=id; rp.balance=rq.amount;
-            }else{
-                db[idx].bal+=rq.amount;
-                rp.balance=db[idx].bal;
-            }
-        }else{ /* withdraw */
-            if (idx==-1 || db[idx].bal<rq.amount){
-                rp.status=-1;
-            }else{
-                db[idx].bal-=rq.amount;
-                rp.balance=db[idx].bal;
-                if (db[idx].bal==0){           /* close account */
-                    db[idx]=db[--db_used];
+            int idx = (rq.account_id==-1)?-1:find_acc(rq.account_id);
+            if (rq.op=='D' || rq.op=='d'){
+                if (idx==-1) {                     /* new account */
+                    int id=new_account(rq.amount);
+                    rp.account_id=id; rp.balance=rq.amount;
+                }else{
+                    db[idx].bal+=rq.amount;
+                    rp.balance=db[idx].bal;
+                }
+            }else{ /* withdraw */
+                if (idx==-1 || db[idx].bal<rq.amount){
+                    rp.status=-1;
+                }else{
+                    db[idx].bal-=rq.amount;
+                    rp.balance=db[idx].bal;
+                    if (db[idx].bal==0){           /* close account */
+                        db[idx]=db[--db_used];
+                    }
                 }
             }
-        }
-        ring->rep[slot]=rp;
-        ring->tail++;
+            ring->rep[slot]=rp;
+            ring->tail++;
 
-        sem_post(mutex);
-        /* wake teller */
-        kill(rq.teller_pid,SIGUSR1);
+            sem_post(mutex);
+            /* wake teller */
+            kill(rq.teller_pid,SIGUSR1);
+        }
     }
-}
