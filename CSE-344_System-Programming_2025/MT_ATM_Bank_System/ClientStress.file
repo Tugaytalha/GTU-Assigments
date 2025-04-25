@@ -1,0 +1,12 @@
+N deposit 100
+N deposit 500
+BankID_08 deposit 200
+BankID_09 withdraw 50
+BankID_08 withdraw 300
+BankID_09 deposit 300
+BankID_10 withdraw 600
+N deposit 800
+N withdraw 100
+BankID_12 deposit 400
+BankID_12 withdraw 200
+BankID_12 withdraw 200

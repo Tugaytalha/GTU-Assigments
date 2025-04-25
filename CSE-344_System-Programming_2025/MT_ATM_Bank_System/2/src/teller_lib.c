@@ -1,4 +1,7 @@
-#define _GNU_SOURCE                 /* clone() flags, MAP_STACK …    */
+#ifndef _GNU_SOURCE
+#  define _GNU_SOURCE      /* unlocks strcasestr et al. */
+#endif
+/* clone() flags, MAP_STACK …    */
 
 #include "common.h"
 

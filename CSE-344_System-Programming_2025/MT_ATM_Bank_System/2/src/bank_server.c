@@ -1,4 +1,6 @@
-#define _GNU_SOURCE                 /* for POLLRDHUP, etc.           */
+#ifndef _GNU_SOURCE
+#  define _GNU_SOURCE      /* unlocks strcasestr et al. */
+#endif
 #include "common.h"
 
 #include <stdio.h>

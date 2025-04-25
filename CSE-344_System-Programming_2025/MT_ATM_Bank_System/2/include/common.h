@@ -72,6 +72,13 @@ typedef struct {
     response_t rsp[MAX_SLOTS];
 } shm_bank_t;
 
+typedef struct {
+    shm_bank_t core;                    /* DB + req + rsp         */
+    sem_t      sem_empty[MAX_SLOTS];
+    sem_t      sem_full [MAX_SLOTS];
+} shm_layout_t;
+
+
 /*Process-creation wrappers*/
 /* 100-point requirement wrappers – implemented in teller_lib.c*/
 #ifdef __cplusplus
