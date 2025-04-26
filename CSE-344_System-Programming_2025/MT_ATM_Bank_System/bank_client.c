@@ -51,11 +51,6 @@ int main(int argc, char **argv)
         txn_t t = { .id = -1, .client = getpid() };
         char  op[16];
 
-        say("  ");               /* indent like the sample */
-        if (t.id == -1)
-            say("new client … ");
-        else
-            sayf("Client%02d … ", t.id);
 
 
 
@@ -65,10 +60,17 @@ int main(int argc, char **argv)
                         &t.id, op, &t.amount) != 3)
             continue;                                                  /* bad line */
 
+        
+        t.op = (strncmp(op, "deposit", 7) == 0) ? DEPOSIT : WITHDRAW;
+        
+        say("  ");              
+        if (t.id == -1)
+            say("new client … ");
+        else
+            sayf("Client%02d … ", t.id);
         say(t.op == DEPOSIT ? "depositing " : "withdrawing ");
         sayf("%d credits\n", t.amount);
         
-        t.op = (strncmp(op, "deposit", 7) == 0) ? DEPOSIT : WITHDRAW;
         if (write(fd, &t, sizeof t) != sizeof t)
             perror("write");
     }
