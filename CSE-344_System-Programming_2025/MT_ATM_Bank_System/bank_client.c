@@ -1,4 +1,4 @@
-/* bank_client.c  — minimal tweak: read transactions from a file
+/* bank_client.c  — read transactions from a file
  * Usage:  BankClient  <client-file | ->  <ServerFIFO>
  */
 #include "common.h"
@@ -23,8 +23,11 @@ int main(int argc, char **argv)
 
     /* 1. open the server FIFO for writing */
     int fd = open(srv_fifo, O_WRONLY);
-    if (fd < 0) die("open fifo");
-
+    if (fd < 0) {
+        char buf[128];
+        snprintf(buf, sizeof buf, "Cannot connect %s...", srv_fifo);  /* ← change */
+        die(buf);
+    }
 
     /* 3. unchanged parsing / sending loop ---------------------------- */
     char line[MAX_LINE];
