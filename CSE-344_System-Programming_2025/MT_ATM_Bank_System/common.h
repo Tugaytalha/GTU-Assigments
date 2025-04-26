@@ -40,5 +40,5 @@ typedef struct {
 } shared_t;
 
 /* terse error wrapper */
-static inline void die(const char *msg) { perror(msg); exit(EXIT_FAILURE); }
+static inline void die(const char *msg) { perror(msg); perror("Exiting.."); (EXIT_FAILURE); }
 #endif

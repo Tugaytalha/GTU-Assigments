@@ -37,8 +37,8 @@ int main(int argc, char **argv)
     fifo_name = argv[1];
 
     signal(SIGINT, cleanup);
-    mkfifo(fifo_name, 0666);
     printf("Adabank is activating…");
+    mkfifo(fifo_name, 0666);
     fifo_fd = open(fifo_name, O_RDONLY);
     if (fifo_fd < 0) die("first open the fifo");
     puts("Waiting for client transactions.");

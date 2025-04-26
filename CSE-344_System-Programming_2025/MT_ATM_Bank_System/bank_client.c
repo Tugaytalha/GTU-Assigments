@@ -16,13 +16,15 @@ int main(int argc, char **argv)
     const char *client_path = argv[1];
     const char *srv_fifo    = argv[2];
 
+    /* 2. open the client script (or use stdin if "-" given) */
+    printf("Reading %s\n", client_path);
+    FILE *in = strcmp(client_path, "-") == 0 ? stdin : fopen(client_path, "r");
+    if (!in) die("open client file");
+
     /* 1. open the server FIFO for writing */
     int fd = open(srv_fifo, O_WRONLY);
     if (fd < 0) die("open fifo");
 
-    /* 2. open the client script (or use stdin if "-" given) */
-    FILE *in = strcmp(client_path, "-") == 0 ? stdin : fopen(client_path, "r");
-    if (!in) die("open client file");
 
     /* 3. unchanged parsing / sending loop ---------------------------- */
     char line[MAX_LINE];
