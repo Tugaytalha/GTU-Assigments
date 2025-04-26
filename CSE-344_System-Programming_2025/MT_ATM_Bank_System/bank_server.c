@@ -27,6 +27,9 @@ static void log_accounts(void)
     fclose(f);
 }
 
+/* TODO: Implement our own version of printf() with write, without using stdio.h funtions*/
+
+
 /* ---------- main loop ---------- */
 int main(int argc, char **argv)
 {
@@ -35,10 +38,11 @@ int main(int argc, char **argv)
 
     signal(SIGINT, cleanup);
     mkfifo(fifo_name, 0666);
+    printf("Adabank is activating…");
     fifo_fd = open(fifo_name, O_RDONLY);
-    if (fifo_fd < 0) die("open fifo");
+    if (fifo_fd < 0) die("first open the fifo");
+    puts("Waiting for client transactions.");
 
-    puts("Adabank is active… Waiting for client transactions.");
 
     while (1) {
         txn_t req;

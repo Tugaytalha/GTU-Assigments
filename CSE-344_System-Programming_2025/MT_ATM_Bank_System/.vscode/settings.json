@@ -3,6 +3,7 @@
         "common.h": "c",
         "ctype.h": "c",
         "bank_common.h": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "teller.h": "c"
     }
 }
