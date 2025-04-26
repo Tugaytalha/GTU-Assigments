@@ -1,3 +1,4 @@
+/* teller.c */
 #include "teller.h"
 
 static shared_t *g_shm = NULL;          /* visible to both parent & child */

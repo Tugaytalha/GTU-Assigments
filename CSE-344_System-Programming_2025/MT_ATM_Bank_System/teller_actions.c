@@ -1,3 +1,4 @@
+/* teller_actions.c */
 #include "teller.h"
 #include <stdio.h>
 

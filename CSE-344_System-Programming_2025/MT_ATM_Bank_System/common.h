@@ -40,5 +40,20 @@ typedef struct {
 } shared_t;
 
 /* terse error wrapper */
-static inline void die(const char *msg) { perror(msg); perror("Exiting.."); (EXIT_FAILURE); }
+static inline void die(const char *msg) { perror(msg); printf("Exiting.."); exit(EXIT_FAILURE); }
+
+/* tiny write-only helpers (avoid stdio buffering) */
+static inline void say(const char *msg) { write(STDOUT_FILENO, msg, strlen(msg)); }
+static inline void sayf(const char *fmt, int n)
+{
+    char buf[128];
+    int  len = snprintf(buf, sizeof buf, fmt, n);
+    write(STDOUT_FILENO, buf, len);
+}
+static inline void sayf2(const char *fmt, int n, int m)
+{
+    char buf[128];
+    int  len = snprintf(buf, sizeof buf, fmt, n, m);
+    write(STDOUT_FILENO, buf, len);
+}
 #endif

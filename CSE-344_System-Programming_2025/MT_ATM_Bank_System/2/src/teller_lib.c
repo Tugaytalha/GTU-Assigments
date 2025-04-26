@@ -1,3 +1,4 @@
+/* teller_lib.c */
 #ifndef _GNU_SOURCE
 #  define _GNU_SOURCE      /* unlocks strcasestr et al. */
 #endif
