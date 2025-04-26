@@ -18,7 +18,7 @@ static void cleanup(int signo)
 static void log_accounts(void)
 {
     FILE *f = fopen("AdaBank.bankLog", "w");
-    if (!f) die("log");
+    if (!f) die("Cannot open log file");
     time_t now = time(NULL);
     fprintf(f, "# Adabank Log file updated @%s", ctime(&now));
     for (int i = 0; i < MAX_ACCOUNTS; ++i)
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
         int ok = 0;
 
         if (tx->id == -1) {             /* opening a new account        */
-            for (int i = 0; i < MAX_ACCOUNTS; ++i)
+            for (int i = 1; i < MAX_ACCOUNTS; ++i)
                 if (!accounts[i].balance) { tx->id = i; break; }
         }
 
