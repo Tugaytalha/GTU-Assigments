@@ -3,36 +3,38 @@
 
 #include <pthread.h>
 #include <stdbool.h>
-#include <signal.h> // For sig_atomic_t
 
-// Bounded buffer structure
+// Define a structure for our bounded buffer
 typedef struct {
-    char **data;           // Array of strings (lines from log file)
-    int size;              // Maximum buffer capacity
-    int count;             // Current number of items
-    int in;                // Index for next insertion
-    int out;               // Index for next removal
-    bool eof_marker_added; // Flag to indicate if EOF marker has been added and placed in buffer
-    pthread_mutex_t mutex; // Mutex for synchronization
-    pthread_cond_t not_full;  // Condition: buffer has space
-    pthread_cond_t not_empty; // Condition: buffer has items
+    char **data;           // Array of strings (lines from the log file)
+    int capacity;          // Maximum capacity of the buffer
+    int size;              // Current number of items in the buffer
+    int in;                // Index for next producer insert
+    int out;               // Index for next consumer remove
+    bool eof_reached;      // Flag to indicate end of file processing
+    pthread_mutex_t mutex; // Mutex for buffer access
+    pthread_cond_t not_full;   // Condition variable for buffer not full
+    pthread_cond_t not_empty;  // Condition variable for buffer not empty
 } Buffer;
 
-// Initialize buffer with given size. Returns NULL on failure.
-Buffer* buffer_init(int size);
+// Initialize the buffer with given capacity
+Buffer* buffer_init(int capacity);
 
-// Free buffer resources, including all stored strings.
+// Free all resources used by the buffer
 void buffer_destroy(Buffer *buffer);
 
-// Add a line to the buffer (producer). Line is duplicated.
-void buffer_add(Buffer *buffer, char *line);
+// Add a line to the buffer (used by manager thread)
+// Returns 0 on success, -1 on error
+int buffer_add(Buffer *buffer, char *line);
 
-// Get a line from the buffer (consumer).
-// Returns NULL if EOF marker is reached or termination is signaled.
-// Caller is responsible for freeing the returned string.
+// Mark the buffer as having reached EOF (no more lines will be added)
+void buffer_mark_eof(Buffer *buffer);
+
+// Get a line from the buffer (used by worker threads)
+// Returns NULL if EOF and buffer is empty
 char* buffer_remove(Buffer *buffer);
 
-// Add EOF marker (NULL) to signal end of input.
-void buffer_add_eof_marker(Buffer *buffer);
+// Check if we've reached EOF and the buffer is empty
+bool buffer_is_done(Buffer *buffer);
 
 #endif // BUFFER_H
