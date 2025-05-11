@@ -3,38 +3,35 @@
 
 #include <pthread.h>
 #include <stdbool.h>
+#include <signal.h> // Needed for sig_atomic_t
 
-// Define a structure for our bounded buffer
+// Bounded buffer structure
 typedef struct {
-    char **data;           // Array of strings (lines from the log file)
-    int capacity;          // Maximum capacity of the buffer
-    int size;              // Current number of items in the buffer
-    int in;                // Index for next producer insert
-    int out;               // Index for next consumer remove
-    bool eof_reached;      // Flag to indicate end of file processing
-    pthread_mutex_t mutex; // Mutex for buffer access
-    pthread_cond_t not_full;   // Condition variable for buffer not full
-    pthread_cond_t not_empty;  // Condition variable for buffer not empty
+    char **data;           // Array of strings (lines from log file)
+    int size;              // Maximum buffer capacity
+    int count;             // Current number of items
+    int in;                // Index for next insertion
+    int out;               // Index for next removal
+    bool eof_marker_added; // Flag to indicate if EOF marker has been added
+    pthread_mutex_t mutex; // Mutex for synchronization
+    pthread_cond_t not_full;  // Condition for buffer not full
+    pthread_cond_t not_empty; // Condition for buffer not empty
 } Buffer;
 
-// Initialize the buffer with given capacity
-Buffer* buffer_init(int capacity);
+// Initialize buffer with given size
+Buffer* buffer_init(int size);
 
-// Free all resources used by the buffer
+// Free buffer resources
 void buffer_destroy(Buffer *buffer);
 
-// Add a line to the buffer (used by manager thread)
-// Returns 0 on success, -1 on error
-int buffer_add(Buffer *buffer, char *line);
+// Add a line to the buffer (producer)
+void buffer_add(Buffer *buffer, char *line);
 
-// Mark the buffer as having reached EOF (no more lines will be added)
-void buffer_mark_eof(Buffer *buffer);
-
-// Get a line from the buffer (used by worker threads)
-// Returns NULL if EOF and buffer is empty
+// Get a line from the buffer (consumer)
+// Returns NULL when EOF marker is reached or on termination
 char* buffer_remove(Buffer *buffer);
 
-// Check if we've reached EOF and the buffer is empty
-bool buffer_is_done(Buffer *buffer);
+// Add EOF marker to signal end of file
+void buffer_add_eof_marker(Buffer *buffer);
 
 #endif // BUFFER_H

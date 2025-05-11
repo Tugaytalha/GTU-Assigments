@@ -2,27 +2,42 @@
 #define UTILS_H
 
 #include <stdbool.h>
+#include <pthread.h>
 #include <signal.h>
+#include "buffer.h"
 
-// Structure to hold program arguments
+// External global flag for program termination
+extern volatile sig_atomic_t terminate_flag;
+
+// Worker thread arguments
 typedef struct {
-    int buffer_size;
-    int num_workers;
-    char *log_file;
-    char *search_term;
-} ProgramArgs;
+    int thread_id;                // Thread identifier
+    const char *search_term;           // Term to search for
+    int match_count;             // Number of matches found by this thread
+    pthread_barrier_t *barrier;  // Barrier for synchronization
+    Buffer *buffer;              // Pointer to the shared buffer
+} WorkerArgs;
 
-// Parse command line arguments into program args structure
-// Returns true if arguments are valid, false otherwise
-bool parse_arguments(int argc, char *argv[], ProgramArgs *args);
+// Set the global buffer reference for signal handling
+void set_global_buffer(Buffer *buffer);
 
-// Print usage information to stderr
-void print_usage(const char *program_name);
+// Setup signal handler
+void setup_signal_handler();
 
-// Set up signal handling (for SIGINT)
-void setup_signal_handling();
+// Parse command line arguments
+bool parse_arguments(int argc, char *argv[], int *buffer_size, int *num_workers,
+                     const char **log_file, const char **search_term);
 
-// Global flag to tell threads to exit gracefully
-extern volatile sig_atomic_t exit_flag;
+// Print program usage
+void print_usage(char *program_name);
+
+// Check if a line contains the search term
+bool line_contains_term(const char *line, const char *term);
+
+// Report matches found by a worker thread
+void report_worker_matches(int thread_id, int matches);
+
+// Generate summary report
+void generate_summary_report(WorkerArgs *worker_args, int num_workers);
 
 #endif // UTILS_H

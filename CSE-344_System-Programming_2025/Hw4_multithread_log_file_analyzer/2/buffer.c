@@ -1,54 +1,49 @@
 #include "buffer.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <errno.h>
+#include <stdio.h> // Added for stderr in error handling
 
-// Initialize the buffer with given capacity
-Buffer* buffer_init(int capacity) {
-    if (capacity <= 0) {
-        return NULL;
-    }
+// Import the global terminate flag
+extern volatile sig_atomic_t terminate_flag;
 
+// Initialize buffer with given size
+Buffer* buffer_init(int size) {
     Buffer *buffer = (Buffer*)malloc(sizeof(Buffer));
     if (!buffer) {
-        perror("Failed to allocate buffer");
+        perror("Failed to allocate buffer struct"); // Use perror for system errors
         return NULL;
     }
 
-    buffer->data = (char**)malloc(capacity * sizeof(char*));
+    buffer->data = (char**)calloc(size, sizeof(char*)); // Use calloc to zero-initialize pointers
     if (!buffer->data) {
-        perror("Failed to allocate buffer data");
+        perror("Failed to allocate buffer data array");
         free(buffer);
         return NULL;
     }
 
-    buffer->capacity = capacity;
-    buffer->size = 0;
+    buffer->size = size;
+    buffer->count = 0;
     buffer->in = 0;
     buffer->out = 0;
-    buffer->eof_reached = false;
+    buffer->eof_marker_added = false;
 
-    // Initialize synchronization primitives
     if (pthread_mutex_init(&buffer->mutex, NULL) != 0) {
         perror("Failed to initialize buffer mutex");
         free(buffer->data);
         free(buffer);
         return NULL;
     }
-
     if (pthread_cond_init(&buffer->not_full, NULL) != 0) {
-        perror("Failed to initialize not_full condition variable");
-        pthread_mutex_destroy(&buffer->mutex);
+        perror("Failed to initialize buffer not_full condition variable");
+        pthread_mutex_destroy(&buffer->mutex); // Clean up initialized mutex
         free(buffer->data);
         free(buffer);
         return NULL;
     }
-
     if (pthread_cond_init(&buffer->not_empty, NULL) != 0) {
-        perror("Failed to initialize not_empty condition variable");
+        perror("Failed to initialize buffer not_empty condition variable");
+        pthread_mutex_destroy(&buffer->mutex); // Clean up initialized primitives
         pthread_cond_destroy(&buffer->not_full);
-        pthread_mutex_destroy(&buffer->mutex);
         free(buffer->data);
         free(buffer);
         return NULL;
@@ -57,127 +52,117 @@ Buffer* buffer_init(int capacity) {
     return buffer;
 }
 
-// Free all resources used by the buffer
+// Free buffer resources
 void buffer_destroy(Buffer *buffer) {
-    if (!buffer) {
-        return;
-    }
+    if (!buffer) return;
 
-    // Free all remaining strings in the buffer
-    pthread_mutex_lock(&buffer->mutex);
-    for (int i = 0; i < buffer->size; i++) {
-        int idx = (buffer->out + i) % buffer->capacity;
-        if (buffer->data[idx]) {
+    pthread_mutex_lock(&buffer->mutex); // Lock before accessing buffer state
+
+    // Free all strings currently in the buffer
+    for (int i = 0; i < buffer->count; i++) {
+        int idx = (buffer->out + i) % buffer->size;
+        if (buffer->data[idx] != NULL) { // Check for NULL EOF marker
             free(buffer->data[idx]);
-            buffer->data[idx] = NULL;
+            buffer->data[idx] = NULL; // Avoid double free (though loop logic should prevent)
         }
     }
-    pthread_mutex_unlock(&buffer->mutex);
+    pthread_mutex_unlock(&buffer->mutex); // Unlock after processing data
+
+    // Free the buffer array
+    free(buffer->data);
+    buffer->data = NULL; // Prevent double free
 
     // Destroy synchronization primitives
-    pthread_cond_destroy(&buffer->not_empty);
-    pthread_cond_destroy(&buffer->not_full);
     pthread_mutex_destroy(&buffer->mutex);
+    pthread_cond_destroy(&buffer->not_full);
+    pthread_cond_destroy(&buffer->not_empty);
 
-    // Free buffer data
-    free(buffer->data);
+    // Free the buffer struct
     free(buffer);
 }
 
-// Add a line to the buffer (used by manager thread)
-int buffer_add(Buffer *buffer, char *line) {
-    if (!buffer || !line) {
-        return -1;
-    }
-
+// Add a line to the buffer (producer)
+void buffer_add(Buffer *buffer, char *line) {
     pthread_mutex_lock(&buffer->mutex);
 
-    // Wait while the buffer is full and we haven't reached EOF
-    while (buffer->size == buffer->capacity) {
+    // Wait until there's space or termination is requested
+    while (buffer->count == buffer->size && !terminate_flag) {
         pthread_cond_wait(&buffer->not_full, &buffer->mutex);
     }
 
-    // If someone marked EOF while we were waiting, abort
-    if (buffer->eof_reached) {
+    // If termination requested, exit without adding
+    if (terminate_flag) {
         pthread_mutex_unlock(&buffer->mutex);
-        return -1;
-    }
-
-    // Add the line to the buffer (make a copy)
-    buffer->data[buffer->in] = strdup(line);
-    if (!buffer->data[buffer->in]) {
-        pthread_mutex_unlock(&buffer->mutex);
-        return -1;
-    }
-
-    // Update buffer state
-    buffer->in = (buffer->in + 1) % buffer->capacity;
-    buffer->size++;
-
-    // Signal that the buffer is not empty anymore
-    pthread_cond_signal(&buffer->not_empty);
-    pthread_mutex_unlock(&buffer->mutex);
-
-    return 0;
-}
-
-// Mark the buffer as having reached EOF (no more lines will be added)
-void buffer_mark_eof(Buffer *buffer) {
-    if (!buffer) {
         return;
     }
 
-    pthread_mutex_lock(&buffer->mutex);
-    buffer->eof_reached = true;
-    
-    // Signal all waiting consumers that EOF has been reached
-    pthread_cond_broadcast(&buffer->not_empty);
+    char *line_copy = strdup(line);
+    if (!line_copy) {
+        perror("Failed to duplicate line in buffer_add");
+        // Handle error: In this case, we might skip this line and continue.
+        // A more complex program might need a dedicated error state.
+        pthread_mutex_unlock(&buffer->mutex);
+        return;
+    }
+
+    buffer->data[buffer->in] = line_copy;
+    buffer->in = (buffer->in + 1) % buffer->size;
+    buffer->count++;
+
+    // Signal that the buffer is not empty
+    pthread_cond_signal(&buffer->not_empty);
     pthread_mutex_unlock(&buffer->mutex);
 }
 
-// Get a line from the buffer (used by worker threads)
-char* buffer_remove(Buffer *buffer) {
-    if (!buffer) {
-        return NULL;
-    }
-
+// Add EOF marker to signal end of file
+void buffer_add_eof_marker(Buffer *buffer) {
     pthread_mutex_lock(&buffer->mutex);
 
-    // Wait while the buffer is empty and EOF has not been reached
-    while (buffer->size == 0 && !buffer->eof_reached) {
+    // Wait until there's space or termination is requested
+    while (buffer->count == buffer->size && !terminate_flag) {
+        pthread_cond_wait(&buffer->not_full, &buffer->mutex);
+    }
+
+    // If termination requested, exit without adding marker
+    if (terminate_flag) {
+        pthread_mutex_unlock(&buffer->mutex);
+        return;
+    }
+
+    buffer->data[buffer->in] = NULL; // NULL serves as the EOF marker
+    buffer->in = (buffer->in + 1) % buffer->size;
+    buffer->count++;
+    buffer->eof_marker_added = true;
+
+    // Signal that the buffer is not empty
+    pthread_cond_broadcast(&buffer->not_empty); // Broadcast to wake all waiting workers
+    pthread_mutex_unlock(&buffer->mutex);
+}
+
+// Get a line from the buffer (consumer)
+char* buffer_remove(Buffer *buffer) {
+    pthread_mutex_lock(&buffer->mutex);
+
+    // Wait until there's an item, EOF is added, or termination is requested
+    while (buffer->count == 0 && !buffer->eof_marker_added && !terminate_flag) {
         pthread_cond_wait(&buffer->not_empty, &buffer->mutex);
     }
 
-    // If buffer is empty and EOF has been reached, we're done
-    if (buffer->size == 0 && buffer->eof_reached) {
+    // If buffer is empty and EOF marker or termination is present, signal done
+    if (buffer->count == 0) {
         pthread_mutex_unlock(&buffer->mutex);
         return NULL;
     }
 
-    // Get the line from the buffer
+    // Remove the item from the buffer
     char *line = buffer->data[buffer->out];
-    buffer->data[buffer->out] = NULL;
+    buffer->data[buffer->out] = NULL; // Clear the pointer after removal
+    buffer->out = (buffer->out + 1) % buffer->size;
+    buffer->count--;
 
-    // Update buffer state
-    buffer->out = (buffer->out + 1) % buffer->capacity;
-    buffer->size--;
-
-    // Signal that the buffer is not full anymore
+    // Signal that the buffer is not full
     pthread_cond_signal(&buffer->not_full);
     pthread_mutex_unlock(&buffer->mutex);
 
     return line;
-}
-
-// Check if we've reached EOF and the buffer is empty
-bool buffer_is_done(Buffer *buffer) {
-    if (!buffer) {
-        return true;
-    }
-
-    pthread_mutex_lock(&buffer->mutex);
-    bool done = (buffer->eof_reached && buffer->size == 0);
-    pthread_mutex_unlock(&buffer->mutex);
-
-    return done;
 }
