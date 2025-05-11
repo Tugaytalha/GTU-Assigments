@@ -1,0 +1,19 @@
+2025-05-11 10:00:15 INFO: System startup completed
+2025-05-11 10:01:22 DEBUG: Connection established with database
+2025-05-11 10:02:45 ERROR: Failed to load configuration file
+2025-05-11 10:03:12 INFO: Using default configuration
+2025-05-11 10:04:30 WARNING: Disk space is low (15% remaining)
+2025-05-11 10:05:45 ERROR: Connection timeout with external API
+2025-05-11 10:06:10 INFO: Retry attempt 1 for external API
+2025-05-11 10:06:55 DEBUG: Memory usage: 1.2GB
+2025-05-11 10:07:30 ERROR: Invalid authentication token
+2025-05-11 10:08:22 INFO: User login: admin
+2025-05-11 10:09:45 DEBUG: Cache hit ratio: 87%
+2025-05-11 10:10:15 INFO: Processing batch job #1242
+2025-05-11 10:11:30 WARNING: Slow query detected (query_id: 5431)
+2025-05-11 10:12:45 ERROR: Database query failed: syntax error
+2025-05-11 10:13:22 INFO: Scheduled maintenance in 2 hours
+2025-05-11 10:14:55 DEBUG: Network latency: 120ms
+2025-05-11 10:15:30 INFO: User logout: admin
+2025-05-11 10:16:45 ERROR: Failed to send notification email
+2025-05-11 10:17:10 WARNING: High CPU usage detected (85%)

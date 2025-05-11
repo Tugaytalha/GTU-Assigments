@@ -1,0 +1,108 @@
+2025-05-01 00:00:10 INFO: Server startup
+2025-05-01 00:01:15 DEBUG: Configuration loaded
+2025-05-01 00:02:20 INFO: Listening on port 8080
+2025-05-01 00:03:30 404: Resource not found: /favicon.ico
+2025-05-01 00:04:45 INFO: GET /home
+2025-05-01 00:05:50 DEBUG: Session created for user: guest
+2025-05-01 00:06:55 INFO: Database connection established
+2025-05-01 00:07:10 200: Request successful: /home
+2025-05-01 00:08:15 INFO: POST /login
+2025-05-01 00:09:20 DEBUG: Authentication attempt: username=admin
+2025-05-01 00:10:25 INFO: Login successful: admin
+2025-05-01 00:11:30 200: Request successful: /login
+2025-05-01 00:12:35 INFO: GET /dashboard
+2025-05-01 00:13:40 DEBUG: Loading user preferences
+2025-05-01 00:14:45 INFO: Dashboard rendered for user: admin
+2025-05-01 00:15:50 200: Request successful: /dashboard
+2025-05-01 00:16:55 INFO: GET /api/stats
+2025-05-01 00:17:10 DEBUG: Retrieving statistics from database
+2025-05-01 00:18:15 INFO: Statistics data retrieved
+2025-05-01 00:19:20 200: Request successful: /api/stats
+2025-05-01 00:20:25 INFO: GET /nonexistent
+2025-05-01 00:21:30 404: Resource not found: /nonexistent
+2025-05-01 00:22:35 INFO: GET /api/users
+2025-05-01 00:23:40 DEBUG: Authorization check: user=admin, role=administrator
+2025-05-01 00:24:45 INFO: Retrieved 120 user records
+2025-05-01 00:25:50 200: Request successful: /api/users
+2025-05-01 00:26:55 INFO: POST /api/users
+2025-05-01 00:27:10 DEBUG: Validating user input
+2025-05-01 00:28:15 ERROR: Invalid user data format
+2025-05-01 00:29:20 400: Bad request: /api/users
+2025-05-01 00:30:25 INFO: GET /api/config
+2025-05-01 00:31:30 DEBUG: Checking permissions
+2025-05-01 00:32:35 INFO: Permission granted
+2025-05-01 00:33:40 200: Request successful: /api/config
+2025-05-01 00:34:45 INFO: PUT /api/config
+2025-05-01 00:35:50 DEBUG: Updating configuration
+2025-05-01 00:36:55 INFO: Configuration updated
+2025-05-01 00:37:10 200: Request successful: /api/config
+2025-05-01 00:38:15 INFO: GET /logout
+2025-05-01 00:39:20 DEBUG: Destroying session: session_id=abc123
+2025-05-01 00:40:25 INFO: User logged out: admin
+2025-05-01 00:41:30 200: Request successful: /logout
+2025-05-01 00:42:35 INFO: GET /home
+2025-05-01 00:43:40 DEBUG: Creating new session for guest
+2025-05-01 00:44:45 INFO: Homepage rendered for guest
+2025-05-01 00:45:50 200: Request successful: /home
+2025-05-01 00:46:55 INFO: GET /api/status
+2025-05-01 00:47:10 DEBUG: Checking system status
+2025-05-01 00:48:15 INFO: System status: healthy
+2025-05-01 00:49:20 200: Request successful: /api/status
+2025-05-01 00:50:25 INFO: GET /unknown
+2025-05-01 00:51:30 404: Resource not found: /unknown
+2025-05-01 00:52:35 INFO: GET /api/metrics
+2025-05-01 00:53:40 DEBUG: Collecting system metrics
+2025-05-01 00:54:45 INFO: Metrics collected
+2025-05-01 00:55:50 200: Request successful: /api/metrics
+2025-05-01 00:56:55 ERROR: Database connection lost
+2025-05-01 00:57:10 DEBUG: Attempting to reconnect to database
+2025-05-01 00:58:15 INFO: Database connection re-established
+2025-05-01 00:59:20 INFO: GET /api/health
+2025-05-01 01:00:25 DEBUG: Running health checks
+2025-05-01 01:01:30 INFO: All health checks passed
+2025-05-01 01:02:35 200: Request successful: /api/health
+2025-05-01 01:03:40 INFO: GET /products
+2025-05-01 01:04:45 DEBUG: Fetching product catalog
+2025-05-01 01:05:50 INFO: Product catalog loaded
+2025-05-01 01:06:55 200: Request successful: /products
+2025-05-01 01:07:10 INFO: GET /product/404
+2025-05-01 01:08:15 DEBUG: Looking up product: 404
+2025-05-01 01:09:20 INFO: Product not found
+2025-05-01 01:10:25 404: Resource not found: /product/404
+2025-05-01 01:11:30 INFO: GET /product/123
+2025-05-01 01:12:35 DEBUG: Looking up product: 123
+2025-05-01 01:13:40 INFO: Product found
+2025-05-01 01:14:45 200: Request successful: /product/123
+2025-05-01 01:15:50 INFO: POST /api/search
+2025-05-01 01:16:55 DEBUG: Search query: {term: "laptop", filters: {price: "under_1000"}}
+2025-05-01 01:17:10 INFO: Search results: 24 items
+2025-05-01 01:18:15 200: Request successful: /api/search
+2025-05-01 01:19:20 INFO: GET /api/updates
+2025-05-01 01:20:25 DEBUG: Checking for system updates
+2025-05-01 01:21:30 INFO: No updates available
+2025-05-01 01:22:35 200: Request successful: /api/updates
+2025-05-01 01:23:40 INFO: GET /restricted
+2025-05-01 01:24:45 DEBUG: Authorization check: user=guest
+2025-05-01 01:25:50 INFO: Authorization failed
+2025-05-01 01:26:55 403: Forbidden: /restricted
+2025-05-01 01:27:10 INFO: POST /contact
+2025-05-01 01:28:15 DEBUG: Processing contact form submission
+2025-05-01 01:29:20 INFO: Contact form submitted
+2025-05-01 01:30:25 200: Request successful: /contact
+2025-05-01 01:31:30 INFO: GET /api/404
+2025-05-01 01:32:35 DEBUG: API endpoint not found
+2025-05-01 01:33:40 404: Resource not found: /api/404
+2025-05-01 01:34:45 INFO: System maintenance starting
+2025-05-01 01:35:50 DEBUG: Backing up database
+2025-05-01 01:36:55 INFO: Database backup completed
+2025-05-01 01:37:10 DEBUG: Optimizing tables
+2025-05-01 01:38:15 INFO: Table optimization completed
+2025-05-01 01:39:20 DEBUG: Clearing cache
+2025-05-01 01:40:25 INFO: Cache cleared
+2025-05-01 01:41:30 DEBUG: Reloading configuration
+2025-05-01 01:42:35 INFO: Configuration reloaded
+2025-05-01 01:43:40 INFO: System maintenance completed
+2025-05-01 01:44:45 INFO: GET /status
+2025-05-01 01:45:50 DEBUG: Generating status report
+2025-05-01 01:46:55 INFO: Status report generated
+2025-05-01 01:47:10 200: Request successful: /status
