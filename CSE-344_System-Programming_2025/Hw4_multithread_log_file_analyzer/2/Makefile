@@ -6,7 +6,7 @@ LDFLAGS = -lpthread
 TARGET = LogAnalyzer
 
 # Source files
-SRCS = main.c buffer.c utils.c
+SRCS = 210104004084_main.c buffer.c utils.c
 OBJS = $(SRCS:.c=.o)
 
 # Default target

@@ -3,7 +3,7 @@
 #include <string.h>
 #include <pthread.h>
 #include <unistd.h>
-#include <errno.h> // Added for errno
+#include <errno.h>
 #include "buffer.h"
 #include "utils.h"
 
@@ -16,20 +16,24 @@ void *worker_thread(void *arg);
 
 // Manager thread arguments
 typedef struct {
-    const char *log_file; // Use const char* for clarity
+    const char *log_file;
     Buffer *buffer;
 } ManagerArgs;
 
+// Global file pointer for worker output (requires synchronization if multiple workers write)
+FILE *worker_output_file = NULL;
+pthread_mutex_t output_mutex = PTHREAD_MUTEX_INITIALIZER; // Mutex for file access
+
 int main(int argc, char *argv[]) {
     int buffer_size, num_workers;
-    const char *log_file, *search_term; // Use const char*
+    const char *log_file, *search_term;
     pthread_t manager_tid;
-    pthread_t *worker_tids = NULL; // Initialize to NULL
-    WorkerArgs *worker_args = NULL; // Initialize to NULL
+    pthread_t *worker_tids = NULL;
+    WorkerArgs *worker_args = NULL;
     pthread_barrier_t barrier;
-    Buffer *buffer = NULL; // Initialize to NULL
+    Buffer *buffer = NULL;
     int i;
-    int exit_status = EXIT_SUCCESS; // Use named constant for exit status
+    int exit_status = EXIT_SUCCESS;
 
     // Set up signal handler for SIGINT
     setup_signal_handler();
@@ -38,12 +42,20 @@ int main(int argc, char *argv[]) {
     if (!parse_arguments(argc, argv, &buffer_size, &num_workers, &log_file, &search_term)) {
         print_usage(argv[0]);
         exit_status = EXIT_FAILURE;
-        goto cleanup; // Use goto for centralized cleanup
+        goto cleanup;
     }
 
     printf("Starting Log Analyzer\n");
     printf("Buffer Size: %d, Workers: %d, File: %s, Search Term: \"%s\"\n",
            buffer_size, num_workers, log_file, search_term);
+
+    // Open file for worker output (overwrite existing file)
+    worker_output_file = fopen("worker_matches.log", "w");
+    if (!worker_output_file) {
+        perror("Failed to open worker output file");
+        exit_status = EXIT_FAILURE;
+        goto cleanup;
+    }
 
     // Initialize buffer
     buffer = buffer_init(buffer_size);
@@ -58,13 +70,13 @@ int main(int argc, char *argv[]) {
 
     // Initialize barrier for worker threads
     if (pthread_barrier_init(&barrier, NULL, num_workers) != 0) {
-        perror("Failed to initialize barrier"); // Use perror for system errors
+        perror("Failed to initialize barrier");
         exit_status = EXIT_FAILURE;
         goto cleanup;
     }
 
     // Allocate and initialize worker arguments and thread IDs
-    worker_args = (WorkerArgs *)calloc(num_workers, sizeof(WorkerArgs)); // Use calloc
+    worker_args = (WorkerArgs *)calloc(num_workers, sizeof(WorkerArgs));
     worker_tids = (pthread_t *)malloc(num_workers * sizeof(pthread_t));
 
     if (!worker_args || !worker_tids) {
@@ -75,7 +87,7 @@ int main(int argc, char *argv[]) {
 
     // Initialize worker arguments
     for (i = 0; i < num_workers; i++) {
-        worker_args[i].thread_id = i + 1; // Start thread IDs from 1 for clearer output
+        worker_args[i].thread_id = i + 1;
         worker_args[i].search_term = search_term;
         worker_args[i].match_count = 0;
         worker_args[i].barrier = &barrier;
@@ -98,16 +110,11 @@ int main(int argc, char *argv[]) {
     // Create worker threads
     for (i = 0; i < num_workers; i++) {
         if (pthread_create(&worker_tids[i], NULL, worker_thread, &worker_args[i]) != 0) {
-            perror("Failed to create worker thread"); // Use perror
-            // If thread creation fails, set termination flag and exit loop
+            perror("Failed to create worker thread");
             terminate_flag = 1;
-            // Join already created threads before cleanup
             for (int j = 0; j < i; j++) {
-                 // Use a timeout if necessary, but join is safer here
                 pthread_join(worker_tids[j], NULL);
             }
-            // No need to signal conditions here as signal handler does it.
-            // Join manager thread (might be stuck on full buffer, handler helps)
             pthread_join(manager_tid, NULL);
 
             exit_status = EXIT_FAILURE;
@@ -120,8 +127,6 @@ int main(int argc, char *argv[]) {
 
     // Wait for all worker threads to finish
     for (i = 0; i < num_workers; i++) {
-        // If termination was requested, the signal handler has already broadcast.
-        // Just join.
         pthread_join(worker_tids[i], NULL);
     }
 
@@ -129,21 +134,25 @@ int main(int argc, char *argv[]) {
     if (!terminate_flag) {
         generate_summary_report(worker_args, num_workers);
     } else {
-        fprintf(stderr, "Program terminated by signal.\n"); // Add a message
+        fprintf(stderr, "Program terminated by signal.\n");
     }
 
 
-cleanup: // Centralized cleanup label
+cleanup:
     if (worker_args) free(worker_args);
     if (worker_tids) free(worker_tids);
-    // Barrier destroy is safe even if not initialized, if checked for return value
-    // but simpler to destroy only if initialized.
-    // Given the goto flow, check if barrier init succeeded implicitly.
-    // Safer: Use a flag for barrier initialization state. For this complexity, OK.
-    if (buffer) { // Only destroy barrier if buffer was initialized (implies barrier likely initialized)
+    if (buffer) {
          pthread_barrier_destroy(&barrier);
          buffer_destroy(buffer);
     }
+    // Close the worker output file
+    if (worker_output_file) {
+        fclose(worker_output_file);
+        worker_output_file = NULL; // Set to NULL after closing
+    }
+    // Destroy the output mutex
+    pthread_mutex_destroy(&output_mutex);
+
 
     return exit_status;
 }
@@ -152,16 +161,15 @@ cleanup: // Centralized cleanup label
 void *manager_thread(void *arg) {
     ManagerArgs *args = (ManagerArgs *)arg;
     FILE *file = fopen(args->log_file, "r");
-    char line[1024]; // Max line length
+    char line[1024];
     size_t len;
 
     if (!file) {
-        fprintf(stderr, "Error: Could not open file %s: %s\n", args->log_file, strerror(errno)); // Use strerror
-        buffer_add_eof_marker(args->buffer); // Signal workers to stop
+        fprintf(stderr, "Error: Could not open file %s: %s\n", args->log_file, strerror(errno));
+        buffer_add_eof_marker(args->buffer);
         return NULL;
     }
 
-    // Read file line by line until EOF or termination
     while (fgets(line, sizeof(line), file) != NULL && !terminate_flag) {
         len = strlen(line);
         if (len > 0 && line[len-1] == '\n') {
@@ -171,12 +179,8 @@ void *manager_thread(void *arg) {
         buffer_add(args->buffer, line);
     }
 
-    // Add EOF marker unless terminated
     if (!terminate_flag) {
         buffer_add_eof_marker(args->buffer);
-    } else {
-        // If terminated, signal handler already woke up workers.
-        // No need for a specific EOF marker add, buffer_remove handles termination.
     }
 
     fclose(file);
@@ -188,34 +192,34 @@ void *worker_thread(void *arg) {
     WorkerArgs *args = (WorkerArgs *)arg;
     char *line;
 
-    printf("Worker %d started\n", args->thread_id);
+    printf("Worker %d started\n", args->thread_id); // Keep this initial print to stdout
 
-    // Process lines until buffer is empty and EOF marker is reached, or termination
     while (true) {
-        // Get a line from the buffer
         line = buffer_remove(args->buffer);
 
-        // buffer_remove returns NULL on EOF or termination when buffer is empty
         if (line == NULL) {
             break;
         }
 
-        // Search for the term in the line
+        // Search for the term and write to file if found
         if (line_contains_term(line, args->search_term)) {
             args->match_count++;
-            printf("Worker %d found match: %s\n", args->thread_id, line);
+            // Write the matching line to the output file
+            pthread_mutex_lock(&output_mutex);
+            if (worker_output_file) { // Check if file is still open
+                fprintf(worker_output_file, "Worker %d found match: %s\n", args->thread_id, line);
+                fflush(worker_output_file); // Flush immediately to see output as it happens
+            }
+            pthread_mutex_unlock(&output_mutex);
         }
 
-        free(line); // Free the line copy
+        free(line);
     }
 
-    // Report matches found by this worker only if not terminating
     if (!terminate_flag) {
-        report_worker_matches(args->thread_id, args->match_count);
+        // Reporting matches found by this worker (now printed in summary)
+        // report_worker_matches(args->thread_id, args->match_count); // Removed terminal print
 
-        // Wait at barrier for all workers before summary report
-        // Barrier wait returns PTHREAD_BARRIER_SERIAL_THREAD for one thread.
-        // Check return value or just ignore if not needed. Ignoring is simpler.
         pthread_barrier_wait(args->barrier);
     } else {
          printf("Worker %d exiting due to termination request.\n", args->thread_id);

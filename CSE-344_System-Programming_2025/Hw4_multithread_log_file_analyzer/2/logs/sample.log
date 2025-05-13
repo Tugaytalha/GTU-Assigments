@@ -1,19 +1,20 @@
-2025-05-11 10:00:15 INFO: System startup completed
-2025-05-11 10:01:22 DEBUG: Connection established with database
-2025-05-11 10:02:45 ERROR: Failed to load configuration file
-2025-05-11 10:03:12 INFO: Using default configuration
-2025-05-11 10:04:30 WARNING: Disk space is low (15% remaining)
-2025-05-11 10:05:45 ERROR: Connection timeout with external API
-2025-05-11 10:06:10 INFO: Retry attempt 1 for external API
-2025-05-11 10:06:55 DEBUG: Memory usage: 1.2GB
-2025-05-11 10:07:30 ERROR: Invalid authentication token
-2025-05-11 10:08:22 INFO: User login: admin
-2025-05-11 10:09:45 DEBUG: Cache hit ratio: 87%
-2025-05-11 10:10:15 INFO: Processing batch job #1242
-2025-05-11 10:11:30 WARNING: Slow query detected (query_id: 5431)
-2025-05-11 10:12:45 ERROR: Database query failed: syntax error
-2025-05-11 10:13:22 INFO: Scheduled maintenance in 2 hours
-2025-05-11 10:14:55 DEBUG: Network latency: 120ms
-2025-05-11 10:15:30 INFO: User logout: admin
-2025-05-11 10:16:45 ERROR: Failed to send notification email
-2025-05-11 10:17:10 WARNING: High CPU usage detected (85%)
+[2025-05-10 10:00:00] INFO: Starting web server on port 80.
+[2025-05-10 10:01:05] INFO: Connection received from 10.0.0.2.
+[2025-05-10 10:01:07] ERROR: Failed to authenticate user guest.
+[2025-05-10 10:01:12] DEBUG: Session ID 1234 created.
+[2025-05-10 10:01:45] INFO: Serving page /index.html
+[2025-05-10 10:01:46] 404: Page not found /about.html
+[2025-05-10 10:01:47] 404: Page not found /contact.html
+[2025-05-10 10:02:10] INFO: Connection received from 10.0.0.3.
+[2025-05-10 10:02:11] DEBUG: Session ID 1235 created.
+[2025-05-10 10:02:12] INFO: Serving page /login.html
+[2025-05-10 10:02:13] FAIL: Login failed for user admin.
+[2025-05-10 10:02:14] WARN: User account locked after 3 failed attempts.
+[2025-05-10 10:02:30] ERROR: Database connection timeout.
+[2025-05-10 10:02:35] INFO: System health check passed.
+[2025-05-10 10:03:00] DEBUG: Cache cleared for user session 1234.
+[2025-05-10 10:03:10] INFO: Connection closed from 10.0.0.2.
+[2025-05-10 10:03:20] 404: Page not found /missing.js
+[2025-05-10 10:03:30] INFO: Backup process started.
+[2025-05-10 10:03:45] DEBUG: Backup file size: 2048MB
+[2025-05-10 10:04:00] INFO: Backup completed successfully.
