@@ -1,0 +1,14 @@
+2025-05-22 21:05:46 - [INFO] Server initialized and listening on port 3131
+2025-05-22 21:05:53 - [USER: han] - connected to the server
+2025-05-22 21:07:21 - [USER: tugay] - connected to the server
+2025-05-22 21:07:32 - [USER: tugay] - joined room
+2025-05-22 21:07:41 - [USER: han] - joined room
+2025-05-22 21:07:51 - [BROADCAST] user 'han': naber
+2025-05-22 21:08:00 - [WHISPER] tugay to han: iyi
+2025-05-22 21:10:01 - [FILE-QUEUE] Upload 'server_log.txt' from han added to queue. Queue size: 1
+2025-05-22 21:10:01 - [FILE] 'code.zip' from user 'han' started upload after 0 seconds in queue.
+2025-05-22 21:10:01 - [SEND FILE] 'server_log.txt' sent from han to tugay (success)
+2025-05-22 21:13:04 - [FILE-QUEUE] Upload '../python/client/a.txt' from tugay added to queue. Queue size: 1
+2025-05-22 21:13:04 - [FILE] 'code.zip' from user 'tugay' started upload after 0 seconds in queue.
+2025-05-22 21:13:04 - [SEND FILE] '../python/client/a.txt' sent from tugay to han (success)
+2025-05-22 21:20:56 - [FILE-QUEUE] Upload 'HW3.pdf' from tugay added to queue. Queue size: 1

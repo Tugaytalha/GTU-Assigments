@@ -1,176 +1,156 @@
+/**
+ * Multi-threaded Distributed Chat and File Server
+ * Header file for server implementation
+ */
+
 #ifndef CHATSERVER_H
 #define CHATSERVER_H
 
-#include <iostream>
-#include <string>
-#include <map>
-#include <vector>
-#include <set>
-#include <queue>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <atomic>
-#include <chrono>
-#include <ctime>
-#include <cstring>
-#include <fstream>
-#include <sstream>
-#include <algorithm>
-#include <functional>
-#include <memory>
-#include <csignal>
-#include <regex>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <signal.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <time.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <strings.h> /* For strcasecmp */
 
-// For cross-platform socket programming
-#ifdef _WIN32
-    #include <winsock2.h>
-    #include <ws2tcpip.h>
-    #pragma comment(lib, "ws2_32.lib")
-    typedef SOCKET socket_t;
-    #define SOCKET_ERROR_VAL INVALID_SOCKET
-    #define close_socket(s) closesocket(s)
-#else
-    #include <unistd.h>
-    #include <sys/socket.h>
-    #include <netinet/in.h>
-    #include <arpa/inet.h>
-    #include <pthread.h>
-    #include <semaphore.h>
-    typedef int socket_t;
-    #define SOCKET_ERROR_VAL (-1)
-    #define close_socket(s) close(s)
-#endif
+/* Constants */
+#define MAX_CLIENTS 15
+#define MAX_USERNAME_LEN 16
+#define MAX_ROOM_NAME_LEN 32
+#define MAX_MESSAGE_LEN 1024
+#define MAX_COMMAND_LEN 1024
+#define MAX_FILE_SIZE (3 * 1024 * 1024) // 3MB
+#define MAX_ROOMS 10
+#define MAX_UPLOAD_QUEUE 5
+#define MAX_FILE_NAME_LEN 256
+#define MAX_PATH_LEN 512
+#define LOG_FILE "server_log.txt"
 
-// Constants
-const int MAX_CLIENTS = 15;
-const int MAX_ROOM_CAPACITY = 15;
-const int MAX_UPLOAD_QUEUE = 5;
-const int MAX_USERNAME_LENGTH = 16;
-const int MAX_ROOM_NAME_LENGTH = 32;
-const size_t MAX_FILE_SIZE = 3 * 1024 * 1024; // 3MB
-const std::string ALLOWED_FILE_EXTENSIONS[] = {".txt", ".pdf", ".jpg", ".png"};
+/* Allowed file extensions */
+#define FILE_EXT_COUNT 4
+extern const char *ALLOWED_FILE_EXTENSIONS[FILE_EXT_COUNT];
 
-// Message types
-enum class MessageType {
-    SYSTEM,
-    BROADCAST,
-    WHISPER,
-    FILE_TRANSFER,
-    ERROR
-};
+/* Client status */
+typedef enum {
+    CLIENT_CONNECTED,
+    CLIENT_DISCONNECTED,
+    CLIENT_AUTHENTICATING
+} ClientStatus;
 
-// File transfer status
-enum class FileTransferStatus {
-    PENDING,
-    IN_PROGRESS,
-    COMPLETED,
-    FAILED
-};
+/* Command types */
+typedef enum {
+    CMD_JOIN,
+    CMD_LEAVE,
+    CMD_BROADCAST,
+    CMD_WHISPER,
+    CMD_SENDFILE,
+    CMD_EXIT,
+    CMD_INVALID
+} CommandType;
 
-// File transfer request
-struct FileTransferRequest {
-    std::string sender;
-    std::string receiver;
-    std::string filename;
+/* File transfer structure */
+typedef struct {
+    char sender_username[MAX_USERNAME_LEN + 1];
+    char recipient_username[MAX_USERNAME_LEN + 1];
+    char filename[MAX_FILE_NAME_LEN];
     size_t filesize;
-    std::chrono::system_clock::time_point requestTime;
-    FileTransferStatus status;
-    
-    FileTransferRequest(const std::string& s, const std::string& r, const std::string& f, size_t fs)
-        : sender(s), receiver(r), filename(f), filesize(fs),
-          requestTime(std::chrono::system_clock::now()), status(FileTransferStatus::PENDING) {}
-};
+    time_t queued_time;
+    bool in_progress;
+} FileTransfer;
 
-// Client structure
-struct Client {
-    socket_t socket;
-    std::string username;
-    std::string currentRoom;
-    std::string ipAddress;
-    bool isActive;
-    
-    Client(socket_t s, const std::string& user, const std::string& ip)
-        : socket(s), username(user), ipAddress(ip), isActive(true) {}
-};
+/* Room structure */
+typedef struct {
+    char name[MAX_ROOM_NAME_LEN + 1];
+    int member_count;
+    int member_sockets[MAX_CLIENTS];
+    char member_usernames[MAX_CLIENTS][MAX_USERNAME_LEN + 1];
+    pthread_mutex_t room_mutex;
+    bool active;
+} Room;
 
-// Room structure
-struct Room {
-    std::string name;
-    std::set<std::string> members;
-    
-    explicit Room(const std::string& n) : name(n) {}
-};
+/* Client structure */
+typedef struct {
+    int socket;
+    struct sockaddr_in address;
+    char username[MAX_USERNAME_LEN + 1];
+    char current_room[MAX_ROOM_NAME_LEN + 1];
+    ClientStatus status;
+    pthread_t thread;
+} Client;
 
-// Chat server class
-class ChatServer {
-public:
-    ChatServer(int port);
-    ~ChatServer();
-    
-    void start();
-    void stop();
-    
-private:
-    // Server socket and port
-    socket_t serverSocket;
-    int serverPort;
-    
-    // Synchronization primitives
-    std::mutex clientsMutex;
-    std::mutex roomsMutex;
-    std::mutex logMutex;
-    std::mutex fileQueueMutex;
-    std::condition_variable fileQueueCV;
-    
-    // Semaphore for file upload queue
-    #ifdef _WIN32
-        std::counting_semaphore<MAX_UPLOAD_QUEUE> fileQueueSemaphore;
-    #else
-        sem_t fileQueueSemaphore;
-    #endif
-    
-    // Clients, rooms, and file queue
-    std::map<std::string, std::shared_ptr<Client>> clients;
-    std::map<std::string, std::shared_ptr<Room>> rooms;
-    std::queue<std::shared_ptr<FileTransferRequest>> fileTransferQueue;
-    
-    // Server state
-    std::atomic<bool> running;
-    std::ofstream logFile;
-    
-    // Thread pool
-    std::vector<std::thread> clientThreads;
-    std::thread fileQueueThread;
-    
-    // Signal handling
-    static ChatServer* instance;
-    static void signalHandler(int signal);
-    
-    // Helper methods
-    void acceptConnections();
-    void handleClient(std::shared_ptr<Client> client);
-    void processCommand(std::shared_ptr<Client> client, const std::string& command);
-    void processFileQueue();
-    
-    // Command handlers
-    void handleJoin(std::shared_ptr<Client> client, const std::string& roomName);
-    void handleLeave(std::shared_ptr<Client> client);
-    void handleBroadcast(std::shared_ptr<Client> client, const std::string& message);
-    void handleWhisper(std::shared_ptr<Client> client, const std::string& targetUser, const std::string& message);
-    void handleSendFile(std::shared_ptr<Client> client, const std::string& filename, const std::string& targetUser);
-    void handleExit(std::shared_ptr<Client> client);
-    
-    // Utility methods
-    void sendMessage(std::shared_ptr<Client> client, const std::string& message, MessageType type);
-    void sendMessageToRoom(const std::string& roomName, const std::string& sender, const std::string& message);
-    void log(const std::string& message);
-    bool isValidUsername(const std::string& username);
-    bool isValidRoomName(const std::string& roomName);
-    bool isAllowedFileExtension(const std::string& filename);
-    std::string getCurrentTimestamp();
-    void cleanupClient(std::shared_ptr<Client> client);
-    void transferFile(std::shared_ptr<FileTransferRequest> request);
-};
+/* Server structure */
+typedef struct {
+    int socket;
+    struct sockaddr_in address;
+    Client clients[MAX_CLIENTS];
+    Room rooms[MAX_ROOMS];
+    FileTransfer upload_queue[MAX_UPLOAD_QUEUE];
+    int queue_count;
+    pthread_mutex_t clients_mutex;
+    pthread_mutex_t rooms_mutex;
+    pthread_mutex_t queue_mutex;
+    sem_t upload_semaphore;
+    FILE *log_file;
+    bool running;
+} Server;
 
-#endif // CHATSERVER_H
+/* Global server instance - extern declaration */
+extern Server server;
+
+/* Function declarations */
+// Server initialization and shutdown
+bool initialize_server(Server *server, int port);
+void shutdown_server(Server *server);
+void handle_sigint(int sig);
+
+// Client management
+void *handle_client(void *arg);
+bool authenticate_client(Client *client);
+void disconnect_client(Server *server, Client *client);
+int find_client_index(Server *server, char *username);
+void notify_client(Client *client, const char *message);
+
+// Command handling
+CommandType parse_command(const char *command, char *args);
+void handle_join_command(Server *server, Client *client, const char *room_name);
+void handle_leave_command(Server *server, Client *client);
+void handle_broadcast_command(Server *server, Client *client, const char *message);
+void handle_whisper_command(Server *server, Client *client, const char *args);
+void handle_sendfile_command(Server *server, Client *client, const char *args);
+void handle_exit_command(Server *server, Client *client);
+
+// Room management
+int create_or_join_room(Server *server, Client *client, const char *room_name);
+void leave_room(Server *server, Client *client);
+int find_room_index(Server *server, const char *room_name);
+
+// File transfer
+bool validate_file_extension(const char *filename);
+bool add_to_upload_queue(Server *server, const char *sender, const char *recipient, const char *filename, size_t filesize);
+void *process_upload_queue(void *arg);
+bool send_file(Client *sender, Client *recipient, const char *filename);
+bool receive_file(Client *client, const char *filename, size_t filesize);
+
+// Logging
+void log_message(Server *server, const char *format, ...);
+void log_client_action(Server *server, const char *username, const char *action);
+void log_file_transfer(Server *server, const char *sender, const char *recipient, const char *filename, bool success);
+
+// Utility functions
+bool is_valid_username(const char *username);
+bool is_valid_room_name(const char *room_name);
+bool is_username_taken(Server *server, const char *username);
+void get_timestamp(char *buffer, size_t size);
+
+#endif /* CHATSERVER_H */
