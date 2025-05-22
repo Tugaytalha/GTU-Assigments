@@ -1,0 +1,36 @@
+2025-05-21 23:28:28 - [INFO] Server listening on port 5000...
+2025-05-21 23:28:43 - [CONNECT] New client connected: emre2025 from 127.0.0.1
+2025-05-21 23:29:05 - [JOIN] user 'emre2025' joined room 'teamchat'
+2025-05-21 23:29:28 - [BROADCAST] user 'emre2025': Hello team!
+2025-05-21 23:30:58 - [CONNECT] New client connected: john42 from 127.0.0.1
+2025-05-21 23:31:21 - [JOIN] user 'john42' joined room 'teamchat'
+2025-05-21 23:31:28 - [BROADCAST] user 'john42': bre bak
+2025-05-21 23:31:55 - [WHISPER] user 'emre2025' sent whisper to 'john42'
+2025-05-22 00:01:36 - [FILE-QUEUE] Upload 'a.txt' from emre2025 added to queue. Queue size: 1
+2025-05-22 00:01:36 - [FILE] 'a.txt' from user 'emre2025' started upload after 0.0 seconds in queue.
+2025-05-22 00:01:36 - [SEND FILE] 'a.txt' sent from emre2025 to john42 (success)
+2025-05-22 00:02:00 - [DISCONNECT] Client emre2025 disconnected.
+2025-05-22 00:03:32 - [CONNECT] New client connected: alice12 from 127.0.0.1
+2025-05-22 00:04:22 - [DISCONNECT] Client john42 disconnected.
+2025-05-22 00:04:56 - [REJECTED] Duplicate username attempted: alice12
+2025-05-22 00:04:56 - [DISCONNECT] user 'alice12' lost connection. Cleaned up resources.
+2025-05-22 00:05:09 - [CONNECT] New client connected: alice1 from 127.0.0.1
+2025-05-22 00:05:19 - [SHUTDOWN] SIGINT received. Disconnecting clients, saving logs.
+2025-05-22 00:05:20 - [INFO] Server listening on port 5000...
+2025-05-22 00:05:26 - [CONNECT] New client connected: alice12 from 127.0.0.1
+2025-05-22 00:05:29 - [JOIN] user 'alice12' joined room 'vay'
+2025-05-22 00:05:40 - [DISCONNECT] Client alice12 disconnected.
+2025-05-22 00:05:40 - [DISCONNECT] user 'alice12' lost connection. Cleaned up resources.
+2025-05-22 00:05:46 - [CONNECT] New client connected: john1 from 127.0.0.1
+2025-05-22 00:05:56 - [JOIN] user 'john1' joined room 'hay'
+2025-05-22 00:06:01 - [DISCONNECT] Client john1 disconnected.
+2025-05-22 00:06:01 - [DISCONNECT] user 'john1' lost connection. Cleaned up resources.
+2025-05-22 00:06:05 - [CONNECT] New client connected: aa from 127.0.0.1
+2025-05-22 00:06:08 - [JOIN] user 'aa' joined room 'aa'
+2025-05-22 00:06:16 - [CONNECT] New client connected: dd from 127.0.0.1
+2025-05-22 00:06:23 - [JOIN] user 'dd' joined room 'demene'
+2025-05-22 00:06:26 - [DISCONNECT] Client dd disconnected.
+2025-05-22 00:06:26 - [DISCONNECT] user 'dd' lost connection. Cleaned up resources.
+2025-05-22 00:06:28 - [DISCONNECT] Client aa disconnected.
+2025-05-22 00:06:28 - [DISCONNECT] user 'aa' lost connection. Cleaned up resources.
+2025-05-22 19:57:56 - [SHUTDOWN] SIGINT received. Disconnecting clients, saving logs.

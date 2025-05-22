@@ -1,0 +1,4 @@
+#!/bin/bash
+# Wrapper script for the chat server
+
+python3 chatserver.py "$@"

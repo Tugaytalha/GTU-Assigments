@@ -1,0 +1,29 @@
+2025-05-21 22:30:15 - [INFO] Server listening on port 5000...
+2025-05-21 22:30:27 - [CONNECT] New client connected: alice12 from 192.168.1.104
+2025-05-21 22:30:31 - [JOIN] user 'alice12' joined room 'project1'
+2025-05-21 22:30:42 - [CONNECT] New client connected: john45 from 192.168.1.44
+2025-05-21 22:30:45 - [JOIN] user 'john45' joined room 'project1'
+2025-05-21 22:30:52 - [BROADCAST] user 'john45': Hello everyone, I'm new here!
+2025-05-21 22:30:58 - [WHISPER] user 'alice12' sent whisper to 'john45'
+2025-05-21 22:31:05 - [CONNECT] New client connected: emre2025 from 192.168.1.35
+2025-05-21 22:31:07 - [REJECTED] Duplicate username attempted: alice12
+2025-05-21 22:31:15 - [JOIN] user 'emre2025' joined room 'teamchat'
+2025-05-21 22:31:25 - [FILE-QUEUE] Upload 'report.pdf' from emre2025 added to queue. Queue size: 1
+2025-05-21 22:31:30 - [FILE] 'report.pdf' from user 'emre2025' started upload after 5.0 seconds in queue.
+2025-05-21 22:31:32 - [SEND FILE] 'report.pdf' sent from emre2025 to john45 (success)
+2025-05-21 22:31:40 - [ROOM] user 'alice12' left room 'project1', joined 'teamchat'
+2025-05-21 22:31:45 - [BROADCAST] user 'alice12': Hi team!
+2025-05-21 22:31:58 - [CONNECT] New client connected: melis22 from 192.168.1.72
+2025-05-21 22:32:05 - [ERROR] File 'huge_data.zip' from user 'melis22' exceeds size limit.
+2025-05-21 22:32:10 - [JOIN] user 'melis22' joined room 'project1'
+2025-05-21 22:32:23 - [FILE-QUEUE] Upload 'project.pdf' from melis22 added to queue. Queue size: 1
+2025-05-21 22:32:25 - [FILE] 'project.pdf' from user 'melis22' started upload after 2.0 seconds in queue.
+2025-05-21 22:32:27 - [SEND FILE] 'project.pdf' sent from melis22 to john45 (success)
+2025-05-21 22:32:30 - [FILE-QUEUE] Upload 'project.pdf' from john45 added to queue. Queue size: 1
+2025-05-21 22:32:32 - [FILE] 'project.pdf' from user 'john45' started upload after 2.0 seconds in queue.
+2025-05-21 22:32:34 - [FILE] Conflict: 'project.pdf' received twice → renamed 'project_1.pdf'
+2025-05-21 22:32:45 - [DISCONNECT] user 'melis22' lost connection. Cleaned up resources.
+2025-05-21 22:32:55 - [DISCONNECT] Client emre2025 disconnected.
+2025-05-21 22:33:10 - [DISCONNECT] Client alice12 disconnected.
+2025-05-21 22:33:15 - [DISCONNECT] Client john45 disconnected.
+2025-05-21 22:33:30 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
