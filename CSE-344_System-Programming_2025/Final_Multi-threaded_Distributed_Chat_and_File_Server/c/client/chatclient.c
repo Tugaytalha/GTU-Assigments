@@ -4,6 +4,20 @@
  */
 
 #include "chatclient.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <signal.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <stdbool.h>
+#include <stdarg.h>
 
 // Global client instance for signal handling
 Client client;
@@ -174,10 +188,16 @@ bool send_command(Client *client, const char *command) {
  * Handle sending a file to another user
  */
 bool handle_file_send(Client *client, const char *filename, const char *recipient) {
-    // Open file for reading
+    // Open file for reading in binary mode
     FILE *file = fopen(filename, "rb");
     if (!file) {
-        print_message("Error", "Could not open file", COLOR_RED);
+        if (errno == ENOENT) {
+            print_message("Error", "File not found: %s", COLOR_RED, filename);
+        } else if (errno == EACCES) {
+            print_message("Error", "Permission denied: %s", COLOR_RED, filename);
+        } else {
+            print_message("Error", "Could not open file: %s (Error: %s)", COLOR_RED, filename, strerror(errno));
+        }
         return false;
     }
     
@@ -187,8 +207,14 @@ bool handle_file_send(Client *client, const char *filename, const char *recipien
     fseek(file, 0, SEEK_SET);
     
     // Check file size
-    if (filesize == 0 || filesize > MAX_FILE_SIZE) {
-        print_message("Error", "File size must be between 1 and 3MB", COLOR_RED);
+    if (filesize == 0) {
+        print_message("Error", "File is empty: %s", COLOR_RED, filename);
+        fclose(file);
+        return false;
+    }
+    if (filesize > MAX_FILE_SIZE) {
+        print_message("Error", "File too large: %s (Size: %zu bytes, Max: %d bytes)", 
+                     COLOR_RED, filename, filesize, MAX_FILE_SIZE);
         fclose(file);
         return false;
     }
@@ -198,7 +224,7 @@ bool handle_file_send(Client *client, const char *filename, const char *recipien
     sprintf(command, "/sendfile %s %s", filename, recipient);
     
     if (!send_command(client, command)) {
-        print_message("Error", "Failed to send command to server", COLOR_RED);
+        print_message("Error", "Failed to send command to server - connection error", COLOR_RED);
         fclose(file);
         return false;
     }
@@ -223,7 +249,7 @@ bool handle_file_send(Client *client, const char *filename, const char *recipien
         ssize_t bytes_sent = send(client->socket, buffer, bytes_read, 0);
         
         if (bytes_sent <= 0) {
-            print_message("Error", "Failed to send file data", COLOR_RED);
+            print_message("Error", "Failed to send file data - connection error", COLOR_RED);
             fclose(file);
             return false;
         }
@@ -326,17 +352,46 @@ void *receive_messages(void *arg) {
  * Handle receiving a file from another user
  */
 void handle_file_receive(Client *client, const char *filename, size_t filesize) {
-    char filepath[MAX_FILE_NAME_LEN + sizeof(UPLOADS_DIR) + 2];
-    sprintf(filepath, "%s/%s", UPLOADS_DIR, filename);
+    // Extract only the base filename, not any path components for security
+    const char *base_filename = strrchr(filename, '/');
+    if (base_filename) {
+        base_filename++; // Skip the slash
+    } else {
+        base_filename = strrchr(filename, '\\');
+        if (base_filename) {
+            base_filename++; // Skip the backslash
+        } else {
+            base_filename = filename; // No path separator found
+        }
+    }
     
-    // Open file for writing
+    // Create the full path for saving the file
+    char filepath[MAX_FILE_NAME_LEN + sizeof(UPLOADS_DIR) + 2];
+    snprintf(filepath, sizeof(filepath), "%s/%s", UPLOADS_DIR, base_filename);
+    
+    // Ensure uploads directory exists
+    create_uploads_directory();
+    
+    // Open file for writing in binary mode
     FILE *file = fopen(filepath, "wb");
     if (!file) {
-        print_message("Error", "Could not create file for writing", COLOR_RED);
+        print_message("Error", "Could not create file for writing. Path: %s", COLOR_RED, filepath);
+        
+        // We need to consume the file data even if we can't save it
+        char discard_buffer[FILE_BUFFER_SIZE];
+        size_t total_discarded = 0;
+        while (total_discarded < filesize) {
+            size_t to_read = filesize - total_discarded;
+            if (to_read > FILE_BUFFER_SIZE) to_read = FILE_BUFFER_SIZE;
+            
+            ssize_t bytes_read = recv(client->socket, discard_buffer, to_read, 0);
+            if (bytes_read <= 0) break;
+            total_discarded += bytes_read;
+        }
         return;
     }
     
-    print_message("File", "Receiving file...", COLOR_YELLOW);
+    print_message("File", "Receiving file '%s'... Saving to: %s", COLOR_YELLOW, base_filename, filepath);
     
     // Receive file data
     char buffer[FILE_BUFFER_SIZE];
@@ -352,12 +407,18 @@ void handle_file_receive(Client *client, const char *filename, size_t filesize) 
         bytes_read = recv(client->socket, buffer, to_read, 0);
         
         if (bytes_read <= 0) {
-            print_message("Error", "Failed to receive file data", COLOR_RED);
+            print_message("Error", "Failed to receive file data - connection error", COLOR_RED);
             fclose(file);
             return;
         }
         
-        fwrite(buffer, 1, bytes_read, file);
+        size_t bytes_written = fwrite(buffer, 1, bytes_read, file);
+        if (bytes_written != bytes_read) {
+            print_message("Error", "Failed to write data to file - disk error", COLOR_RED);
+            fclose(file);
+            return;
+        }
+        
         total_received += bytes_read;
         
         // Display progress
@@ -367,9 +428,16 @@ void handle_file_receive(Client *client, const char *filename, size_t filesize) 
     }
     
     printf("\n");
+    fflush(file); // Make sure all data is written
     fclose(file);
     
-    print_message("Success", "File received and saved to uploads directory", COLOR_GREEN);
+    // Verify file was saved
+    struct stat st;
+    if (stat(filepath, &st) == 0 && st.st_size == filesize) {
+        print_message("Success", "File '%s' received and saved to: %s", COLOR_GREEN, base_filename, filepath);
+    } else {
+        print_message("Warning", "File may not have been saved correctly. Check: %s", COLOR_YELLOW, filepath);
+    }
 }
 
 /**
@@ -405,7 +473,13 @@ void print_help() {
 /**
  * Print a formatted message with color
  */
-void print_message(const char *prefix, const char *message, const char *color) {
+void print_message(const char *prefix, const char *format, const char *color, ...) {
+    char message[MAX_MESSAGE_LEN];
+    va_list args;
+    va_start(args, color);
+    vsnprintf(message, sizeof(message), format, args);
+    va_end(args);
+
     if (strlen(prefix) > 0) {
         printf("%s%s:%s %s\n", color, prefix, COLOR_RESET, message);
     } else {
@@ -426,6 +500,7 @@ void create_uploads_directory() {
         #else
         mkdir(UPLOADS_DIR, 0700);
         #endif
+        printf("Created uploads directory: %s\n", UPLOADS_DIR);
     }
 }
 

@@ -68,7 +68,7 @@ void handle_file_receive(Client *client, const char *header, size_t filesize);
 // Utility functions
 void print_welcome_message();
 void print_help();
-void print_message(const char *prefix, const char *message, const char *color);
+void print_message(const char *prefix, const char *format, const char *color, ...);
 void create_uploads_directory();
 
 #endif /* CHATCLIENT_H */

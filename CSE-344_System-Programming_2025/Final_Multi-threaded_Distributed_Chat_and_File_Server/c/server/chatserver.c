@@ -175,6 +175,9 @@ void *handle_client(void *arg) {
     printf("[CONNECT] New client connected: %s from %s\n", 
            client->username, inet_ntoa(client->address.sin_addr));
     
+    // Initialize file transfer flag
+    client->in_file_transfer = false;
+
     // Main command processing loop
     while (client->status == CLIENT_CONNECTED && server_ptr->running) {
         memset(buffer, 0, MAX_COMMAND_LEN);
@@ -194,32 +197,43 @@ void *handle_client(void *arg) {
         
         buffer[bytes_read] = '\0';
         
+        // If client is in file transfer mode, don't interpret data as commands
+        if (client->in_file_transfer) {
+            // Skip command processing - this data is part of a file transfer
+            continue;
+        }
+        
         // Process command
         char args[MAX_COMMAND_LEN] = {0};
         CommandType cmd_type = parse_command(buffer, args);
         
-        switch (cmd_type) {
-            case CMD_JOIN:
-                handle_join_command(server_ptr, client, args);
-                break;
-            case CMD_LEAVE:
-                handle_leave_command(server_ptr, client);
-                break;
-            case CMD_BROADCAST:
-                handle_broadcast_command(server_ptr, client, args);
-                break;
-            case CMD_WHISPER:
-                handle_whisper_command(server_ptr, client, args);
-                break;
-            case CMD_SENDFILE:
-                handle_sendfile_command(server_ptr, client, args);
-                break;
-            case CMD_EXIT:
-                handle_exit_command(server_ptr, client);
-                break;
-            case CMD_INVALID:
-                notify_client(client, "[Server]: Invalid command. Type /help for available commands.");
-                break;
+        // Don't process commands if in file transfer mode
+        if (!client->in_file_transfer) {
+            switch (cmd_type) {
+                case CMD_JOIN:
+                    handle_join_command(server_ptr, client, args);
+                    break;
+                case CMD_LEAVE:
+                    handle_leave_command(server_ptr, client);
+                    break;
+                case CMD_BROADCAST:
+                    handle_broadcast_command(server_ptr, client, args);
+                    break;
+                case CMD_WHISPER:
+                    handle_whisper_command(server_ptr, client, args);
+                    break;
+                case CMD_SENDFILE:
+                    handle_sendfile_command(server_ptr, client, args);
+                    break;
+                case CMD_EXIT:
+                    handle_exit_command(server_ptr, client);
+                    break;
+                case CMD_INVALID:
+                    if (!client->in_file_transfer) {
+                        notify_client(client, "[Server]: Invalid command. Type /help for available commands.");
+                    }
+                    break;
+            }
         }
     }
     

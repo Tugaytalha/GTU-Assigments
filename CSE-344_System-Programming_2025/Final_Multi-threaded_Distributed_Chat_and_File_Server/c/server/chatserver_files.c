@@ -140,6 +140,9 @@ void *process_upload_queue(void *arg) {
     // Request file data from sender
     notify_client(sender, "[Server]: Please send file data now.");
     
+    // Set sender to file transfer mode to prevent interpreting file data as commands
+    sender->in_file_transfer = true;
+    
     // Create a buffer for file data
     char *file_buffer = (char *)malloc(transfer->filesize);
     if (!file_buffer) {
@@ -228,6 +231,9 @@ void *process_upload_queue(void *arg) {
     
     // Free buffer
     free(file_buffer);
+    
+    // Reset file transfer flag
+    sender->in_file_transfer = false;
     
     // Calculate queue wait time
     time_t transfer_time = time(NULL) - transfer->queued_time;

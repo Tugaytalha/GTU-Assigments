@@ -262,8 +262,15 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
     // Request file size
     notify_client(client, "[Server]: Send file size in bytes:");
     
+    // Temporarily mark client as in file transfer mode to prevent misinterpreting the size
+    client->in_file_transfer = true;
+    
     char buffer[32];
     ssize_t bytes_read = recv(client->socket, buffer, sizeof(buffer) - 1, 0);
+    
+    // Reset the flag temporarily
+    client->in_file_transfer = false;
+    
     if (bytes_read <= 0) {
         notify_client(client, "[Server]: Error - Failed to receive file size.");
         return;
@@ -285,7 +292,8 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
         
         // Notify recipient
         char notify_msg[MAX_MESSAGE_LEN];
-        sprintf(notify_msg, "[Server]: User %s is sending you file '%s' (%zu bytes).", client->username, filename, filesize);
+        snprintf(notify_msg, MAX_MESSAGE_LEN, "[Server]: User %s is sending you file '%s' (%zu bytes).", 
+                client->username, filename, filesize);
         notify_client(&server->clients[recipient_index], notify_msg);
         
         log_message(server, "[FILE-QUEUE] Upload '%s' from %s added to queue. Queue size: %d", 

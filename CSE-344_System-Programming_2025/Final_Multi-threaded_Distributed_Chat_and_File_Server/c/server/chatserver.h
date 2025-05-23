@@ -87,6 +87,7 @@ typedef struct {
     char current_room[MAX_ROOM_NAME_LEN + 1];
     ClientStatus status;
     pthread_t thread;
+    bool in_file_transfer;  // Flag to indicate if client is currently in file transfer mode
 } Client;
 
 /* Server structure */

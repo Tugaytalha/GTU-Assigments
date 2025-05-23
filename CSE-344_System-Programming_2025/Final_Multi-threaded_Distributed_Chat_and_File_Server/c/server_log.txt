@@ -12,3 +12,25 @@
 2025-05-22 21:13:04 - [FILE] 'code.zip' from user 'tugay' started upload after 0 seconds in queue.
 2025-05-22 21:13:04 - [SEND FILE] '../python/client/a.txt' sent from tugay to han (success)
 2025-05-22 21:20:56 - [FILE-QUEUE] Upload 'HW3.pdf' from tugay added to queue. Queue size: 1
+2025-05-22 21:51:11 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-22 22:01:29 - [INFO] Server initialized and listening on port 3131
+2025-05-22 22:01:55 - [USER: han31] - connected to the server
+2025-05-22 22:02:02 - [USER: tugaykral] - connected to the server
+2025-05-22 22:02:28 - [WHISPER] tugaykral to han31: 313131
+2025-05-22 22:02:50 - [USER: han31] - joined room
+2025-05-22 22:02:59 - [USER: tugaykral] - joined room
+2025-05-22 22:03:04 - [BROADCAST] user 'tugaykral': 313131
+2025-05-22 22:03:54 - [ROOM] user 'tugaykral' left room ''
+2025-05-22 22:03:54 - [USER: tugaykral] - joined room
+2025-05-22 22:05:58 - [FILE-QUEUE] Upload 'HW3.pdf' from tugaykral added to queue. Queue size: 1
+2025-05-22 22:07:02 - [FILE-QUEUE] Upload '../python/client/a.txt' from han31 added to queue. Queue size: 2
+2025-05-22 22:07:02 - [FILE] 'code.zip' from user 'han31' started upload after 0 seconds in queue.
+2025-05-22 22:07:02 - [SEND FILE] '../python/client/a.txt' sent from han31 to tugaykral (success)
+2025-05-22 22:08:55 - [USER: tugaykral] - disconnected (connection closed)
+2025-05-22 22:11:58 - [INFO] Server initialized and listening on port 3131
+2025-05-22 22:12:18 - [USER: han31] - connected to the server
+2025-05-22 22:12:31 - [USER: ttden] - connected to the server
+2025-05-22 22:12:45 - [USER: ttden] - joined room
+2025-05-22 22:13:27 - [FILE-QUEUE] Upload '../python/client/a.txt' from ttden added to queue. Queue size: 1
+2025-05-22 22:13:27 - [FILE] 'code.zip' from user 'ttden' started upload after 0 seconds in queue.
+2025-05-22 22:13:27 - [SEND FILE] '../python/client/a.txt' sent from ttden to han31 (success)
