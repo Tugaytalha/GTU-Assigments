@@ -34,3 +34,70 @@
 2025-05-22 22:13:27 - [FILE-QUEUE] Upload '../python/client/a.txt' from ttden added to queue. Queue size: 1
 2025-05-22 22:13:27 - [FILE] 'code.zip' from user 'ttden' started upload after 0 seconds in queue.
 2025-05-22 22:13:27 - [SEND FILE] '../python/client/a.txt' sent from ttden to han31 (success)
+2025-05-23 16:43:22 - [INFO] Server initialized and listening on port 3131
+2025-05-23 16:43:39 - [USER: han] - connected to the server
+2025-05-23 16:43:45 - [USER: tugay] - connected to the server
+2025-05-23 16:43:53 - [FILE-QUEUE] Upload 'server_log.txt' from tugay added to queue. Queue size: 1
+2025-05-23 16:43:53 - [FILE] 'server_log.txt' from user 'tugay' started upload after 0 seconds in queue.
+2025-05-23 16:43:53 - [SEND FILE] 'server_log.txt' sent from tugay to han (success)
+2025-05-23 16:47:36 - [USER: tugay] - disconnected (connection closed)
+2025-05-23 16:47:36 - [USER: tugay] - disconnected
+2025-05-23 16:47:37 - [USER: han] - disconnected (connection closed)
+2025-05-23 16:47:37 - [USER: han] - disconnected
+2025-05-23 16:47:38 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-23 16:47:43 - [INFO] Server initialized and listening on port 3131
+2025-05-23 16:47:49 - [USER: han] - connected to the server
+2025-05-23 16:47:58 - [USER: tugay] - connected to the server
+2025-05-23 16:48:09 - [FILE-QUEUE] Upload 'server_log.txt' from tugay added to queue. Queue size: 1
+2025-05-23 16:49:13 - [USER: tugay] - disconnected (connection closed)
+2025-05-23 16:50:54 - [INFO] Server initialized and listening on port 3131
+2025-05-23 16:51:00 - [USER: han] - connected to the server
+2025-05-23 16:51:07 - [USER: tugay] - connected to the server
+2025-05-23 16:51:14 - [FILE-QUEUE] Upload 'server_log.txt' from tugay added to queue. Queue size: 1
+2025-05-23 16:53:34 - [INFO] Server initialized and listening on port 3131
+2025-05-23 16:53:40 - [USER: h] - connected to the server
+2025-05-23 16:53:47 - [USER: t] - connected to the server
+2025-05-23 16:53:56 - [FILE] 'server_log.txt' sent from t to h successfully
+2025-05-23 16:53:56 - [SEND FILE] 'server_log.txt' sent from t to h (success)
+2025-05-23 21:59:18 - [INFO] Server initialized and listening on port 3131
+2025-05-23 21:59:58 - [USER: han31] - connected to the server
+2025-05-23 22:00:41 - [USER: ttden] - connected to the server
+2025-05-23 22:01:49 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:01:49 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:36:52 - [USER: ttden] - joined room
+2025-05-23 22:36:58 - [USER: han31] - joined room
+2025-05-23 22:37:13 - [FILE] 'HW3.pdf' sent from han31 to ttden successfully
+2025-05-23 22:37:13 - [SEND FILE] 'HW3.pdf' sent from han31 to ttden (success)
+2025-05-23 22:38:41 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:38:41 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:38:55 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:38:55 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:40:38 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:40:38 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:41:11 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:41:11 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:41:11 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:41:11 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:41:12 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:41:12 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:41:12 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:41:12 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:41:13 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:41:13 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:41:13 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:41:13 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:41:13 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:41:13 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:41:14 - [FILE] 'HW3.pdf' sent from ttden to han31 successfully
+2025-05-23 22:41:14 - [SEND FILE] 'HW3.pdf' sent from ttden to han31 (success)
+2025-05-23 22:42:02 - [USER: ttden] - disconnected (connection closed)
+2025-05-23 22:42:02 - [ROOM] user 'ttden' left room ''
+2025-05-23 22:42:02 - [USER: ttden] - disconnected
+2025-05-23 22:42:17 - [USER: han31] - disconnected (connection closed)
+2025-05-23 22:42:17 - [ROOM] user 'han31' left room ''
+2025-05-23 22:42:17 - [USER: han31] - disconnected
+2025-05-23 22:42:20 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-23 22:44:57 - [INFO] Server initialized and listening on port 3131
+2025-05-23 23:06:22 - [USER: sa] - connected to the server
+2025-05-23 23:06:29 - [USER: as] - connected to the server
+2025-05-23 23:06:31 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.

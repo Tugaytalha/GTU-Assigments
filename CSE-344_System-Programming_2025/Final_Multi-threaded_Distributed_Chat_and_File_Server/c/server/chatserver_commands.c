@@ -197,7 +197,10 @@ void handle_whisper_command(Server *server, Client *client, const char *args) {
     
     // Send whisper
     char whisper_msg[MAX_MESSAGE_LEN];
-    snprintf(whisper_msg, MAX_MESSAGE_LEN, "[Whisper from %s]: %s", client->username, message);
+    size_t prefix_len = snprintf(whisper_msg, MAX_MESSAGE_LEN, "[Whisper from %s]: ", client->username);
+    if (prefix_len < MAX_MESSAGE_LEN) {
+        strncat(whisper_msg, message, MAX_MESSAGE_LEN - prefix_len - 1);
+    }
     notify_client(&server->clients[recipient_index], whisper_msg);
     
     notify_client(client, "[Server]: Whisper sent");
@@ -262,14 +265,9 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
     // Request file size
     notify_client(client, "[Server]: Send file size in bytes:");
     
-    // Temporarily mark client as in file transfer mode to prevent misinterpreting the size
-    client->in_file_transfer = true;
-    
     char buffer[32];
+    memset(buffer, 0, sizeof(buffer));
     ssize_t bytes_read = recv(client->socket, buffer, sizeof(buffer) - 1, 0);
-    
-    // Reset the flag temporarily
-    client->in_file_transfer = false;
     
     if (bytes_read <= 0) {
         notify_client(client, "[Server]: Error - Failed to receive file size.");
@@ -277,31 +275,149 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
     }
     
     buffer[bytes_read] = '\0';
-    size_t filesize = atol(buffer);
+    char *endptr;
+    size_t filesize = strtoull(buffer, &endptr, 10);
+    
+    if (*endptr != '\0' || filesize == 0) {
+        notify_client(client, "[Server]: Error - Invalid file size format.");
+        return;
+    }
     
     // Validate file size
-    if (filesize <= 0 || filesize > MAX_FILE_SIZE) {
+    if (filesize > MAX_FILE_SIZE) {
         notify_client(client, "[Server]: Error - File size must be between 1 and 3MB.");
         log_message(server, "[ERROR] File '%s' from user '%s' exceeds size limit.", filename, client->username);
         return;
     }
     
-    // Add to upload queue
-    if (add_to_upload_queue(server, client->username, recipient, filename, filesize)) {
-        notify_client(client, "[Server]: File added to the upload queue.");
-        
-        // Notify recipient
-        char notify_msg[MAX_MESSAGE_LEN];
-        snprintf(notify_msg, MAX_MESSAGE_LEN, "[Server]: User %s is sending you file '%s' (%zu bytes).", 
-                client->username, filename, filesize);
-        notify_client(&server->clients[recipient_index], notify_msg);
-        
-        log_message(server, "[FILE-QUEUE] Upload '%s' from %s added to queue. Queue size: %d", 
-                   filename, client->username, server->queue_count);
-        printf("[COMMAND] %s initiated file transfer to %s\n", client->username, recipient);
-    } else {
-        notify_client(client, "[Server]: Error - Failed to queue file transfer. Queue might be full.");
+    // Send acknowledgment to client that we're ready for file data
+    notify_client(client, "[Server]: Ready to receive file data. Please send now.");
+    
+    // Create file buffer for immediate processing
+    char *file_buffer = (char *)malloc(filesize);
+    if (!file_buffer) {
+        notify_client(client, "[Server]: Error - Memory allocation failed.");
+        return;
     }
+    
+    printf("[DEBUG] Allocated buffer for immediate file receive: %zu bytes\n", filesize);
+    
+    // Set client to file transfer mode
+    client->in_file_transfer = true;
+    
+    // Receive file data immediately
+    size_t total_received = 0;
+    ssize_t data_received;
+    
+    printf("[DEBUG] Starting immediate file data reception...\n");
+    
+    while (total_received < filesize) {
+        size_t remaining = filesize - total_received;
+        size_t to_receive = (remaining > FILE_BUFFER_SIZE) ? FILE_BUFFER_SIZE : remaining;
+        
+        data_received = recv(client->socket, file_buffer + total_received, to_receive, 0);
+        
+        if (data_received <= 0) {
+            printf("[ERROR] Failed to receive file data: %ld, errno: %d\n", (long)data_received, errno);
+            free(file_buffer);
+            client->in_file_transfer = false;
+            notify_client(client, "[Server]: Error - File transfer failed during reception.");
+            return;
+        }
+        
+        total_received += data_received;
+        
+        // Show progress
+        size_t progress = (total_received * 100) / filesize;
+        if (progress % 20 == 0) {
+            printf("[DEBUG] File reception progress: %zu%%\n", progress);
+        }
+    }
+    
+    printf("[DEBUG] File data received successfully: %zu bytes\n", total_received);
+    
+    // Reset file transfer flag
+    client->in_file_transfer = false;
+    
+    // Now send the file to recipient immediately
+    char unique_filename[MAX_FILE_NAME_LEN + 32];
+    time_t now = time(NULL);
+    
+    // Add timestamp to filename to make it unique
+    const char *dot = strrchr(filename, '.');
+    if (dot) {
+        int name_len = dot - filename;
+        char base_name[MAX_FILE_NAME_LEN];
+        strncpy(base_name, filename, name_len);
+        base_name[name_len] = '\0';
+        
+        snprintf(unique_filename, sizeof(unique_filename), "%s_%ld%s", 
+                base_name, (long)now, dot);
+    } else {
+        snprintf(unique_filename, sizeof(unique_filename), "%s_%ld", 
+                filename, (long)now);
+    }
+    
+    printf("[DEBUG] Sending file to recipient with unique name: %s\n", unique_filename);
+    
+    // Send file header to recipient
+    char header[MAX_MESSAGE_LEN];
+    sprintf(header, "FILE:%s:%zu\n", unique_filename, filesize);
+    
+    if (send(server->clients[recipient_index].socket, header, strlen(header), 0) <= 0) {
+        printf("[ERROR] Failed to send header to recipient\n");
+        free(file_buffer);
+        notify_client(client, "[Server]: Error - Failed to send file to recipient.");
+        return;
+    }
+    
+    printf("[DEBUG] Header sent to recipient: %s", header);
+    
+    // Send file data to recipient
+    size_t total_sent = 0;
+    ssize_t data_sent;
+    
+    while (total_sent < filesize) {
+        size_t remaining = filesize - total_sent;
+        size_t to_send = (remaining > FILE_BUFFER_SIZE) ? FILE_BUFFER_SIZE : remaining;
+        
+        data_sent = send(server->clients[recipient_index].socket, file_buffer + total_sent, to_send, 0);
+        
+        if (data_sent <= 0) {
+            printf("[ERROR] Failed to send file data to recipient: %ld\n", (long)data_sent);
+            free(file_buffer);
+            notify_client(client, "[Server]: Error - Failed to send file to recipient.");
+            return;
+        }
+        
+        total_sent += data_sent;
+        
+        // Show progress
+        size_t progress = (total_sent * 100) / filesize;
+        if (progress % 20 == 0) {
+            printf("[DEBUG] File send progress: %zu%%\n", progress);
+        }
+    }
+    
+    printf("[DEBUG] File sent successfully to recipient: %zu bytes\n", total_sent);
+    
+    // Free buffer
+    free(file_buffer);
+    
+    // Notify both parties
+    notify_client(client, "[Server]: File sent successfully.");
+    
+    char notify_msg[MAX_MESSAGE_LEN];
+    snprintf(notify_msg, MAX_MESSAGE_LEN, "[Server]: File '%s' received successfully from %s.", 
+            filename, client->username);
+    notify_client(&server->clients[recipient_index], notify_msg);
+    
+    // Log the transfer
+    log_message(server, "[FILE] '%s' sent from %s to %s successfully", 
+               filename, client->username, recipient);
+    log_file_transfer(server, client->username, recipient, filename, true);
+    
+    printf("[COMMAND] %s completed file transfer to %s\n", client->username, recipient);
 }
 
 /**

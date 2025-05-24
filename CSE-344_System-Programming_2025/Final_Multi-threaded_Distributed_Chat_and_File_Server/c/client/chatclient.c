@@ -26,6 +26,7 @@ Client client;
  * Signal handler for SIGINT (Ctrl+C)
  */
 void handle_sigint(int sig) {
+    (void)sig;  // Kullanılmayan parametre uyarısını engellemek için
     printf("\nDisconnecting from server...\n");
     client.exit_flag = true;
     disconnect_from_server(&client);
@@ -229,21 +230,37 @@ bool handle_file_send(Client *client, const char *filename, const char *recipien
         return false;
     }
     
-    // Wait for server to request file size
-    // The server will respond and request the file size, which is handled in receive_messages()
-    
     // Send file size
     char size_str[32];
     sprintf(size_str, "%zu", filesize);
-    send(client->socket, size_str, strlen(size_str), 0);
+    if (send(client->socket, size_str, strlen(size_str), 0) <= 0) {
+        print_message("Error", "Failed to send file size - connection error", COLOR_RED);
+        fclose(file);
+        return false;
+    }
     
-    // Server will send a message confirming file is queued
-    // Then wait for server to request file data
+    // Wait for server acknowledgment
+    char ack_buffer[32];
+    ssize_t ack_bytes = recv(client->socket, ack_buffer, sizeof(ack_buffer) - 1, 0);
+    if (ack_bytes <= 0) {
+        print_message("Error", "Failed to receive server acknowledgment", COLOR_RED);
+        fclose(file);
+        return false;
+    }
+    ack_buffer[ack_bytes] = '\0';
+    
+    // Check if server acknowledged
+    if (strstr(ack_buffer, "Error") != NULL) {
+        print_message("Error", "Server rejected file transfer: %s", COLOR_RED, ack_buffer);
+        fclose(file);
+        return false;
+    }
     
     // Read file data and send it
     char buffer[FILE_BUFFER_SIZE];
     size_t bytes_read;
     size_t total_sent = 0;
+    size_t last_progress = 0;
     
     while ((bytes_read = fread(buffer, 1, FILE_BUFFER_SIZE, file)) > 0) {
         ssize_t bytes_sent = send(client->socket, buffer, bytes_read, 0);
@@ -256,17 +273,34 @@ bool handle_file_send(Client *client, const char *filename, const char *recipien
         
         total_sent += bytes_sent;
         
-        // Display progress
-        float progress = (float)total_sent / filesize * 100;
-        printf("\rUploading: %.1f%%", progress);
-        fflush(stdout);
+        // Display progress only when it changes by at least 1%
+        size_t current_progress = (total_sent * 100) / filesize;
+        if (current_progress > last_progress) {
+            printf("\rUploading: %zu%%", current_progress);
+            fflush(stdout);
+            last_progress = current_progress;
+        }
     }
     
     printf("\n");
     fclose(file);
     
-    print_message("Info", "File upload completed", COLOR_GREEN);
-    return true;
+    // Wait for final confirmation
+    char final_buffer[256];
+    ssize_t final_bytes = recv(client->socket, final_buffer, sizeof(final_buffer) - 1, 0);
+    if (final_bytes <= 0) {
+        print_message("Error", "Failed to receive final confirmation", COLOR_RED);
+        return false;
+    }
+    final_buffer[final_bytes] = '\0';
+    
+    if (strstr(final_buffer, "successfully") != NULL) {
+        print_message("Success", "File upload completed successfully", COLOR_GREEN);
+        return true;
+    } else {
+        print_message("Error", "File upload failed: %s", COLOR_RED, final_buffer);
+        return false;
+    }
 }
 
 /**
@@ -297,6 +331,8 @@ void *receive_messages(void *arg) {
         
         // Check if this is a file transfer
         if (strncmp(buffer, "FILE:", 5) == 0) {
+            printf("DEBUG: Received file header: %s\n", buffer); // Debug
+            
             // Extract filename and size
             char *filename_start = buffer + 5;
             char *size_start = strchr(filename_start, ':');
@@ -305,8 +341,27 @@ void *receive_messages(void *arg) {
                 *size_start = '\0';
                 size_start++;
                 
-                size_t filesize = atol(size_start);
-                handle_file_receive(client, filename_start, filesize);
+                // Remove newline if present
+                char *newline = strchr(size_start, '\n');
+                char *remaining_data = NULL;
+                size_t remaining_len = 0;
+                
+                if (newline) {
+                    *newline = '\0';
+                    remaining_data = newline + 1;
+                    remaining_len = bytes_read - (remaining_data - buffer);
+                }
+                
+                char *endptr;
+                size_t filesize = strtoull(size_start, &endptr, 10);
+                printf("DEBUG: Parsed filename='%s', filesize=%zu, remaining_len=%zu\n", 
+                       filename_start, filesize, remaining_len); // Debug
+                
+                if (*endptr == '\0' && filesize > 0) {
+                    handle_file_receive_with_data(client, filename_start, filesize, remaining_data, remaining_len);
+                } else {
+                    print_message("Error", "Invalid file size received", COLOR_RED);
+                }
             }
         }
         // Handle server prompts
@@ -348,10 +403,11 @@ void *receive_messages(void *arg) {
     pthread_exit(NULL);
 }
 
-/**
- * Handle receiving a file from another user
- */
-void handle_file_receive(Client *client, const char *filename, size_t filesize) {
+void handle_file_receive_with_data(Client *client, const char *filename, size_t filesize, 
+                                   const char *initial_data, size_t initial_len) {
+    printf("DEBUG: Starting file receive: filename='%s', filesize=%zu, initial_len=%zu\n", 
+           filename, filesize, initial_len); // Debug
+    
     // Extract only the base filename, not any path components for security
     const char *base_filename = strrchr(filename, '/');
     if (base_filename) {
@@ -369,17 +425,21 @@ void handle_file_receive(Client *client, const char *filename, size_t filesize) 
     char filepath[MAX_FILE_NAME_LEN + sizeof(UPLOADS_DIR) + 2];
     snprintf(filepath, sizeof(filepath), "%s/%s", UPLOADS_DIR, base_filename);
     
+    printf("DEBUG: File will be saved to: %s\n", filepath); // Debug
+    
     // Ensure uploads directory exists
     create_uploads_directory();
     
     // Open file for writing in binary mode
     FILE *file = fopen(filepath, "wb");
     if (!file) {
-        print_message("Error", "Could not create file for writing. Path: %s", COLOR_RED, filepath);
+        print_message("Error", "Could not create file for writing. Path: %s, Error: %s", 
+                     COLOR_RED, filepath, strerror(errno));
         
         // We need to consume the file data even if we can't save it
         char discard_buffer[FILE_BUFFER_SIZE];
-        size_t total_discarded = 0;
+        size_t total_discarded = initial_len;
+        
         while (total_discarded < filesize) {
             size_t to_read = filesize - total_discarded;
             if (to_read > FILE_BUFFER_SIZE) to_read = FILE_BUFFER_SIZE;
@@ -393,10 +453,24 @@ void handle_file_receive(Client *client, const char *filename, size_t filesize) 
     
     print_message("File", "Receiving file '%s'... Saving to: %s", COLOR_YELLOW, base_filename, filepath);
     
-    // Receive file data
-    char buffer[FILE_BUFFER_SIZE];
+    // Write initial data if any
     size_t total_received = 0;
+    if (initial_data && initial_len > 0) {
+        size_t data_to_write = (initial_len > filesize) ? filesize : initial_len;
+        size_t bytes_written = fwrite(initial_data, 1, data_to_write, file);
+        if (bytes_written != data_to_write) {
+            print_message("Error", "Failed to write initial data to file - disk error", COLOR_RED);
+            fclose(file);
+            return;
+        }
+        total_received = data_to_write;
+        printf("DEBUG: Wrote %zu bytes of initial data\n", data_to_write); // Debug
+    }
+    
+    // Receive remaining file data
+    char buffer[FILE_BUFFER_SIZE];
     ssize_t bytes_read;
+    size_t last_progress = 0;
     
     while (total_received < filesize) {
         size_t to_read = filesize - total_received;
@@ -412,8 +486,8 @@ void handle_file_receive(Client *client, const char *filename, size_t filesize) 
             return;
         }
         
-        size_t bytes_written = fwrite(buffer, 1, bytes_read, file);
-        if (bytes_written != bytes_read) {
+        size_t bytes_written = fwrite(buffer, 1, (size_t)bytes_read, file);
+        if (bytes_written != (size_t)bytes_read) {
             print_message("Error", "Failed to write data to file - disk error", COLOR_RED);
             fclose(file);
             return;
@@ -421,23 +495,37 @@ void handle_file_receive(Client *client, const char *filename, size_t filesize) 
         
         total_received += bytes_read;
         
-        // Display progress
-        float progress = (float)total_received / filesize * 100;
-        printf("\rDownloading: %.1f%%", progress);
-        fflush(stdout);
+        // Display progress only when it changes by at least 1%
+        size_t current_progress = (total_received * 100) / filesize;
+        if (current_progress > last_progress) {
+            printf("\rDownloading: %zu%%", current_progress);
+            fflush(stdout);
+            last_progress = current_progress;
+        }
     }
     
     printf("\n");
     fflush(file); // Make sure all data is written
     fclose(file);
     
+    printf("DEBUG: File receive completed. Total received: %zu bytes\n", total_received); // Debug
+    
     // Verify file was saved
     struct stat st;
-    if (stat(filepath, &st) == 0 && st.st_size == filesize) {
+    if (stat(filepath, &st) == 0 && (size_t)st.st_size == filesize) {
         print_message("Success", "File '%s' received and saved to: %s", COLOR_GREEN, base_filename, filepath);
     } else {
-        print_message("Warning", "File may not have been saved correctly. Check: %s", COLOR_YELLOW, filepath);
+        if (stat(filepath, &st) == 0) {
+            print_message("Warning", "File size mismatch. Expected: %zu, Actual: %lld. Check: %s", 
+                         COLOR_YELLOW, filesize, (long long)st.st_size, filepath);
+        } else {
+            print_message("Warning", "File may not have been saved correctly. Check: %s", COLOR_YELLOW, filepath);
+        }
     }
+}
+
+void handle_file_receive(Client *client, const char *filename, size_t filesize) {
+    handle_file_receive_with_data(client, filename, filesize, NULL, 0);
 }
 
 /**

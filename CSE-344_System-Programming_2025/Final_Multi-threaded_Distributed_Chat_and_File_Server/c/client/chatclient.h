@@ -64,6 +64,8 @@ bool handle_file_send(Client *client, const char *filename, const char *recipien
 // Message reception
 void *receive_messages(void *arg);
 void handle_file_receive(Client *client, const char *header, size_t filesize);
+void handle_file_receive_with_data(Client *client, const char *filename, size_t filesize, 
+                                   const char *initial_data, size_t initial_len);
 
 // Utility functions
 void print_welcome_message();

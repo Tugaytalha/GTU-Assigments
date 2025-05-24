@@ -36,6 +36,7 @@
 #define MAX_FILE_NAME_LEN 256
 #define MAX_PATH_LEN 512
 #define LOG_FILE "server_log.txt"
+#define FILE_BUFFER_SIZE 8192  // Dosya transferi için tampon boyutu
 
 /* Allowed file extensions */
 #define FILE_EXT_COUNT 4
