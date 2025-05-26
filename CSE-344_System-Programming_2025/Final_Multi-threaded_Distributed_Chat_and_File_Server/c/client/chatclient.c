@@ -331,7 +331,7 @@ void *receive_messages(void *arg) {
         
         // Check if this is a file transfer
         if (strncmp(buffer, "FILE:", 5) == 0) {
-            printf("DEBUG: Received file header: %s\n", buffer); // Debug
+            //printf("DEBUG: Received file header: %s\n", buffer); // Debug
             
             // Extract filename and size
             char *filename_start = buffer + 5;
@@ -354,7 +354,7 @@ void *receive_messages(void *arg) {
                 
                 char *endptr;
                 size_t filesize = strtoull(size_start, &endptr, 10);
-                printf("DEBUG: Parsed filename='%s', filesize=%zu, remaining_len=%zu\n", 
+                //printf("DEBUG: Parsed filename='%s', filesize=%zu, remaining_len=%zu\n",
                        filename_start, filesize, remaining_len); // Debug
                 
                 if (*endptr == '\0' && filesize > 0) {
@@ -405,7 +405,7 @@ void *receive_messages(void *arg) {
 
 void handle_file_receive_with_data(Client *client, const char *filename, size_t filesize, 
                                    const char *initial_data, size_t initial_len) {
-    printf("DEBUG: Starting file receive: filename='%s', filesize=%zu, initial_len=%zu\n", 
+    //printf("DEBUG: Starting file receive: filename='%s', filesize=%zu, initial_len=%zu\n",
            filename, filesize, initial_len); // Debug
     
     // Extract only the base filename, not any path components for security
@@ -425,7 +425,7 @@ void handle_file_receive_with_data(Client *client, const char *filename, size_t 
     char filepath[MAX_FILE_NAME_LEN + sizeof(UPLOADS_DIR) + 2];
     snprintf(filepath, sizeof(filepath), "%s/%s", UPLOADS_DIR, base_filename);
     
-    printf("DEBUG: File will be saved to: %s\n", filepath); // Debug
+    //printf("DEBUG: File will be saved to: %s\n", filepath); // Debug
     
     // Ensure uploads directory exists
     create_uploads_directory();
@@ -464,7 +464,7 @@ void handle_file_receive_with_data(Client *client, const char *filename, size_t 
             return;
         }
         total_received = data_to_write;
-        printf("DEBUG: Wrote %zu bytes of initial data\n", data_to_write); // Debug
+        //printf("DEBUG: Wrote %zu bytes of initial data\n", data_to_write); // Debug
     }
     
     // Receive remaining file data
@@ -508,7 +508,7 @@ void handle_file_receive_with_data(Client *client, const char *filename, size_t 
     fflush(file); // Make sure all data is written
     fclose(file);
     
-    printf("DEBUG: File receive completed. Total received: %zu bytes\n", total_received); // Debug
+    //printf("DEBUG: File receive completed. Total received: %zu bytes\n", total_received); // Debug
     
     // Verify file was saved
     struct stat st;

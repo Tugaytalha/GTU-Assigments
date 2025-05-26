@@ -1,0 +1,607 @@
+Chat Server Test Log - 2025-05-25 01:14:18.238274
+================================================================================
+
+
+================================================================================
+SETUP
+================================================================================
+
+[2025-05-25 01:14:18] Created test file: small.txt (10.0 KB)
+[2025-05-25 01:14:18] Created test file: medium.pdf (500.0 KB)
+[2025-05-25 01:14:18] Created test file: large.jpg (2048.0 KB)
+[2025-05-25 01:14:18] Created test file: oversize.png (4096.0 KB)
+[2025-05-25 01:14:18] Starting server on port 5000...
+[2025-05-25 01:14:19] Server started successfully
+
+================================================================================
+TEST 3: FILE UPLOAD QUEUE LIMIT
+================================================================================
+
+[2025-05-25 01:14:21] [filerecipient] Received: ====================================
+[2025-05-25 01:14:21] [filerecipient] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:21] [filerecipient] Received: ====================================
+[2025-05-25 01:14:21] [filerecipient] Received: Welcome to the chat client!
+[2025-05-25 01:14:21] [filerecipient] Received: Type /help to see available commands.
+[2025-05-25 01:14:21] [filerecipient] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:22] Client 'filerecipient' connected successfully
+[2025-05-25 01:14:22] [fileuser1] Received: ====================================
+[2025-05-25 01:14:22] [fileuser1] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:22] [fileuser1] Received: ====================================
+[2025-05-25 01:14:22] [fileuser1] Received: Welcome to the chat client!
+[2025-05-25 01:14:22] [fileuser1] Received: Type /help to see available commands.
+[2025-05-25 01:14:22] [fileuser1] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:23] Client 'fileuser1' connected successfully
+[2025-05-25 01:14:23] [fileuser2] Received: ====================================
+[2025-05-25 01:14:23] [fileuser2] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:23] [fileuser2] Received: ====================================
+[2025-05-25 01:14:23] [fileuser2] Received: Welcome to the chat client!
+[2025-05-25 01:14:23] [fileuser2] Received: Type /help to see available commands.
+[2025-05-25 01:14:23] [fileuser2] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:25] Client 'fileuser2' connected successfully
+[2025-05-25 01:14:25] [fileuser3] Received: ====================================
+[2025-05-25 01:14:25] [fileuser3] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:25] [fileuser3] Received: ====================================
+[2025-05-25 01:14:25] [fileuser3] Received: Welcome to the chat client!
+[2025-05-25 01:14:25] [fileuser3] Received: Type /help to see available commands.
+[2025-05-25 01:14:25] [fileuser3] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:26] Client 'fileuser3' connected successfully
+[2025-05-25 01:14:26] [fileuser4] Received: ====================================
+[2025-05-25 01:14:26] [fileuser4] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:26] [fileuser4] Received: ====================================
+[2025-05-25 01:14:26] [fileuser4] Received: Welcome to the chat client!
+[2025-05-25 01:14:26] [fileuser4] Received: Type /help to see available commands.
+[2025-05-25 01:14:26] [fileuser4] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:27] Client 'fileuser4' connected successfully
+[2025-05-25 01:14:27] [fileuser5] Received: ====================================
+[2025-05-25 01:14:27] [fileuser5] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:27] [fileuser5] Received: ====================================
+[2025-05-25 01:14:27] [fileuser5] Received: Welcome to the chat client!
+[2025-05-25 01:14:27] [fileuser5] Received: Type /help to see available commands.
+[2025-05-25 01:14:27] [fileuser5] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:29] Client 'fileuser5' connected successfully
+[2025-05-25 01:14:29] [fileuser6] Received: ====================================
+[2025-05-25 01:14:29] [fileuser6] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:29] [fileuser6] Received: ====================================
+[2025-05-25 01:14:29] [fileuser6] Received: Welcome to the chat client!
+[2025-05-25 01:14:29] [fileuser6] Received: Type /help to see available commands.
+[2025-05-25 01:14:29] [fileuser6] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:30] Client 'fileuser6' connected successfully
+[2025-05-25 01:14:30] [fileuser7] Received: ====================================
+[2025-05-25 01:14:30] [fileuser7] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:30] [fileuser7] Received: ====================================
+[2025-05-25 01:14:30] [fileuser7] Received: Welcome to the chat client!
+[2025-05-25 01:14:30] [fileuser7] Received: Type /help to see available commands.
+[2025-05-25 01:14:30] [fileuser7] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:31] Client 'fileuser7' connected successfully
+[2025-05-25 01:14:31] [fileuser8] Received: ====================================
+[2025-05-25 01:14:31] [fileuser8] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:31] [fileuser8] Received: ====================================
+[2025-05-25 01:14:31] [fileuser8] Received: Welcome to the chat client!
+[2025-05-25 01:14:31] [fileuser8] Received: Type /help to see available commands.
+[2025-05-25 01:14:31] [fileuser8] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:33] Client 'fileuser8' connected successfully
+[2025-05-25 01:14:33] [fileuser9] Received: ====================================
+[2025-05-25 01:14:33] [fileuser9] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:33] [fileuser9] Received: ====================================
+[2025-05-25 01:14:33] [fileuser9] Received: Welcome to the chat client!
+[2025-05-25 01:14:33] [fileuser9] Received: Type /help to see available commands.
+[2025-05-25 01:14:33] [fileuser9] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:34] Client 'fileuser9' connected successfully
+[2025-05-25 01:14:34] [fileuser10] Received: ====================================
+[2025-05-25 01:14:34] [fileuser10] Received:   Multi-threaded Chat Client
+[2025-05-25 01:14:34] [fileuser10] Received: ====================================
+[2025-05-25 01:14:34] [fileuser10] Received: Welcome to the chat client!
+[2025-05-25 01:14:34] [fileuser10] Received: Type /help to see available commands.
+[2025-05-25 01:14:34] [fileuser10] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:14:35] Client 'fileuser10' connected successfully
+[2025-05-25 01:14:35] Having all clients attempt to send files simultaneously...
+[2025-05-25 01:14:35] [fileuser1] Sending command: /sendfile test_files/large.jpg filerecipient
+[2025-05-25 01:14:35] [fileuser1] Received: > Enter your username: > Server:  Welcome, fileuser1! You are now connected.
+[2025-05-25 01:14:35] [fileuser1] Received: es:
+[2025-05-25 01:14:35] [fileuser1] Received: Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:14:35] [fileuser1] Received: Uploading: 1%Uploading: 2%Uploading: 3%Uploading: 4%Uploading: 5%Uploading: 6%Uploading: 7%Uploading: 8%Uploading: 9%Uploading: 10%Uploading: 11%Uploading: 12%Uploading: 13%Uploading: 14%Uploading: 15%Uploading: 16%Uploading: 17%Uploading: 18%Uploading: 19%Uploading: 20%Uploading: 21%Uploading: 22%Uploading: 23%Uploading: 24%Uploading: 25%Uploading: 26%Uploading: 27%Uploading: 28%Uploading: 29%Uploading: 30%Uploading: 31%Uploading: 32%Uploading: 33%Uploading: 34%Uploading: 35%Uploading: 36%Uploading: 37%Uploading: 38%Uploading: 39%Uploading: 40%Uploading: 41%Uploading: 42%Uploading: 43%Uploading: 44%Uploading: 45%Uploading: 46%Uploading: 47%Uploading: 48%Uploading: 49%Uploading: 50%Uploading: 51%Uploading: 52%Uploading: 53%Uploading: 54%Uploading: 55%Uploading: 56%Uploading: 57%Uploading: 58%Uploading: 59%Uploading: 60%Uploading: 61%Uploading: 62%Uploading: 63%Uploading: 64%Uploading: 65%Uploading: 66%Uploading: 67%Uploading: 68%Uploading: 69%Uploading: 70%Uploading: 71%Uploading: 72%Uploading: 73%Uploading: 74%Uploading: 75%Uploading: 76%Uploading: 77%Uploading: 78%Uploading: 79%Uploading: 80%Uploading: 81%Uploading: 82%Uploading: 83%Uploading: 84%Uploading: 85%Uploading: 86%Uploading: 87%Uploading: 88%Uploading: 89%Uploading: 90%Uploading: 91%Uploading: 92%Uploading: 93%Uploading: 94%Uploading: 95%Uploading: 96%Uploading: 97%Uploading: 98%Uploading: 99%Uploading: 100%
+[2025-05-25 01:14:35] [filerecipient] Received: > Enter your username: > Server:  Welcome, filerecipient! You are now connected.
+[2025-05-25 01:14:35] [fileuser1] Received: Success: File upload completed successfully
+[2025-05-25 01:14:35] [filerecipient] Received: DEBUG: Received file header: FILE:test_files/large_1748124875.jpg:2097152
+[2025-05-25 01:14:35] [filerecipient] Received: Binary data (114 bytes): db a5 c2 87 1b 16 d1 9e 40 54 c6 d3 32 e4 6f 15 fc 46 aa eb...
+[2025-05-25 01:14:35] [filerecipient] Received: Binary data (39 bytes): 6c 97 06 1b 27 66 81 99 2d 64 ab 64 45 ca ef a3 97 d4 0d e1...
+[2025-05-25 01:14:35] [filerecipient] Received: Binary data (75 bytes): fa 6d c4 6d 0f 76 f9 24 0d d0 5b 38 a8 d8 1e 2f 92 fa e6 63...
+[2025-05-25 01:14:35] [filerecipient] Received: Binary data (58 bytes): 9c 12 24 bf 47 bc a5 4c 19 d0 f7 23 3b 27 b1 2b c6 63 5d a2...
+[2025-05-25 01:14:35] [filerecipient] Received: DEBUG: Parsed filename='test_files/large_1748124875.jpg', filesize=2097152, remaining_len=2002
+[2025-05-25 01:14:35] [filerecipient] Received: DEBUG: Starting file receive: filename='test_files/large_1748124875.jpg', filesize=2097152, initial_len=2002
+[2025-05-25 01:14:35] [filerecipient] Received: DEBUG: File will be saved to: uploads/large_1748124875.jpg
+[2025-05-25 01:14:35] [filerecipient] Received: File: Receiving file 'large_1748124875.jpg'... Saving to: uploads/large_1748124875.jpg
+[2025-05-25 01:14:35] [filerecipient] Received: DEBUG: Wrote 2002 bytes of initial data
+[2025-05-25 01:14:36] [fileuser2] Sending command: /sendfile test_files/large.jpg filerecipient
+[2025-05-25 01:14:36] [fileuser2] Received: > Enter your username: > Server:  Welcome, fileuser2! You are now connected.
+[2025-05-25 01:14:36] [fileuser2] Received: es:
+[2025-05-25 01:14:36] [fileuser2] Received: Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:14:36] [fileuser2] Received: Uploading: 1%Uploading: 2%Uploading: 3%Uploading: 4%Uploading: 5%Uploading: 6%Uploading: 7%Uploading: 8%Uploading: 9%Uploading: 10%Uploading: 11%Uploading: 12%Uploading: 13%Uploading: 14%Uploading: 15%Uploading: 16%Uploading: 17%Uploading: 18%Uploading: 19%Uploading: 20%Uploading: 21%Uploading: 22%Uploading: 23%Uploading: 24%Uploading: 25%Uploading: 26%Uploading: 27%Uploading: 28%Uploading: 29%Uploading: 30%Uploading: 31%Uploading: 32%Uploading: 33%Uploading: 34%Uploading: 35%Uploading: 36%Uploading: 37%Uploading: 38%Uploading: 39%Uploading: 40%Uploading: 41%Uploading: 42%Uploading: 43%Uploading: 44%Uploading: 45%Uploading: 46%Uploading: 47%Uploading: 48%Uploading: 49%Uploading: 50%Uploading: 51%Uploading: 52%Uploading: 53%Uploading: 54%Uploading: 55%Uploading: 56%Uploading: 57%Uploading: 58%Uploading: 59%Uploading: 60%Uploading: 61%Uploading: 62%Uploading: 63%Uploading: 64%Uploading: 65%Uploading: 66%Uploading: 67%Uploading: 68%Uploading: 69%Uploading: 70%Uploading: 71%Uploading: 72%Uploading: 73%Uploading: 74%Uploading: 75%Uploading: 76%Uploading: 77%Uploading: 78%Uploading: 79%Uploading: 80%Uploading: 81%Uploading: 82%Uploading: 83%Uploading: 84%Uploading: 85%Uploading: 86%Uploading: 87%Uploading: 88%Uploading: 89%Uploading: 90%Uploading: 91%Uploading: 92%Uploading: 93%Uploading: 94%Uploading: 95%Uploading: 96%Uploading: 97%Uploading: 98%Uploading: 99%Uploading: 100%
+[2025-05-25 01:14:36] [filerecipient] Received: Downloading: 1%Downloading: 2%Downloading: 3%Downloading: 4%Downloading: 5%Downloading: 6%Downloading: 7%Downloading: 8%Downloading: 9%Downloading: 10%Downloading: 11%Downloading: 12%Downloading: 13%Downloading: 14%Downloading: 15%Downloading: 16%Downloading: 17%Downloading: 18%Downloading: 19%Downloading: 20%Downloading: 21%Downloading: 22%Downloading: 23%Downloading: 24%Downloading: 25%Downloading: 26%Downloading: 27%Downloading: 28%Downloading: 29%Downloading: 30%Downloading: 31%Downloading: 32%Downloading: 33%Downloading: 34%Downloading: 35%Downloading: 36%Downloading: 37%Downloading: 38%Downloading: 39%Downloading: 40%Downloading: 41%Downloading: 42%Downloading: 43%Downloading: 44%Downloading: 45%Downloading: 46%Downloading: 47%Downloading: 48%Downloading: 49%Downloading: 50%Downloading: 51%Downloading: 52%Downloading: 53%Downloading: 54%Downloading: 55%Downloading: 56%Downloading: 57%Downloading: 58%Downloading: 59%Downloading: 60%Downloading: 61%Downloading: 62%Downloading: 63%Downloading: 64%Downloading: 65%Downloading: 66%Downloading: 67%Downloading: 68%Downloading: 69%Downloading: 70%Downloading: 71%Downloading: 72%Downloading: 73%Downloading: 74%Downloading: 75%Downloading: 76%Downloading: 77%Downloading: 78%Downloading: 79%Downloading: 80%Downloading: 81%Downloading: 82%Downloading: 83%Downloading: 84%Downloading: 85%Downloading: 86%Downloading: 87%Downloading: 88%Downloading: 89%Downloading: 90%Downloading: 91%Downloading: 92%Downloading: 93%Downloading: 94%Downloading: 95%Downloading: 96%Downloading: 97%Downloading: 98%Downloading: 99%Downloading: 100%
+[2025-05-25 01:14:36] [fileuser2] Received: Success: File upload completed successfully
+[2025-05-25 01:14:36] [filerecipient] Received: DEBUG: File receive completed. Total received: 2097152 bytes
+[2025-05-25 01:14:36] [filerecipient] Received: Success: File 'large_1748124875.jpg' received and saved to: uploads/large_1748124875.jpg
+[2025-05-25 01:14:36] [filerecipient] Received: Server:  File 'test_files/large.jpg' received successfully from fileuser1.
+[2025-05-25 01:14:36] [filerecipient] Received: DEBUG: Received file header: FILE:test_files/large_1748124876.jpg:2097152
+[2025-05-25 01:14:36] [filerecipient] Received: Binary data (114 bytes): db a5 c2 87 1b 16 d1 9e 40 54 c6 d3 32 e4 6f 15 fc 46 aa eb...
+[2025-05-25 01:14:36] [filerecipient] Received: Binary data (39 bytes): 6c 97 06 1b 27 66 81 99 2d 64 ab 64 45 ca ef a3 97 d4 0d e1...
+[2025-05-25 01:14:36] [filerecipient] Received: Binary data (75 bytes): fa 6d c4 6d 0f 76 f9 24 0d d0 5b 38 a8 d8 1e 2f 92 fa e6 63...
+[2025-05-25 01:14:36] [filerecipient] Received: Binary data (58 bytes): 9c 12 24 bf 47 bc a5 4c 19 d0 f7 23 3b 27 b1 2b c6 63 5d a2...
+[2025-05-25 01:14:36] [filerecipient] Received: DEBUG: Parsed filename='test_files/large_1748124876.jpg', filesize=2097152, remaining_len=2002
+[2025-05-25 01:14:36] [filerecipient] Received: DEBUG: Starting file receive: filename='test_files/large_1748124876.jpg', filesize=2097152, initial_len=2002
+[2025-05-25 01:14:36] [filerecipient] Received: DEBUG: File will be saved to: uploads/large_1748124876.jpg
+[2025-05-25 01:14:36] [filerecipient] Received: File: Receiving file 'large_1748124876.jpg'... Saving to: uploads/large_1748124876.jpg
+[2025-05-25 01:14:36] [filerecipient] Received: DEBUG: Wrote 2002 bytes of initial data
+[2025-05-25 01:14:37] [fileuser3] Sending command: /sendfile test_files/large.jpg filerecipient
+[2025-05-25 01:14:37] [fileuser3] Received: > Enter your username: > Server:  Welcome, fileuser3! You are now connected.
+[2025-05-25 01:14:37] [fileuser3] Received: es:
+[2025-05-25 01:14:37] [fileuser3] Received: Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:14:37] [fileuser3] Received: Uploading: 1%Uploading: 2%Uploading: 3%Uploading: 4%Uploading: 5%Uploading: 6%Uploading: 7%Uploading: 8%Uploading: 9%Uploading: 10%Uploading: 11%Uploading: 12%Uploading: 13%Uploading: 14%Uploading: 15%Uploading: 16%Uploading: 17%Uploading: 18%Uploading: 19%Uploading: 20%Uploading: 21%Uploading: 22%Uploading: 23%Uploading: 24%Uploading: 25%Uploading: 26%Uploading: 27%Uploading: 28%Uploading: 29%Uploading: 30%Uploading: 31%Uploading: 32%Uploading: 33%Uploading: 34%Uploading: 35%Uploading: 36%Uploading: 37%Uploading: 38%Uploading: 39%Uploading: 40%Uploading: 41%Uploading: 42%Uploading: 43%Uploading: 44%Uploading: 45%Uploading: 46%Uploading: 47%Uploading: 48%Uploading: 49%Uploading: 50%Uploading: 51%Uploading: 52%Uploading: 53%Uploading: 54%Uploading: 55%Uploading: 56%Uploading: 57%Uploading: 58%Uploading: 59%Uploading: 60%Uploading: 61%Uploading: 62%Uploading: 63%Uploading: 64%Uploading: 65%Uploading: 66%Uploading: 67%Uploading: 68%Uploading: 69%Uploading: 70%Uploading: 71%Uploading: 72%Uploading: 73%Uploading: 74%Uploading: 75%Uploading: 76%Uploading: 77%Uploading: 78%Uploading: 79%Uploading: 80%Uploading: 81%Uploading: 82%Uploading: 83%Uploading: 84%Uploading: 85%Uploading: 86%Uploading: 87%Uploading: 88%Uploading: 89%Uploading: 90%Uploading: 91%Uploading: 92%Uploading: 93%Uploading: 94%Uploading: 95%Uploading: 96%Uploading: 97%Uploading: 98%Uploading: 99%Uploading: 100%
+[2025-05-25 01:14:37] [filerecipient] Received: Downloading: 1%Downloading: 2%Downloading: 3%Downloading: 4%Downloading: 5%Downloading: 6%Downloading: 7%Downloading: 8%Downloading: 9%Downloading: 10%Downloading: 11%Downloading: 12%Downloading: 13%Downloading: 14%Downloading: 15%Downloading: 16%Downloading: 17%Downloading: 18%Downloading: 19%Downloading: 20%Downloading: 21%Downloading: 22%Downloading: 23%Downloading: 24%Downloading: 25%Downloading: 26%Downloading: 27%Downloading: 28%Downloading: 29%Downloading: 30%Downloading: 31%Downloading: 32%Downloading: 33%Downloading: 34%Downloading: 35%Downloading: 36%Downloading: 37%Downloading: 38%Downloading: 39%Downloading: 40%Downloading: 41%Downloading: 42%Downloading: 43%Downloading: 44%Downloading: 45%Downloading: 46%Downloading: 47%Downloading: 48%Downloading: 49%Downloading: 50%Downloading: 51%Downloading: 52%Downloading: 53%Downloading: 54%Downloading: 55%Downloading: 56%Downloading: 57%Downloading: 58%Downloading: 59%Downloading: 60%Downloading: 61%Downloading: 62%Downloading: 63%Downloading: 64%Downloading: 65%Downloading: 66%Downloading: 67%Downloading: 68%Downloading: 69%Downloading: 70%Downloading: 71%Downloading: 72%Downloading: 73%Downloading: 74%Downloading: 75%Downloading: 76%Downloading: 77%Downloading: 78%Downloading: 79%Downloading: 80%Downloading: 81%Downloading: 82%Downloading: 83%Downloading: 84%Downloading: 85%Downloading: 86%Downloading: 87%Downloading: 88%Downloading: 89%Downloading: 90%Downloading: 91%Downloading: 92%Downloading: 93%Downloading: 94%Downloading: 95%Downloading: 96%Downloading: 97%Downloading: 98%Downloading: 99%Downloading: 100%
+[2025-05-25 01:14:37] [fileuser3] Received: Success: File upload completed successfully
+[2025-05-25 01:14:37] [filerecipient] Received: DEBUG: File receive completed. Total received: 2097152 bytes
+[2025-05-25 01:14:37] [filerecipient] Received: Success: File 'large_1748124876.jpg' received and saved to: uploads/large_1748124876.jpg
+[2025-05-25 01:14:37] [filerecipient] Received: Server:  File 'test_files/large.jpg' received successfully from fileuser2.
+[2025-05-25 01:14:37] [filerecipient] Received: DEBUG: Received file header: FILE:test_files/large_1748124877.jpg:2097152
+[2025-05-25 01:14:37] [filerecipient] Received: Binary data (114 bytes): db a5 c2 87 1b 16 d1 9e 40 54 c6 d3 32 e4 6f 15 fc 46 aa eb...
+[2025-05-25 01:14:37] [filerecipient] Received: Binary data (39 bytes): 6c 97 06 1b 27 66 81 99 2d 64 ab 64 45 ca ef a3 97 d4 0d e1...
+[2025-05-25 01:14:37] [filerecipient] Received: Binary data (75 bytes): fa 6d c4 6d 0f 76 f9 24 0d d0 5b 38 a8 d8 1e 2f 92 fa e6 63...
+[2025-05-25 01:14:37] [filerecipient] Received: Binary data (58 bytes): 9c 12 24 bf 47 bc a5 4c 19 d0 f7 23 3b 27 b1 2b c6 63 5d a2...
+[2025-05-25 01:14:37] [filerecipient] Received: DEBUG: Parsed filename='test_files/large_1748124877.jpg', filesize=2097152, remaining_len=2002
+[2025-05-25 01:14:37] [filerecipient] Received: DEBUG: Starting file receive: filename='test_files/large_1748124877.jpg', filesize=2097152, initial_len=2002
+[2025-05-25 01:14:37] [filerecipient] Received: DEBUG: File will be saved to: uploads/large_1748124877.jpg
+[2025-05-25 01:14:37] [filerecipient] Received: File: Receiving file 'large_1748124877.jpg'... Saving to: uploads/large_1748124877.jpg
+[2025-05-25 01:14:37] [filerecipient] Received: DEBUG: Wrote 2002 bytes of initial data
+[2025-05-25 01:14:38] [fileuser4] Sending command: /sendfile test_files/large.jpg filerecipient
+[2025-05-25 01:14:38] [fileuser4] Received: > Enter your username: > Server:  Welcome, fileuser4! You are now connected.
+[2025-05-25 01:14:38] [fileuser4] Received: es:
+[2025-05-25 01:14:38] [fileuser4] Received: Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:14:38] [fileuser4] Received: Uploading: 1%Uploading: 2%Uploading: 3%Uploading: 4%Uploading: 5%Uploading: 6%Uploading: 7%Uploading: 8%Uploading: 9%Uploading: 10%Uploading: 11%Uploading: 12%Uploading: 13%Uploading: 14%Uploading: 15%Uploading: 16%Uploading: 17%Uploading: 18%Uploading: 19%Uploading: 20%Uploading: 21%Uploading: 22%Uploading: 23%Uploading: 24%Uploading: 25%Uploading: 26%Uploading: 27%Uploading: 28%Uploading: 29%Uploading: 30%Uploading: 31%Uploading: 32%Uploading: 33%Uploading: 34%Uploading: 35%Uploading: 36%Uploading: 37%Uploading: 38%Uploading: 39%Uploading: 40%Uploading: 41%Uploading: 42%Uploading: 43%Uploading: 44%Uploading: 45%Uploading: 46%Uploading: 47%Uploading: 48%Uploading: 49%Uploading: 50%Uploading: 51%Uploading: 52%Uploading: 53%Uploading: 54%Uploading: 55%Uploading: 56%Uploading: 57%Uploading: 58%Uploading: 59%Uploading: 60%Uploading: 61%Uploading: 62%Uploading: 63%Uploading: 64%Uploading: 65%Uploading: 66%Uploading: 67%Uploading: 68%Uploading: 69%Uploading: 70%Uploading: 71%Uploading: 72%Uploading: 73%Uploading: 74%Uploading: 75%Uploading: 76%Uploading: 77%Uploading: 78%Uploading: 79%Uploading: 80%Uploading: 81%Uploading: 82%Uploading: 83%Uploading: 84%Uploading: 85%Uploading: 86%Uploading: 87%Uploading: 88%Uploading: 89%Uploading: 90%Uploading: 91%Uploading: 92%Uploading: 93%Uploading: 94%Uploading: 95%Uploading: 96%Uploading: 97%Uploading: 98%Uploading: 99%Uploading: 100%
+[2025-05-25 01:14:38] [filerecipient] Received: Downloading: 1%Downloading: 2%Downloading: 3%Downloading: 4%Downloading: 5%Downloading: 6%Downloading: 7%Downloading: 8%Downloading: 9%Downloading: 10%Downloading: 11%Downloading: 12%Downloading: 13%Downloading: 14%Downloading: 15%Downloading: 16%Downloading: 17%Downloading: 18%Downloading: 19%Downloading: 20%Downloading: 21%Downloading: 22%Downloading: 23%Downloading: 24%Downloading: 25%Downloading: 26%Downloading: 27%Downloading: 28%Downloading: 29%Downloading: 30%Downloading: 31%Downloading: 32%Downloading: 33%Downloading: 34%Downloading: 35%Downloading: 36%Downloading: 37%Downloading: 38%Downloading: 39%Downloading: 40%Downloading: 41%Downloading: 42%Downloading: 43%Downloading: 44%Downloading: 45%Downloading: 46%Downloading: 47%Downloading: 48%Downloading: 49%Downloading: 50%Downloading: 51%Downloading: 52%Downloading: 53%Downloading: 54%Downloading: 55%Downloading: 56%Downloading: 57%Downloading: 58%Downloading: 59%Downloading: 60%Downloading: 61%Downloading: 62%Downloading: 63%Downloading: 64%Downloading: 65%Downloading: 66%Downloading: 67%Downloading: 68%Downloading: 69%Downloading: 70%Downloading: 71%Downloading: 72%Downloading: 73%Downloading: 74%Downloading: 75%Downloading: 76%Downloading: 77%Downloading: 78%Downloading: 79%Downloading: 80%Downloading: 81%Downloading: 82%Downloading: 83%Downloading: 84%Downloading: 85%Downloading: 86%Downloading: 87%Downloading: 88%Downloading: 89%Downloading: 90%Downloading: 91%Downloading: 92%Downloading: 93%Downloading: 94%Downloading: 95%Downloading: 96%Downloading: 97%Downloading: 98%Downloading: 99%Downloading: 100%
+[2025-05-25 01:14:38] [fileuser4] Received: Success: File upload completed successfully
+[2025-05-25 01:14:38] [filerecipient] Received: DEBUG: File receive completed. Total received: 2097152 bytes
+[2025-05-25 01:14:38] [filerecipient] Received: Success: File 'large_1748124877.jpg' received and saved to: uploads/large_1748124877.jpg
+[2025-05-25 01:14:38] [filerecipient] Received: Server:  File 'test_files/large.jpg' received successfully from fileuser3.
+[2025-05-25 01:14:38] [filerecipient] Received: DEBUG: Received file header: FILE:test_files/large_1748124878.jpg:2097152
+[2025-05-25 01:14:38] [filerecipient] Received: DEBUG: Parsed filename='test_files/large_1748124878.jpg', filesize=2097152, remaining_len=0
+[2025-05-25 01:14:38] [filerecipient] Received: DEBUG: Starting file receive: filename='test_files/large_1748124878.jpg', filesize=2097152, initial_len=0
+[2025-05-25 01:14:38] [filerecipient] Received: DEBUG: File will be saved to: uploads/large_1748124878.jpg
+[2025-05-25 01:14:38] [filerecipient] Received: File: Receiving file 'large_1748124878.jpg'... Saving to: uploads/large_1748124878.jpg
+[2025-05-25 01:14:38] [fileuser5] Sending command: /sendfile test_files/large.jpg filerecipient
+[2025-05-25 01:14:38] [fileuser5] Received: > Enter your username: > Server:  Welcome, fileuser5! You are now connected.
+[2025-05-25 01:14:38] [fileuser5] Received: es:
+[2025-05-25 01:14:38] [fileuser5] Received: Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:14:38] [fileuser5] Received: Uploading: 1%Uploading: 2%Uploading: 3%Uploading: 4%Uploading: 5%Uploading: 6%Uploading: 7%Uploading: 8%Uploading: 9%Uploading: 10%Uploading: 11%Uploading: 12%Uploading: 13%Uploading: 14%Uploading: 15%Uploading: 16%Uploading: 17%Uploading: 18%Uploading: 19%Uploading: 20%Uploading: 21%Uploading: 22%Uploading: 23%Uploading: 24%Uploading: 25%Uploading: 26%Uploading: 27%Uploading: 28%Uploading: 29%Uploading: 30%Uploading: 31%Uploading: 32%Uploading: 33%Uploading: 34%Uploading: 35%Uploading: 36%Uploading: 37%Uploading: 38%Uploading: 39%Uploading: 40%Uploading: 41%Uploading: 42%Uploading: 43%Uploading: 44%Uploading: 45%Uploading: 46%Uploading: 47%Uploading: 48%Uploading: 49%Uploading: 50%Uploading: 51%Uploading: 52%Uploading: 53%Uploading: 54%Uploading: 55%Uploading: 56%Uploading: 57%Uploading: 58%Uploading: 59%Uploading: 60%Uploading: 61%Uploading: 62%Uploading: 63%Uploading: 64%Uploading: 65%Uploading: 66%Uploading: 67%Uploading: 68%Uploading: 69%Uploading: 70%Uploading: 71%Uploading: 72%Uploading: 73%Uploading: 74%Uploading: 75%Uploading: 76%Uploading: 77%Uploading: 78%Uploading: 79%Uploading: 80%Uploading: 81%Uploading: 82%Uploading: 83%Uploading: 84%Uploading: 85%Uploading: 86%Uploading: 87%Uploading: 88%Uploading: 89%Uploading: 90%Uploading: 91%Uploading: 92%Uploading: 93%Uploading: 94%Uploading: 95%Uploading: 96%Uploading: 97%Uploading: 98%Uploading: 99%Uploading: 100%
+[2025-05-25 01:14:38] [filerecipient] Received: Downloading: 1%Downloading: 2%Downloading: 3%Downloading: 4%Downloading: 5%Downloading: 6%Downloading: 7%Downloading: 8%Downloading: 9%Downloading: 10%Downloading: 11%Downloading: 12%Downloading: 13%Downloading: 14%Downloading: 15%Downloading: 16%Downloading: 17%Downloading: 18%Downloading: 19%Downloading: 20%Downloading: 21%Downloading: 22%Downloading: 23%Downloading: 24%Downloading: 25%Downloading: 26%Downloading: 27%Downloading: 28%Downloading: 29%Downloading: 30%Downloading: 31%Downloading: 32%Downloading: 33%Downloading: 34%Downloading: 35%Downloading: 36%Downloading: 37%Downloading: 38%Downloading: 39%Downloading: 40%Downloading: 41%Downloading: 42%Downloading: 43%Downloading: 44%Downloading: 45%Downloading: 46%Downloading: 47%Downloading: 48%Downloading: 49%Downloading: 50%Downloading: 51%Downloading: 52%Downloading: 53%Downloading: 54%Downloading: 55%Downloading: 56%Downloading: 57%Downloading: 58%Downloading: 59%Downloading: 60%Downloading: 61%Downloading: 62%Downloading: 63%Downloading: 64%Downloading: 65%Downloading: 66%Downloading: 67%Downloading: 68%Downloading: 69%Downloading: 70%Downloading: 71%Downloading: 72%Downloading: 73%Downloading: 74%Downloading: 75%Downloading: 76%Downloading: 77%Downloading: 78%Downloading: 79%Downloading: 80%Downloading: 81%Downloading: 82%Downloading: 83%Downloading: 84%Downloading: 85%Downloading: 86%Downloading: 87%Downloading: 88%Downloading: 89%Downloading: 90%Downloading: 91%Downloading: 92%Downloading: 93%Downloading: 94%Downloading: 95%Downloading: 96%Downloading: 97%Downloading: 98%Downloading: 99%Downloading: 100%
+[2025-05-25 01:14:38] [fileuser5] Received: Success: File upload completed successfully
+[2025-05-25 01:14:38] [filerecipient] Received: DEBUG: File receive completed. Total received: 2097152 bytes
+[2025-05-25 01:14:38] [filerecipient] Received: Success: File 'large_1748124878.jpg' received and saved to: uploads/large_1748124878.jpg
+[2025-05-25 01:14:38] [filerecipient] Received: Server:  File 'test_files/large.jpg' received successfully from fileuser4.
+[2025-05-25 01:14:39] [filerecipient] Received: DEBUG: Received file header: FILE:test_files/large_1748124878.jpg:2097152
+[2025-05-25 01:14:39] [filerecipient] Received: Binary data (114 bytes): db a5 c2 87 1b 16 d1 9e 40 54 c6 d3 32 e4 6f 15 fc 46 aa eb...
+[2025-05-25 01:14:39] [filerecipient] Received: Binary data (39 bytes): 6c 97 06 1b 27 66 81 99 2d 64 ab 64 45 ca ef a3 97 d4 0d e1...
+[2025-05-25 01:14:39] [filerecipient] Received: Binary data (75 bytes): fa 6d c4 6d 0f 76 f9 24 0d d0 5b 38 a8 d8 1e 2f 92 fa e6 63...
+[2025-05-25 01:14:39] [filerecipient] Received: Binary data (58 bytes): 9c 12 24 bf 47 bc a5 4c 19 d0 f7 23 3b 27 b1 2b c6 63 5d a2...
+[2025-05-25 01:14:39] [filerecipient] Received: DEBUG: Parsed filename='test_files/large_1748124878.jpg', filesize=2097152, remaining_len=2002
+[2025-05-25 01:14:39] [filerecipient] Received: DEBUG: Starting file receive: filename='test_files/large_1748124878.jpg', filesize=2097152, initial_len=2002
+[2025-05-25 01:14:39] [filerecipient] Received: DEBUG: File will be saved to: uploads/large_1748124878.jpg
+[2025-05-25 01:14:39] [filerecipient] Received: File: Receiving file 'large_1748124878.jpg'... Saving to: uploads/large_1748124878.jpg
+[2025-05-25 01:14:39] [filerecipient] Received: DEBUG: Wrote 2002 bytes of initial data
+[2025-05-25 01:14:42] [fileuser6] Sending command: /sendfile test_files/large.jpg filerecipient
+[2025-05-25 01:14:42] [fileuser6] Received: > Enter your username: > Server:  Welcome, fileuser6! You are now connected.
+[2025-05-25 01:14:42] [fileuser6] Received: es:
+[2025-05-25 01:14:42] [fileuser6] Received: Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:14:42] [fileuser6] Received: Uploading: 1%Uploading: 2%Uploading: 3%Uploading: 4%Uploading: 5%Uploading: 6%Uploading: 7%Uploading: 8%Uploading: 9%Uploading: 10%Uploading: 11%Uploading: 12%Uploading: 13%Uploading: 14%Uploading: 15%Uploading: 16%Uploading: 17%Uploading: 18%Uploading: 19%Uploading: 20%Uploading: 21%Uploading: 22%Uploading: 23%Uploading: 24%Uploading: 25%Uploading: 26%Uploading: 27%Uploading: 28%Uploading: 29%Uploading: 30%Uploading: 31%Uploading: 32%Uploading: 33%Uploading: 34%Uploading: 35%Uploading: 36%Uploading: 37%Uploading: 38%Uploading: 39%Uploading: 40%Uploading: 41%Uploading: 42%Uploading: 43%Uploading: 44%Uploading: 45%Uploading: 46%Uploading: 47%Uploading: 48%Uploading: 49%Uploading: 50%Uploading: 51%Uploading: 52%Uploading: 53%Uploading: 54%Uploading: 55%Uploading: 56%Uploading: 57%Uploading: 58%Uploading: 59%Uploading: 60%Uploading: 61%Uploading: 62%Uploading: 63%Uploading: 64%Uploading: 65%Uploading: 66%Uploading: 67%Uploading: 68%Uploading: 69%Uploading: 70%Uploading: 71%Uploading: 72%Uploading: 73%Uploading: 74%Uploading: 75%Uploading: 76%Uploading: 77%Uploading: 78%Uploading: 79%Uploading: 80%Uploading: 81%Uploading: 82%Uploading: 83%Uploading: 84%Uploading: 85%Uploading: 86%Uploading: 87%Uploading: 88%Uploading: 89%Uploading: 90%Uploading: 91%Uploading: 92%Uploading: 93%Uploading: 94%Uploading: 95%Uploading: 96%Uploading: 97%Uploading: 98%Uploading: 99%Uploading: 100%
+[2025-05-25 01:14:42] [filerecipient] Received: Downloading: 1%Downloading: 2%Downloading: 3%Downloading: 4%Downloading: 5%Downloading: 6%Downloading: 7%Downloading: 8%Downloading: 9%Downloading: 10%Downloading: 11%Downloading: 12%Downloading: 13%Downloading: 14%Downloading: 15%Downloading: 16%Downloading: 17%Downloading: 18%Downloading: 19%Downloading: 20%Downloading: 21%Downloading: 22%Downloading: 23%Downloading: 24%Downloading: 25%Downloading: 26%Downloading: 27%Downloading: 28%Downloading: 29%Downloading: 30%Downloading: 31%Downloading: 32%Downloading: 33%Downloading: 34%Downloading: 35%Downloading: 36%Downloading: 37%Downloading: 38%Downloading: 39%Downloading: 40%Downloading: 41%Downloading: 42%Downloading: 43%Downloading: 44%Downloading: 45%Downloading: 46%Downloading: 47%Downloading: 48%Downloading: 49%Downloading: 50%Downloading: 51%Downloading: 52%Downloading: 53%Downloading: 54%Downloading: 55%Downloading: 56%Downloading: 57%Downloading: 58%Downloading: 59%Downloading: 60%Downloading: 61%Downloading: 62%Downloading: 63%Downloading: 64%Downloading: 65%Downloading: 66%Downloading: 67%Downloading: 68%Downloading: 69%Downloading: 70%Downloading: 71%Downloading: 72%Downloading: 73%Downloading: 74%Downloading: 75%Downloading: 76%Downloading: 77%Downloading: 78%Downloading: 79%Downloading: 80%Downloading: 81%Downloading: 82%Downloading: 83%Downloading: 84%Downloading: 85%Downloading: 86%Downloading: 87%Downloading: 88%Downloading: 89%Downloading: 90%Downloading: 91%Downloading: 92%Downloading: 93%Downloading: 94%Downloading: 95%Downloading: 96%Downloading: 97%Downloading: 98%Downloading: 99%Downloading: 100%
+[2025-05-25 01:14:42] [fileuser6] Received: Success: File upload completed successfully
+[2025-05-25 01:14:42] [filerecipient] Received: DEBUG: File receive completed. Total received: 2097152 bytes
+[2025-05-25 01:14:42] [filerecipient] Received: Success: File 'large_1748124878.jpg' received and saved to: uploads/large_1748124878.jpg
+[2025-05-25 01:14:42] [filerecipient] Received: Server:  File 'test_files/large.jpg' received successfully from fileuser5.
+[2025-05-25 01:14:42] [filerecipient] Received: DEBUG: Received file header: FILE:test_files/large_1748124882.jpg:2097152
+[2025-05-25 01:14:42] [filerecipient] Received: DEBUG: Parsed filename='test_files/large_1748124882.jpg', filesize=2097152, remaining_len=0
+[2025-05-25 01:14:42] [filerecipient] Received: DEBUG: Starting file receive: filename='test_files/large_1748124882.jpg', filesize=2097152, initial_len=0
+[2025-05-25 01:14:42] [filerecipient] Received: DEBUG: File will be saved to: uploads/large_1748124882.jpg
+[2025-05-25 01:14:42] [filerecipient] Received: File: Receiving file 'large_1748124882.jpg'... Saving to: uploads/large_1748124882.jpg
+[2025-05-25 01:14:43] [fileuser7] Sending command: /sendfile test_files/large.jpg filerecipient
+[2025-05-25 01:14:44] [fileuser7] Received: > Enter your username: > Server:  Welcome, fileuser7! You are now connected.
+[2025-05-25 01:14:44] [fileuser7] Received: es:
+[2025-05-25 01:14:44] [fileuser7] Received: Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:14:44] [fileuser7] Received: Uploading: 1%Uploading: 2%Uploading: 3%Uploading: 4%Uploading: 5%Uploading: 6%Uploading: 7%Uploading: 8%Uploading: 9%Uploading: 10%Uploading: 11%Uploading: 12%Uploading: 13%Uploading: 14%Uploading: 15%Uploading: 16%Uploading: 17%Uploading: 18%Uploading: 19%Uploading: 20%Uploading: 21%Uploading: 22%Uploading: 23%Uploading: 24%Uploading: 25%Uploading: 26%Uploading: 27%Uploading: 28%Uploading: 29%Uploading: 30%Uploading: 31%Uploading: 32%Uploading: 33%Uploading: 34%Uploading: 35%Uploading: 36%Uploading: 37%Uploading: 38%Uploading: 39%Uploading: 40%Uploading: 41%Uploading: 42%Uploading: 43%Uploading: 44%Uploading: 45%Uploading: 46%Uploading: 47%Uploading: 48%Uploading: 49%Uploading: 50%Uploading: 51%Uploading: 52%Uploading: 53%Uploading: 54%Uploading: 55%Uploading: 56%Uploading: 57%Uploading: 58%Uploading: 59%Uploading: 60%Uploading: 61%Uploading: 62%Uploading: 63%Uploading: 64%Uploading: 65%Uploading: 66%Uploading: 67%Uploading: 68%Uploading: 69%Uploading: 70%Uploading: 71%Uploading: 72%Uploading: 73%Uploading: 74%Uploading: 75%Uploading: 76%Uploading: 77%Uploading: 78%Uploading: 79%Uploading: 80%Uploading: 81%Uploading: 82%Uploading: 83%Uploading: 84%Uploading: 85%Uploading: 86%Uploading: 87%Uploading: 88%Uploading: 89%Uploading: 90%Uploading: 91%Uploading: 92%Uploading: 93%Uploading: 94%Uploading: 95%Uploading: 96%Uploading: 97%Uploading: 98%Uploading: 99%Uploading: 100%
+[2025-05-25 01:14:44] [filerecipient] Received: Downloading: 1%Downloading: 2%Downloading: 3%Downloading: 4%Downloading: 5%Downloading: 6%Downloading: 7%Downloading: 8%Downloading: 9%Downloading: 10%Downloading: 11%Downloading: 12%Downloading: 13%Downloading: 14%Downloading: 15%Downloading: 16%Downloading: 17%Downloading: 18%Downloading: 19%Downloading: 20%Downloading: 21%Downloading: 22%Downloading: 23%Downloading: 24%Downloading: 25%Downloading: 26%Downloading: 27%Downloading: 28%Downloading: 29%Downloading: 30%Downloading: 31%Downloading: 32%Downloading: 33%Downloading: 34%Downloading: 35%Downloading: 36%Downloading: 37%Downloading: 38%Downloading: 39%Downloading: 40%Downloading: 41%Downloading: 42%Downloading: 43%Downloading: 44%Downloading: 45%Downloading: 46%Downloading: 47%Downloading: 48%Downloading: 49%Downloading: 50%Downloading: 51%Downloading: 52%Downloading: 53%Downloading: 54%Downloading: 55%Downloading: 56%Downloading: 57%Downloading: 58%Downloading: 59%Downloading: 60%Downloading: 61%Downloading: 62%Downloading: 63%Downloading: 64%Downloading: 65%Downloading: 66%Downloading: 67%Downloading: 68%Downloading: 69%Downloading: 70%Downloading: 71%Downloading: 72%Downloading: 73%Downloading: 74%Downloading: 75%Downloading: 76%Downloading: 77%Downloading: 78%Downloading: 79%Downloading: 80%Downloading: 81%Downloading: 82%Downloading: 83%Downloading: 84%Downloading: 85%Downloading: 86%Downloading: 87%Downloading: 88%Downloading: 89%Downloading: 90%Downloading: 91%Downloading: 92%Downloading: 93%Downloading: 94%Downloading: 95%Downloading: 96%Downloading: 97%Downloading: 98%Downloading: 99%Downloading: 100%
+[2025-05-25 01:14:44] [fileuser7] Received: Success: File upload completed successfully
+[2025-05-25 01:14:44] [filerecipient] Received: DEBUG: File receive completed. Total received: 2097152 bytes
+[2025-05-25 01:14:44] [filerecipient] Received: Success: File 'large_1748124882.jpg' received and saved to: uploads/large_1748124882.jpg
+[2025-05-25 01:14:44] [filerecipient] Received: Server:  File 'test_files/large.jpg' received successfully from fileuser6.
+[2025-05-25 01:14:44] [filerecipient] Received: DEBUG: Received file header: FILE:test_files/large_1748124884.jpg:2097152
+[2025-05-25 01:14:44] [filerecipient] Received: Binary data (114 bytes): db a5 c2 87 1b 16 d1 9e 40 54 c6 d3 32 e4 6f 15 fc 46 aa eb...
+[2025-05-25 01:14:44] [filerecipient] Received: Binary data (39 bytes): 6c 97 06 1b 27 66 81 99 2d 64 ab 64 45 ca ef a3 97 d4 0d e1...
+[2025-05-25 01:14:44] [filerecipient] Received: Binary data (75 bytes): fa 6d c4 6d 0f 76 f9 24 0d d0 5b 38 a8 d8 1e 2f 92 fa e6 63...
+[2025-05-25 01:14:44] [filerecipient] Received: Binary data (58 bytes): 9c 12 24 bf 47 bc a5 4c 19 d0 f7 23 3b 27 b1 2b c6 63 5d a2...
+[2025-05-25 01:14:44] [filerecipient] Received: DEBUG: Parsed filename='test_files/large_1748124884.jpg', filesize=2097152, remaining_len=2002
+[2025-05-25 01:14:44] [filerecipient] Received: DEBUG: Starting file receive: filename='test_files/large_1748124884.jpg', filesize=2097152, initial_len=2002
+[2025-05-25 01:14:44] [filerecipient] Received: DEBUG: File will be saved to: uploads/large_1748124884.jpg
+[2025-05-25 01:14:44] [filerecipient] Received: File: Receiving file 'large_1748124884.jpg'... Saving to: uploads/large_1748124884.jpg
+[2025-05-25 01:14:44] [filerecipient] Received: DEBUG: Wrote 2002 bytes of initial data
+[2025-05-25 01:14:45] [fileuser8] Sending command: /sendfile test_files/large.jpg filerecipient
+[2025-05-25 01:14:45] [fileuser8] Received: > Enter your username: > Server:  Welcome, fileuser8! You are now connected.
+[2025-05-25 01:14:45] [fileuser8] Received: es:
+[2025-05-25 01:14:45] [fileuser8] Received: Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:14:45] [fileuser8] Received: Uploading: 1%Uploading: 2%Uploading: 3%Uploading: 4%Uploading: 5%Uploading: 6%Uploading: 7%Uploading: 8%Uploading: 9%Uploading: 10%Uploading: 11%Uploading: 12%Uploading: 13%Uploading: 14%Uploading: 15%Uploading: 16%Uploading: 17%Uploading: 18%Uploading: 19%Uploading: 20%Uploading: 21%Uploading: 22%Uploading: 23%Uploading: 24%Uploading: 25%Uploading: 26%Uploading: 27%Uploading: 28%Uploading: 29%Uploading: 30%Uploading: 31%Uploading: 32%Uploading: 33%Uploading: 34%Uploading: 35%Uploading: 36%Uploading: 37%Uploading: 38%Uploading: 39%Uploading: 40%Uploading: 41%Uploading: 42%Uploading: 43%Uploading: 44%Uploading: 45%Uploading: 46%Uploading: 47%Uploading: 48%Uploading: 49%Uploading: 50%Uploading: 51%Uploading: 52%Uploading: 53%Uploading: 54%Uploading: 55%Uploading: 56%Uploading: 57%Uploading: 58%Uploading: 59%Uploading: 60%Uploading: 61%Uploading: 62%Uploading: 63%Uploading: 64%Uploading: 65%Uploading: 66%Uploading: 67%Uploading: 68%Uploading: 69%Uploading: 70%Uploading: 71%Uploading: 72%Uploading: 73%Uploading: 74%Uploading: 75%Uploading: 76%Uploading: 77%Uploading: 78%Uploading: 79%Uploading: 80%Uploading: 81%Uploading: 82%Uploading: 83%Uploading: 84%Uploading: 85%Uploading: 86%Uploading: 87%Uploading: 88%Uploading: 89%Uploading: 90%Uploading: 91%Uploading: 92%Uploading: 93%Uploading: 94%Uploading: 95%Uploading: 96%Uploading: 97%Uploading: 98%Uploading: 99%Uploading: 100%
+[2025-05-25 01:14:45] [filerecipient] Received: Downloading: 1%Downloading: 2%Downloading: 3%Downloading: 4%Downloading: 5%Downloading: 6%Downloading: 7%Downloading: 8%Downloading: 9%Downloading: 10%Downloading: 11%Downloading: 12%Downloading: 13%Downloading: 14%Downloading: 15%Downloading: 16%Downloading: 17%Downloading: 18%Downloading: 19%Downloading: 20%Downloading: 21%Downloading: 22%Downloading: 23%Downloading: 24%Downloading: 25%Downloading: 26%Downloading: 27%Downloading: 28%Downloading: 29%Downloading: 30%Downloading: 31%Downloading: 32%Downloading: 33%Downloading: 34%Downloading: 35%Downloading: 36%Downloading: 37%Downloading: 38%Downloading: 39%Downloading: 40%Downloading: 41%Downloading: 42%Downloading: 43%Downloading: 44%Downloading: 45%Downloading: 46%Downloading: 47%Downloading: 48%Downloading: 49%Downloading: 50%Downloading: 51%Downloading: 52%Downloading: 53%Downloading: 54%Downloading: 55%Downloading: 56%Downloading: 57%Downloading: 58%Downloading: 59%Downloading: 60%Downloading: 61%Downloading: 62%Downloading: 63%Downloading: 64%Downloading: 65%Downloading: 66%Downloading: 67%Downloading: 68%Downloading: 69%Downloading: 70%Downloading: 71%Downloading: 72%Downloading: 73%Downloading: 74%Downloading: 75%Downloading: 76%Downloading: 77%Downloading: 78%Downloading: 79%Downloading: 80%Downloading: 81%Downloading: 82%Downloading: 83%Downloading: 84%Downloading: 85%Downloading: 86%Downloading: 87%Downloading: 88%Downloading: 89%Downloading: 90%Downloading: 91%Downloading: 92%Downloading: 93%Downloading: 94%Downloading: 95%Downloading: 96%Downloading: 97%Downloading: 98%Downloading: 99%Downloading: 100%
+[2025-05-25 01:14:45] [fileuser8] Received: Success: File upload completed successfully
+[2025-05-25 01:14:45] [filerecipient] Received: DEBUG: File receive completed. Total received: 2097152 bytes
+[2025-05-25 01:14:45] [filerecipient] Received: Success: File 'large_1748124884.jpg' received and saved to: uploads/large_1748124884.jpg
+[2025-05-25 01:14:45] [filerecipient] Received: Server:  File 'test_files/large.jpg' received successfully from fileuser7.
+[2025-05-25 01:14:45] [filerecipient] Received: DEBUG: Received file header: FILE:test_files/large_1748124885.jpg:2097152
+[2025-05-25 01:14:45] [filerecipient] Received: Binary data (114 bytes): db a5 c2 87 1b 16 d1 9e 40 54 c6 d3 32 e4 6f 15 fc 46 aa eb...
+[2025-05-25 01:14:45] [filerecipient] Received: Binary data (39 bytes): 6c 97 06 1b 27 66 81 99 2d 64 ab 64 45 ca ef a3 97 d4 0d e1...
+[2025-05-25 01:14:45] [filerecipient] Received: Binary data (75 bytes): fa 6d c4 6d 0f 76 f9 24 0d d0 5b 38 a8 d8 1e 2f 92 fa e6 63...
+[2025-05-25 01:14:45] [filerecipient] Received: Binary data (58 bytes): 9c 12 24 bf 47 bc a5 4c 19 d0 f7 23 3b 27 b1 2b c6 63 5d a2...
+[2025-05-25 01:14:45] [filerecipient] Received: DEBUG: Parsed filename='test_files/large_1748124885.jpg', filesize=2097152, remaining_len=2002
+[2025-05-25 01:14:45] [filerecipient] Received: DEBUG: Starting file receive: filename='test_files/large_1748124885.jpg', filesize=2097152, initial_len=2002
+[2025-05-25 01:14:45] [filerecipient] Received: DEBUG: File will be saved to: uploads/large_1748124885.jpg
+[2025-05-25 01:14:45] [filerecipient] Received: File: Receiving file 'large_1748124885.jpg'... Saving to: uploads/large_1748124885.jpg
+[2025-05-25 01:14:45] [filerecipient] Received: DEBUG: Wrote 2002 bytes of initial data
+[2025-05-25 01:14:46] [fileuser9] Sending command: /sendfile test_files/large.jpg filerecipient
+[2025-05-25 01:14:46] [fileuser9] Received: > Enter your username: > Server:  Welcome, fileuser9! You are now connected.
+[2025-05-25 01:14:46] [fileuser9] Received: es:
+[2025-05-25 01:14:46] [fileuser9] Received: Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:14:46] [fileuser9] Received: Uploading: 1%Uploading: 2%Uploading: 3%Uploading: 4%Uploading: 5%Uploading: 6%Uploading: 7%Uploading: 8%Uploading: 9%Uploading: 10%Uploading: 11%Uploading: 12%Uploading: 13%Uploading: 14%Uploading: 15%Uploading: 16%Uploading: 17%Uploading: 18%Uploading: 19%Uploading: 20%Uploading: 21%Uploading: 22%Uploading: 23%Uploading: 24%Uploading: 25%Uploading: 26%Uploading: 27%Uploading: 28%Uploading: 29%Uploading: 30%Uploading: 31%Uploading: 32%Uploading: 33%Uploading: 34%Uploading: 35%Uploading: 36%Uploading: 37%Uploading: 38%Uploading: 39%Uploading: 40%Uploading: 41%Uploading: 42%Uploading: 43%Uploading: 44%Uploading: 45%Uploading: 46%Uploading: 47%Uploading: 48%Uploading: 49%Uploading: 50%Uploading: 51%Uploading: 52%Uploading: 53%Uploading: 54%Uploading: 55%Uploading: 56%Uploading: 57%Uploading: 58%Uploading: 59%Uploading: 60%Uploading: 61%Uploading: 62%Uploading: 63%Uploading: 64%Uploading: 65%Uploading: 66%Uploading: 67%Uploading: 68%Uploading: 69%Uploading: 70%Uploading: 71%Uploading: 72%Uploading: 73%Uploading: 74%Uploading: 75%Uploading: 76%Uploading: 77%Uploading: 78%Uploading: 79%Uploading: 80%Uploading: 81%Uploading: 82%Uploading: 83%Uploading: 84%Uploading: 85%Uploading: 86%Uploading: 87%Uploading: 88%Uploading: 89%Uploading: 90%Uploading: 91%Uploading: 92%Uploading: 93%Uploading: 94%Uploading: 95%Uploading: 96%Uploading: 97%Uploading: 98%Uploading: 99%Uploading: 100%
+[2025-05-25 01:14:46] [filerecipient] Received: Downloading: 1%Downloading: 2%Downloading: 3%Downloading: 4%Downloading: 5%Downloading: 6%Downloading: 7%Downloading: 8%Downloading: 9%Downloading: 10%Downloading: 11%Downloading: 12%Downloading: 13%Downloading: 14%Downloading: 15%Downloading: 16%Downloading: 17%Downloading: 18%Downloading: 19%Downloading: 20%Downloading: 21%Downloading: 22%Downloading: 23%Downloading: 24%Downloading: 25%Downloading: 26%Downloading: 27%Downloading: 28%Downloading: 29%Downloading: 30%Downloading: 31%Downloading: 32%Downloading: 33%Downloading: 34%Downloading: 35%Downloading: 36%Downloading: 37%Downloading: 38%Downloading: 39%Downloading: 40%Downloading: 41%Downloading: 42%Downloading: 43%Downloading: 44%Downloading: 45%Downloading: 46%Downloading: 47%Downloading: 48%Downloading: 49%Downloading: 50%Downloading: 51%Downloading: 52%Downloading: 53%Downloading: 54%Downloading: 55%Downloading: 56%Downloading: 57%Downloading: 58%Downloading: 59%Downloading: 60%Downloading: 61%Downloading: 62%Downloading: 63%Downloading: 64%Downloading: 65%Downloading: 66%Downloading: 67%Downloading: 68%Downloading: 69%Downloading: 70%Downloading: 71%Downloading: 72%Downloading: 73%Downloading: 74%Downloading: 75%Downloading: 76%Downloading: 77%Downloading: 78%Downloading: 79%Downloading: 80%Downloading: 81%Downloading: 82%Downloading: 83%Downloading: 84%Downloading: 85%Downloading: 86%Downloading: 87%Downloading: 88%Downloading: 89%Downloading: 90%Downloading: 91%Downloading: 92%Downloading: 93%Downloading: 94%Downloading: 95%Downloading: 96%Downloading: 97%Downloading: 98%Downloading: 99%Downloading: 100%
+[2025-05-25 01:14:46] [fileuser9] Received: Success: File upload completed successfully
+[2025-05-25 01:14:46] [filerecipient] Received: DEBUG: File receive completed. Total received: 2097152 bytes
+[2025-05-25 01:14:46] [filerecipient] Received: Success: File 'large_1748124885.jpg' received and saved to: uploads/large_1748124885.jpg
+[2025-05-25 01:14:46] [filerecipient] Received: Server:  File 'test_files/large.jpg' received successfully from fileuser8.
+[2025-05-25 01:14:46] [filerecipient] Received: DEBUG: Received file header: FILE:test_files/large_1748124886.jpg:2097152
+[2025-05-25 01:14:46] [filerecipient] Received: DEBUG: Parsed filename='test_files/large_1748124886.jpg', filesize=2097152, remaining_len=0
+[2025-05-25 01:14:46] [filerecipient] Received: DEBUG: Starting file receive: filename='test_files/large_1748124886.jpg', filesize=2097152, initial_len=0
+[2025-05-25 01:14:46] [filerecipient] Received: DEBUG: File will be saved to: uploads/large_1748124886.jpg
+[2025-05-25 01:14:46] [filerecipient] Received: File: Receiving file 'large_1748124886.jpg'... Saving to: uploads/large_1748124886.jpg
+[2025-05-25 01:14:47] [fileuser10] Sending command: /sendfile test_files/large.jpg filerecipient
+[2025-05-25 01:14:47] [fileuser10] Received: > Enter your username: > Server:  Welcome, fileuser10! You are now connected.
+[2025-05-25 01:14:47] [fileuser10] Received: es:
+[2025-05-25 01:14:47] [fileuser10] Received: Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:14:48] [fileuser10] Received: Uploading: 1%Uploading: 2%Uploading: 3%Uploading: 4%Uploading: 5%Uploading: 6%Uploading: 7%Uploading: 8%Uploading: 9%Uploading: 10%Uploading: 11%Uploading: 12%Uploading: 13%Uploading: 14%Uploading: 15%Uploading: 16%Uploading: 17%Uploading: 18%Uploading: 19%Uploading: 20%Uploading: 21%Uploading: 22%Uploading: 23%Uploading: 24%Uploading: 25%Uploading: 26%Uploading: 27%Uploading: 28%Uploading: 29%Uploading: 30%Uploading: 31%Uploading: 32%Uploading: 33%Uploading: 34%Uploading: 35%Uploading: 36%Uploading: 37%Uploading: 38%Uploading: 39%Uploading: 40%Uploading: 41%Uploading: 42%Uploading: 43%Uploading: 44%Uploading: 45%Uploading: 46%Uploading: 47%Uploading: 48%Uploading: 49%Uploading: 50%Uploading: 51%Uploading: 52%Uploading: 53%Uploading: 54%Uploading: 55%Uploading: 56%Uploading: 57%Uploading: 58%Uploading: 59%Uploading: 60%Uploading: 61%Uploading: 62%Uploading: 63%Uploading: 64%Uploading: 65%Uploading: 66%Uploading: 67%Uploading: 68%Uploading: 69%Uploading: 70%Uploading: 71%Uploading: 72%Uploading: 73%Uploading: 74%Uploading: 75%Uploading: 76%Uploading: 77%Uploading: 78%Uploading: 79%Uploading: 80%Uploading: 81%Uploading: 82%Uploading: 83%Uploading: 84%Uploading: 85%Uploading: 86%Uploading: 87%Uploading: 88%Uploading: 89%Uploading: 90%Uploading: 91%Uploading: 92%Uploading: 93%Uploading: 94%Uploading: 95%Uploading: 96%Uploading: 97%Uploading: 98%Uploading: 99%Uploading: 100%
+[2025-05-25 01:14:48] [filerecipient] Received: Downloading: 1%Downloading: 2%Downloading: 3%Downloading: 4%Downloading: 5%Downloading: 6%Downloading: 7%Downloading: 8%Downloading: 9%Downloading: 10%Downloading: 11%Downloading: 12%Downloading: 13%Downloading: 14%Downloading: 15%Downloading: 16%Downloading: 17%Downloading: 18%Downloading: 19%Downloading: 20%Downloading: 21%Downloading: 22%Downloading: 23%Downloading: 24%Downloading: 25%Downloading: 26%Downloading: 27%Downloading: 28%Downloading: 29%Downloading: 30%Downloading: 31%Downloading: 32%Downloading: 33%Downloading: 34%Downloading: 35%Downloading: 36%Downloading: 37%Downloading: 38%Downloading: 39%Downloading: 40%Downloading: 41%Downloading: 42%Downloading: 43%Downloading: 44%Downloading: 45%Downloading: 46%Downloading: 47%Downloading: 48%Downloading: 49%Downloading: 50%Downloading: 51%Downloading: 52%Downloading: 53%Downloading: 54%Downloading: 55%Downloading: 56%Downloading: 57%Downloading: 58%Downloading: 59%Downloading: 60%Downloading: 61%Downloading: 62%Downloading: 63%Downloading: 64%Downloading: 65%Downloading: 66%Downloading: 67%Downloading: 68%Downloading: 69%Downloading: 70%Downloading: 71%Downloading: 72%Downloading: 73%Downloading: 74%Downloading: 75%Downloading: 76%Downloading: 77%Downloading: 78%Downloading: 79%Downloading: 80%Downloading: 81%Downloading: 82%Downloading: 83%Downloading: 84%Downloading: 85%Downloading: 86%Downloading: 87%Downloading: 88%Downloading: 89%Downloading: 90%Downloading: 91%Downloading: 92%Downloading: 93%Downloading: 94%Downloading: 95%Downloading: 96%Downloading: 97%Downloading: 98%Downloading: 99%Downloading: 100%
+[2025-05-25 01:14:48] [fileuser10] Received: Success: File upload completed successfully
+[2025-05-25 01:14:48] [filerecipient] Received: DEBUG: File receive completed. Total received: 2097152 bytes
+[2025-05-25 01:14:48] [filerecipient] Received: Success: File 'large_1748124886.jpg' received and saved to: uploads/large_1748124886.jpg
+[2025-05-25 01:14:48] [filerecipient] Received: Server:  File 'test_files/large.jpg' received successfully from fileuser9.
+[2025-05-25 01:14:48] [filerecipient] Received: DEBUG: Received file header: FILE:test_files/large_1748124888.jpg:2097152
+[2025-05-25 01:14:48] [filerecipient] Received: Binary data (114 bytes): db a5 c2 87 1b 16 d1 9e 40 54 c6 d3 32 e4 6f 15 fc 46 aa eb...
+[2025-05-25 01:14:48] [filerecipient] Received: Binary data (39 bytes): 6c 97 06 1b 27 66 81 99 2d 64 ab 64 45 ca ef a3 97 d4 0d e1...
+[2025-05-25 01:14:48] [filerecipient] Received: Binary data (75 bytes): fa 6d c4 6d 0f 76 f9 24 0d d0 5b 38 a8 d8 1e 2f 92 fa e6 63...
+[2025-05-25 01:14:48] [filerecipient] Received: Binary data (58 bytes): 9c 12 24 bf 47 bc a5 4c 19 d0 f7 23 3b 27 b1 2b c6 63 5d a2...
+[2025-05-25 01:14:48] [filerecipient] Received: DEBUG: Parsed filename='test_files/large_1748124888.jpg', filesize=2097152, remaining_len=2002
+[2025-05-25 01:14:48] [filerecipient] Received: DEBUG: Starting file receive: filename='test_files/large_1748124888.jpg', filesize=2097152, initial_len=2002
+[2025-05-25 01:14:48] [filerecipient] Received: DEBUG: File will be saved to: uploads/large_1748124888.jpg
+[2025-05-25 01:14:48] [filerecipient] Received: File: Receiving file 'large_1748124888.jpg'... Saving to: uploads/large_1748124888.jpg
+[2025-05-25 01:14:48] [filerecipient] Received: DEBUG: Wrote 2002 bytes of initial data
+[2025-05-25 01:14:59] WARNING: Client fileuser6 was not queued as expected
+[2025-05-25 01:14:59] WARNING: Client fileuser7 was not queued as expected
+[2025-05-25 01:14:59] WARNING: Client fileuser8 was not queued as expected
+[2025-05-25 01:14:59] WARNING: Client fileuser9 was not queued as expected
+[2025-05-25 01:14:59] WARNING: Client fileuser10 was not queued as expected
+[2025-05-25 01:14:59] TEST RESULT: File Upload Queue - [91mFAILED[0m
+Details: No file transfers were queued
+
+================================================================================
+TEST 4: UNEXPECTED DISCONNECTION
+================================================================================
+
+[2025-05-25 01:14:59] [filerecipient] Sending command: /exit
+[2025-05-25 01:14:59] [filerecipient] Received: Downloading: 1%Downloading: 2%Downloading: 3%Downloading: 4%Downloading: 5%Downloading: 6%Downloading: 7%Downloading: 8%Downloading: 9%Downloading: 10%Downloading: 11%Downloading: 12%Downloading: 13%Downloading: 14%Downloading: 15%Downloading: 16%Downloading: 17%Downloading: 18%Downloading: 19%Downloading: 20%Downloading: 21%Downloading: 22%Downloading: 23%Downloading: 24%Downloading: 25%Downloading: 26%Downloading: 27%Downloading: 28%Downloading: 29%Downloading: 30%Downloading: 31%Downloading: 32%Downloading: 33%Downloading: 34%Downloading: 35%Downloading: 36%Downloading: 37%Downloading: 38%Downloading: 39%Downloading: 40%Downloading: 41%Downloading: 42%Downloading: 43%Downloading: 44%Downloading: 45%Downloading: 46%Downloading: 47%Downloading: 48%Downloading: 49%Downloading: 50%Downloading: 51%Downloading: 52%Downloading: 53%Downloading: 54%Downloading: 55%Downloading: 56%Downloading: 57%Downloading: 58%Downloading: 59%Downloading: 60%Downloading: 61%Downloading: 62%Downloading: 63%Downloading: 64%Downloading: 65%Downloading: 66%Downloading: 67%Downloading: 68%Downloading: 69%Downloading: 70%Downloading: 71%Downloading: 72%Downloading: 73%Downloading: 74%Downloading: 75%Downloading: 76%Downloading: 77%Downloading: 78%Downloading: 79%Downloading: 80%Downloading: 81%Downloading: 82%Downloading: 83%Downloading: 84%Downloading: 85%Downloading: 86%Downloading: 87%Downloading: 88%Downloading: 89%Downloading: 90%Downloading: 91%Downloading: 92%Downloading: 93%Downloading: 94%Downloading: 95%Downloading: 96%Downloading: 97%Downloading: 98%Downloading: 99%Downloading: 100%
+[2025-05-25 01:14:59] [filerecipient] Received: DEBUG: File receive completed. Total received: 2097152 bytes
+[2025-05-25 01:14:59] [filerecipient] Received: Success: File 'large_1748124888.jpg' received and saved to: uploads/large_1748124888.jpg
+[2025-05-25 01:14:59] [filerecipient] Received: Server:  File 'test_files/large.jpg' received successfully from fileuser10.
+[2025-05-25 01:14:59] [filerecipient] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:14:59] [filerecipient] Received: Disconnected from server.
+[2025-05-25 01:15:00] Client 'filerecipient' stopped
+[2025-05-25 01:15:00] [fileuser1] Sending command: /exit
+[2025-05-25 01:15:00] [fileuser1] Received: >
+[2025-05-25 01:15:00] [fileuser1] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:00] [fileuser1] Received: Disconnected from server.
+[2025-05-25 01:15:00] Client 'fileuser1' stopped
+[2025-05-25 01:15:00] [fileuser2] Sending command: /exit
+[2025-05-25 01:15:00] [fileuser2] Received: >
+[2025-05-25 01:15:00] [fileuser2] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:00] [fileuser2] Received: Disconnected from server.
+[2025-05-25 01:15:01] Client 'fileuser2' stopped
+[2025-05-25 01:15:01] [fileuser3] Sending command: /exit
+[2025-05-25 01:15:01] [fileuser3] Received: >
+[2025-05-25 01:15:01] [fileuser3] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:01] [fileuser3] Received: Disconnected from server.
+[2025-05-25 01:15:02] Client 'fileuser3' stopped
+[2025-05-25 01:15:02] [fileuser4] Sending command: /exit
+[2025-05-25 01:15:02] [fileuser4] Received: >
+[2025-05-25 01:15:02] [fileuser4] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:02] [fileuser4] Received: Disconnected from server.
+[2025-05-25 01:15:03] Client 'fileuser4' stopped
+[2025-05-25 01:15:03] [fileuser5] Sending command: /exit
+[2025-05-25 01:15:03] [fileuser5] Received: >
+[2025-05-25 01:15:03] [fileuser5] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:03] [fileuser5] Received: Disconnected from server.
+[2025-05-25 01:15:04] Client 'fileuser5' stopped
+[2025-05-25 01:15:04] [fileuser6] Sending command: /exit
+[2025-05-25 01:15:04] [fileuser6] Received: >
+[2025-05-25 01:15:04] [fileuser6] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:04] [fileuser6] Received: Disconnected from server.
+[2025-05-25 01:15:04] Client 'fileuser6' stopped
+[2025-05-25 01:15:04] [fileuser7] Sending command: /exit
+[2025-05-25 01:15:04] [fileuser7] Received: >
+[2025-05-25 01:15:04] [fileuser7] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:04] [fileuser7] Received: Disconnected from server.
+[2025-05-25 01:15:05] Client 'fileuser7' stopped
+[2025-05-25 01:15:05] [fileuser8] Sending command: /exit
+[2025-05-25 01:15:05] [fileuser8] Received: >
+[2025-05-25 01:15:05] [fileuser8] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:05] [fileuser8] Received: Disconnected from server.
+[2025-05-25 01:15:06] Client 'fileuser8' stopped
+[2025-05-25 01:15:06] [fileuser9] Sending command: /exit
+[2025-05-25 01:15:06] [fileuser9] Received: >
+[2025-05-25 01:15:06] [fileuser9] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:06] [fileuser9] Received: Disconnected from server.
+[2025-05-25 01:15:07] Client 'fileuser9' stopped
+[2025-05-25 01:15:07] [fileuser10] Sending command: /exit
+[2025-05-25 01:15:07] [fileuser10] Received: >
+[2025-05-25 01:15:07] [fileuser10] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:07] [fileuser10] Received: Disconnected from server.
+[2025-05-25 01:15:08] Client 'fileuser10' stopped
+[2025-05-25 01:15:08] [normaluser] Received: ====================================
+[2025-05-25 01:15:08] [normaluser] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:08] [normaluser] Received: ====================================
+[2025-05-25 01:15:08] [normaluser] Received: Welcome to the chat client!
+[2025-05-25 01:15:08] [normaluser] Received: Type /help to see available commands.
+[2025-05-25 01:15:08] [normaluser] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:09] Client 'normaluser' connected successfully
+[2025-05-25 01:15:09] [disconnect_user] Received: ====================================
+[2025-05-25 01:15:09] [disconnect_user] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:09] [disconnect_user] Received: ====================================
+[2025-05-25 01:15:09] [disconnect_user] Received: Welcome to the chat client!
+[2025-05-25 01:15:09] [disconnect_user] Received: Type /help to see available commands.
+[2025-05-25 01:15:09] [disconnect_user] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:10] Client 'disconnect_user' connected successfully
+[2025-05-25 01:15:10] [normaluser] Sending command: /join disconnecttest
+[2025-05-25 01:15:10] [normaluser] Received: > Enter your username: > Server:  Welcome, normaluser! You are now connected.
+[2025-05-25 01:15:11] [disconnect_user] Sending command: /join disconnecttest
+[2025-05-25 01:15:11] [disconnect_user] Received: > Enter your username: > [ERROR] Invalid username. Must be alphanumeric, 1-16 characters.
+[2025-05-25 01:15:11] [disconnect_user] Received: Server: Connection closed by server
+[2025-05-25 01:15:11] [disconnect_user] Received: Error: Failed to send command to server
+[2025-05-25 01:15:11] [disconnect_user] Received: Disconnected from server.
+[2025-05-25 01:15:12] Force killing 'disconnect_user' without proper exit...
+[2025-05-25 01:15:14] [normaluser] Sending command: /broadcast Is anyone still here?
+[2025-05-25 01:15:14] [normaluser] Received: > Server:  You joined the room 'disconnecttest'
+[2025-05-25 01:15:14] [normaluser] Sending command: /exit
+[2025-05-25 01:15:14] [normaluser] Received: > Server:  Message sent to room
+[2025-05-25 01:15:14] [normaluser] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:14] [normaluser] Received: Disconnected from server.
+[2025-05-25 01:15:15] Client 'normaluser' stopped
+[2025-05-25 01:15:16] TEST RESULT: Unexpected Disconnection - [92mPASSED[0m
+Details: Server handled unexpected client disconnection gracefully
+
+================================================================================
+TEST 5: ROOM SWITCHING
+================================================================================
+
+[2025-05-25 01:15:16] [switcher] Received: ====================================
+[2025-05-25 01:15:16] [switcher] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:16] [switcher] Received: ====================================
+[2025-05-25 01:15:16] [switcher] Received: Welcome to the chat client!
+[2025-05-25 01:15:16] [switcher] Received: Type /help to see available commands.
+[2025-05-25 01:15:16] [switcher] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:17] Client 'switcher' connected successfully
+[2025-05-25 01:15:17] [room1user] Received: ====================================
+[2025-05-25 01:15:17] [room1user] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:17] [room1user] Received: ====================================
+[2025-05-25 01:15:17] [room1user] Received: Welcome to the chat client!
+[2025-05-25 01:15:17] [room1user] Received: Type /help to see available commands.
+[2025-05-25 01:15:17] [room1user] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:19] Client 'room1user' connected successfully
+[2025-05-25 01:15:19] [room2user] Received: ====================================
+[2025-05-25 01:15:19] [room2user] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:19] [room2user] Received: ====================================
+[2025-05-25 01:15:19] [room2user] Received: Welcome to the chat client!
+[2025-05-25 01:15:19] [room2user] Received: Type /help to see available commands.
+[2025-05-25 01:15:19] [room2user] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:20] Client 'room2user' connected successfully
+[2025-05-25 01:15:20] [room1user] Sending command: /join switchroom1
+[2025-05-25 01:15:20] [room1user] Received: > Enter your username: > Server:  Welcome, room1user! You are now connected.
+[2025-05-25 01:15:20] [room2user] Sending command: /join switchroom2
+[2025-05-25 01:15:20] [room2user] Received: > Enter your username: > Server:  Welcome, room2user! You are now connected.
+[2025-05-25 01:15:21] [switcher] Sending command: /join switchroom1
+[2025-05-25 01:15:21] [switcher] Received: > Enter your username: > Server:  Welcome, switcher! You are now connected.
+[2025-05-25 01:15:22] [switcher] Sending command: /broadcast Hello room1
+[2025-05-25 01:15:22] [switcher] Received: > Server:  You joined the room 'switchroom1'
+[2025-05-25 01:15:23] Switching 'switcher' from room1 to room2...
+[2025-05-25 01:15:23] [switcher] Sending command: /join switchroom2
+[2025-05-25 01:15:23] [switcher] Received: > Server:  Message sent to room
+[2025-05-25 01:15:25] [switcher] Sending command: /broadcast Hello room2
+[2025-05-25 01:15:25] [switcher] Received: > Server:  You joined the room 'switchroom2'
+[2025-05-25 01:15:26] [switcher] Sending command: /exit
+[2025-05-25 01:15:26] [switcher] Received: > Server:  Message sent to room
+[2025-05-25 01:15:26] [switcher] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:26] [switcher] Received: Disconnected from server.
+[2025-05-25 01:15:27] Client 'switcher' stopped
+[2025-05-25 01:15:27] [room1user] Sending command: /exit
+[2025-05-25 01:15:27] [room1user] Received: > Server:  You joined the room 'switchroom1'
+[2025-05-25 01:15:27] [room1user] Received: [switcher]: Hello room1
+[2025-05-25 01:15:27] [room1user] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:27] [room1user] Received: Disconnected from server.
+[2025-05-25 01:15:27] Client 'room1user' stopped
+[2025-05-25 01:15:27] [room2user] Sending command: /exit
+[2025-05-25 01:15:27] [room2user] Received: > Server:  You joined the room 'switchroom2'
+[2025-05-25 01:15:27] [room2user] Received: [switcher]: Hello room2
+[2025-05-25 01:15:27] [room2user] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:27] [room2user] Received: Disconnected from server.
+[2025-05-25 01:15:28] Client 'room2user' stopped
+[2025-05-25 01:15:28] TEST RESULT: Room Switching - [92mPASSED[0m
+Details: Client successfully switched between rooms
+
+================================================================================
+TEST 6: OVERSIZED FILE REJECTION
+================================================================================
+
+[2025-05-25 01:15:28] [filesender] Received: ====================================
+[2025-05-25 01:15:28] [filesender] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:28] [filesender] Received: ====================================
+[2025-05-25 01:15:28] [filesender] Received: Welcome to the chat client!
+[2025-05-25 01:15:28] [filesender] Received: Type /help to see available commands.
+[2025-05-25 01:15:28] [filesender] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:30] Client 'filesender' connected successfully
+[2025-05-25 01:15:30] [filereceiver] Received: ====================================
+[2025-05-25 01:15:30] [filereceiver] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:30] [filereceiver] Received: ====================================
+[2025-05-25 01:15:30] [filereceiver] Received: Welcome to the chat client!
+[2025-05-25 01:15:30] [filereceiver] Received: Type /help to see available commands.
+[2025-05-25 01:15:30] [filereceiver] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:31] Client 'filereceiver' connected successfully
+[2025-05-25 01:15:31] Attempting to send oversized file (4.0MB)...
+[2025-05-25 01:15:31] [filesender] Sending command: /sendfile test_files/oversize.png filereceiver#s
+[2025-05-25 01:15:31] [filesender] Received: > Enter your username: > Server:  Welcome, filesender! You are now connected.
+[2025-05-25 01:15:31] [filesender] Received: Error: File too large: test_files/oversize.png (Size: 4194304 bytes, Max: 3145728 bytes)
+[2025-05-25 01:15:33] TEST RESULT: Oversized File Rejection - [92mPASSED[0m
+Details: Server correctly rejected oversized file
+[2025-05-25 01:15:33] [filesender] Sending command: /exit
+[2025-05-25 01:15:33] [filesender] Received: > Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:33] [filesender] Received: Disconnected from server.
+[2025-05-25 01:15:34] Client 'filesender' stopped
+[2025-05-25 01:15:34] [filereceiver] Sending command: /exit
+[2025-05-25 01:15:34] [filereceiver] Received: > Enter your username: > Server:  Welcome, filereceiver! You are now connected.
+[2025-05-25 01:15:34] [filereceiver] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:34] [filereceiver] Received: Disconnected from server.
+[2025-05-25 01:15:35] Client 'filereceiver' stopped
+
+================================================================================
+TEST 8: REJOINING ROOMS
+================================================================================
+
+[2025-05-25 01:15:35] [rejoiner] Received: ====================================
+[2025-05-25 01:15:35] [rejoiner] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:35] [rejoiner] Received: ====================================
+[2025-05-25 01:15:35] [rejoiner] Received: Welcome to the chat client!
+[2025-05-25 01:15:35] [rejoiner] Received: Type /help to see available commands.
+[2025-05-25 01:15:35] [rejoiner] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:36] Client 'rejoiner' connected successfully
+[2025-05-25 01:15:36] [stayer] Received: ====================================
+[2025-05-25 01:15:36] [stayer] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:36] [stayer] Received: ====================================
+[2025-05-25 01:15:36] [stayer] Received: Welcome to the chat client!
+[2025-05-25 01:15:36] [stayer] Received: Type /help to see available commands.
+[2025-05-25 01:15:36] [stayer] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:37] Client 'stayer' connected successfully
+[2025-05-25 01:15:37] [rejoiner] Sending command: /join rejoinroom
+[2025-05-25 01:15:37] [rejoiner] Received: > Enter your username: > Server:  Welcome, rejoiner! You are now connected.
+[2025-05-25 01:15:38] [stayer] Sending command: /join rejoinroom
+[2025-05-25 01:15:38] [stayer] Received: > Enter your username: > Server:  Welcome, stayer! You are now connected.
+[2025-05-25 01:15:39] [stayer] Sending command: /broadcast First message
+[2025-05-25 01:15:39] [stayer] Received: > Server:  You joined the room 'rejoinroom'
+[2025-05-25 01:15:40] 'rejoiner' leaves the room...
+[2025-05-25 01:15:40] [rejoiner] Sending command: /leave
+[2025-05-25 01:15:40] [rejoiner] Received: > Server:  You joined the room 'rejoinroom'
+[2025-05-25 01:15:40] [rejoiner] Received: [stayer]: First message
+[2025-05-25 01:15:42] [stayer] Sending command: /broadcast Second message (while rejoiner is away)
+[2025-05-25 01:15:42] [stayer] Received: > Server:  Message sent to room
+[2025-05-25 01:15:43] 'rejoiner' rejoins the room...
+[2025-05-25 01:15:43] [rejoiner] Sending command: /join rejoinroom
+[2025-05-25 01:15:43] [rejoiner] Received: > Server:  You left the room.
+[2025-05-25 01:15:44] [stayer] Sending command: /broadcast Third message (after rejoiner returned)
+[2025-05-25 01:15:44] [stayer] Received: > Server:  Message sent to room
+[2025-05-25 01:15:46] [rejoiner] Sending command: /exit
+[2025-05-25 01:15:46] [rejoiner] Received: > Server:  You joined the room 'rejoinroom'
+[2025-05-25 01:15:46] [rejoiner] Received: [stayer]: Third message (after rejoiner returned)
+[2025-05-25 01:15:46] [rejoiner] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:46] [rejoiner] Received: Disconnected from server.
+[2025-05-25 01:15:46] Client 'rejoiner' stopped
+[2025-05-25 01:15:46] [stayer] Sending command: /exit
+[2025-05-25 01:15:46] [stayer] Received: > Server:  Message sent to room
+[2025-05-25 01:15:46] [stayer] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:46] [stayer] Received: Disconnected from server.
+[2025-05-25 01:15:47] Client 'stayer' stopped
+[2025-05-25 01:15:47] TEST RESULT: Rejoining Rooms - [92mPASSED[0m
+Details: Client successfully left and rejoined a room
+
+================================================================================
+TEST 9: SAME FILENAME COLLISION
+================================================================================
+
+[2025-05-25 01:15:47] [sender1] Received: ====================================
+[2025-05-25 01:15:47] [sender1] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:47] [sender1] Received: ====================================
+[2025-05-25 01:15:47] [sender1] Received: Welcome to the chat client!
+[2025-05-25 01:15:47] [sender1] Received: Type /help to see available commands.
+[2025-05-25 01:15:47] [sender1] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:49] Client 'sender1' connected successfully
+[2025-05-25 01:15:49] [sender2] Received: ====================================
+[2025-05-25 01:15:49] [sender2] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:49] [sender2] Received: ====================================
+[2025-05-25 01:15:49] [sender2] Received: Welcome to the chat client!
+[2025-05-25 01:15:49] [sender2] Received: Type /help to see available commands.
+[2025-05-25 01:15:49] [sender2] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:50] Client 'sender2' connected successfully
+[2025-05-25 01:15:50] [collisionreceiver] Received: ====================================
+[2025-05-25 01:15:50] [collisionreceiver] Received:   Multi-threaded Chat Client
+[2025-05-25 01:15:50] [collisionreceiver] Received: ====================================
+[2025-05-25 01:15:50] [collisionreceiver] Received: Welcome to the chat client!
+[2025-05-25 01:15:50] [collisionreceiver] Received: Type /help to see available commands.
+[2025-05-25 01:15:50] [collisionreceiver] Received: Connecting to server 127.0.0.1:5000...
+[2025-05-25 01:15:51] Client 'collisionreceiver' connected successfully
+[2025-05-25 01:15:51] First sender sending file...
+[2025-05-25 01:15:51] [sender1] Sending command: /sendfile test_files/small.txt collisionreceiver
+[2025-05-25 01:15:51] [sender1] Received: > Enter your username: > Server:  Welcome, sender1! You are now connected.
+[2025-05-25 01:15:51] [sender1] Received: es:
+[2025-05-25 01:15:51] [sender1] Received: Uploading: 100%Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:15:51] [sender1] Received: Success: File upload completed successfully
+[2025-05-25 01:15:54] Second sender sending file with same name...
+[2025-05-25 01:15:54] [sender2] Sending command: /sendfile test_files/small.txt collisionreceiver
+[2025-05-25 01:15:54] [sender2] Received: > Enter your username: > Server:  Welcome, sender2! You are now connected.
+[2025-05-25 01:15:54] [sender2] Received: es:
+[2025-05-25 01:15:55] [sender2] Received: Uploading: 100%Server:  Ready to receive file data. Please send now.
+[2025-05-25 01:15:55] [sender2] Received: Success: File upload completed successfully
+[2025-05-25 01:15:58] [sender1] Sending command: /exit
+[2025-05-25 01:15:58] [sender1] Received: > Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:58] [sender1] Received: Disconnected from server.
+[2025-05-25 01:15:59] Client 'sender1' stopped
+[2025-05-25 01:15:59] [sender2] Sending command: /exit
+[2025-05-25 01:15:59] [sender2] Received: > Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:59] [sender2] Received: Disconnected from server.
+[2025-05-25 01:15:59] Client 'sender2' stopped
+[2025-05-25 01:15:59] [collisionreceiver] Sending command: /exit
+[2025-05-25 01:15:59] [collisionreceiver] Received: > Enter your username: > Server:  Welcome, collisionreceive! You are now connected.
+[2025-05-25 01:15:59] [collisionreceiver] Received: Server:  Invalid command. Type /help for available commands.
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: Received file header: FILE:test_files/small_1748124951.txt:17
+[2025-05-25 01:15:59] [collisionreceiver] Received: Some trying text.[Server]: File 'test_files/small.txt' received successfully from sender1.
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: Parsed filename='test_files/small_1748124951.txt', filesize=17, remaining_len=91
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: Starting file receive: filename='test_files/small_1748124951.txt', filesize=17, initial_len=91
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: File will be saved to: uploads/small_1748124951.txt
+[2025-05-25 01:15:59] [collisionreceiver] Received: File: Receiving file 'small_1748124951.txt'... Saving to: uploads/small_1748124951.txt
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: Wrote 17 bytes of initial data
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: File receive completed. Total received: 17 bytes
+[2025-05-25 01:15:59] [collisionreceiver] Received: Success: File 'small_1748124951.txt' received and saved to: uploads/small_1748124951.txt
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: Received file header: FILE:test_files/small_1748124954.txt:17
+[2025-05-25 01:15:59] [collisionreceiver] Received: Some trying text.
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: Parsed filename='test_files/small_1748124954.txt', filesize=17, remaining_len=17
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: Starting file receive: filename='test_files/small_1748124954.txt', filesize=17, initial_len=17
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: File will be saved to: uploads/small_1748124954.txt
+[2025-05-25 01:15:59] [collisionreceiver] Received: File: Receiving file 'small_1748124954.txt'... Saving to: uploads/small_1748124954.txt
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: Wrote 17 bytes of initial data
+[2025-05-25 01:15:59] [collisionreceiver] Received: DEBUG: File receive completed. Total received: 17 bytes
+[2025-05-25 01:15:59] [collisionreceiver] Received: Success: File 'small_1748124954.txt' received and saved to: uploads/small_1748124954.txt
+[2025-05-25 01:15:59] [collisionreceiver] Received: Server:  File 'test_files/small.txt' received successfully from sender2.
+[2025-05-25 01:15:59] [collisionreceiver] Received: Server:  Disconnected. Goodbye!
+[2025-05-25 01:15:59] [collisionreceiver] Received: Disconnected from server.
+[2025-05-25 01:16:00] Client 'collisionreceiver' stopped
+[2025-05-25 01:16:00] TEST RESULT: Filename Collision - [92mPASSED[0m
+Details: Server handled filename collision (check server logs for details)
+
+================================================================================
+TEARDOWN
+================================================================================
+
+[2025-05-25 01:16:00] Sending SIGINT to server...
+[2025-05-25 01:16:02] Server stopped
+
+================================================================================
+TEST SUMMARY
+================================================================================
+
+[2025-05-25 01:16:02] All tests completed. See test_results.log for detailed results.

@@ -101,3 +101,133 @@
 2025-05-23 23:06:22 - [USER: sa] - connected to the server
 2025-05-23 23:06:29 - [USER: as] - connected to the server
 2025-05-23 23:06:31 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-25 01:12:31 - [INFO] Server initialized and listening on port 5000
+2025-05-25 01:12:34 - [USER: filerecipient] - connected to the server
+2025-05-25 01:12:36 - [USER: fileuser1] - connected to the server
+2025-05-25 01:12:37 - [USER: fileuser2] - connected to the server
+2025-05-25 01:12:38 - [USER: fileuser3] - connected to the server
+2025-05-25 01:12:39 - [USER: fileuser4] - connected to the server
+2025-05-25 01:12:41 - [USER: fileuser5] - connected to the server
+2025-05-25 01:12:42 - [USER: fileuser6] - connected to the server
+2025-05-25 01:12:43 - [USER: fileuser7] - connected to the server
+2025-05-25 01:12:45 - [USER: fileuser8] - connected to the server
+2025-05-25 01:12:46 - [USER: fileuser9] - connected to the server
+2025-05-25 01:12:47 - [USER: fileuser10] - connected to the server
+2025-05-25 01:12:48 - [FILE] 'test_files/large.jpg' sent from fileuser1 to filerecipient successfully
+2025-05-25 01:12:48 - [SEND FILE] 'test_files/large.jpg' sent from fileuser1 to filerecipient (success)
+2025-05-25 01:12:49 - [FILE] 'test_files/large.jpg' sent from fileuser2 to filerecipient successfully
+2025-05-25 01:12:49 - [SEND FILE] 'test_files/large.jpg' sent from fileuser2 to filerecipient (success)
+2025-05-25 01:12:50 - [FILE] 'test_files/large.jpg' sent from fileuser3 to filerecipient successfully
+2025-05-25 01:12:50 - [SEND FILE] 'test_files/large.jpg' sent from fileuser3 to filerecipient (success)
+2025-05-25 01:12:51 - [FILE] 'test_files/large.jpg' sent from fileuser4 to filerecipient successfully
+2025-05-25 01:12:51 - [SEND FILE] 'test_files/large.jpg' sent from fileuser4 to filerecipient (success)
+2025-05-25 01:12:51 - [FILE] 'test_files/large.jpg' sent from fileuser5 to filerecipient successfully
+2025-05-25 01:12:51 - [SEND FILE] 'test_files/large.jpg' sent from fileuser5 to filerecipient (success)
+2025-05-25 01:12:55 - [FILE] 'test_files/large.jpg' sent from fileuser6 to filerecipient successfully
+2025-05-25 01:12:55 - [SEND FILE] 'test_files/large.jpg' sent from fileuser6 to filerecipient (success)
+2025-05-25 01:12:57 - [FILE] 'test_files/large.jpg' sent from fileuser7 to filerecipient successfully
+2025-05-25 01:12:57 - [SEND FILE] 'test_files/large.jpg' sent from fileuser7 to filerecipient (success)
+2025-05-25 01:12:58 - [FILE] 'test_files/large.jpg' sent from fileuser8 to filerecipient successfully
+2025-05-25 01:12:58 - [SEND FILE] 'test_files/large.jpg' sent from fileuser8 to filerecipient (success)
+2025-05-25 01:12:59 - [FILE] 'test_files/large.jpg' sent from fileuser9 to filerecipient successfully
+2025-05-25 01:12:59 - [SEND FILE] 'test_files/large.jpg' sent from fileuser9 to filerecipient (success)
+2025-05-25 01:13:00 - [FILE] 'test_files/large.jpg' sent from fileuser10 to filerecipient successfully
+2025-05-25 01:13:00 - [SEND FILE] 'test_files/large.jpg' sent from fileuser10 to filerecipient (success)
+2025-05-25 01:13:13 - [USER: fileuser1] - disconnected (connection closed)
+2025-05-25 01:13:13 - [USER: fileuser1] - disconnected
+2025-05-25 01:13:17 - [USER: fileuser5] - disconnected (connection closed)
+2025-05-25 01:13:17 - [USER: fileuser5] - disconnected
+2025-05-25 01:13:22 - [USER: normaluser] - connected to the server
+2025-05-25 01:13:24 - [USER: normaluser] - joined room
+2025-05-25 01:13:27 - [BROADCAST] user 'normaluser': Is anyone still here?
+2025-05-25 01:13:30 - [USER: switcher] - connected to the server
+2025-05-25 01:13:31 - [USER: room1user] - connected to the server
+2025-05-25 01:13:33 - [USER: room2user] - connected to the server
+2025-05-25 01:13:33 - [USER: room1user] - joined room
+2025-05-25 01:13:34 - [USER: room2user] - joined room
+2025-05-25 01:13:34 - [USER: switcher] - joined room
+2025-05-25 01:13:35 - [BROADCAST] user 'switcher': Hello room1
+2025-05-25 01:13:37 - [ROOM] user 'switcher' left room ''
+2025-05-25 01:13:37 - [USER: switcher] - joined room
+2025-05-25 01:13:38 - [BROADCAST] user 'switcher': Hello room2
+2025-05-25 01:13:42 - [USER: filesender] - connected to the server
+2025-05-25 01:13:43 - [USER: filereceiver] - connected to the server
+2025-05-25 01:13:49 - [USER: rejoiner] - connected to the server
+2025-05-25 01:13:50 - [USER: stayer] - connected to the server
+2025-05-25 01:13:51 - [USER: rejoiner] - joined room
+2025-05-25 01:13:51 - [USER: stayer] - joined room
+2025-05-25 01:13:52 - [BROADCAST] user 'stayer': First message
+2025-05-25 01:13:54 - [ROOM] user 'rejoiner' left room ''
+2025-05-25 01:13:54 - [USER: rejoiner] - left room
+2025-05-25 01:13:55 - [BROADCAST] user 'stayer': Second message (while rejoiner is away)
+2025-05-25 01:13:56 - [USER: rejoiner] - joined room
+2025-05-25 01:13:58 - [BROADCAST] user 'stayer': Third message (after rejoiner returned)
+2025-05-25 01:14:01 - [USER: sender1] - connected to the server
+2025-05-25 01:14:02 - [USER: sender2] - connected to the server
+2025-05-25 01:14:04 - [USER: collisionreceive] - connected to the server
+2025-05-25 01:14:14 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-25 01:14:18 - [INFO] Server initialized and listening on port 5000
+2025-05-25 01:14:21 - [USER: filerecipient] - connected to the server
+2025-05-25 01:14:23 - [USER: fileuser1] - connected to the server
+2025-05-25 01:14:24 - [USER: fileuser2] - connected to the server
+2025-05-25 01:14:25 - [USER: fileuser3] - connected to the server
+2025-05-25 01:14:27 - [USER: fileuser4] - connected to the server
+2025-05-25 01:14:28 - [USER: fileuser5] - connected to the server
+2025-05-25 01:14:29 - [USER: fileuser6] - connected to the server
+2025-05-25 01:14:30 - [USER: fileuser7] - connected to the server
+2025-05-25 01:14:32 - [USER: fileuser8] - connected to the server
+2025-05-25 01:14:33 - [USER: fileuser9] - connected to the server
+2025-05-25 01:14:34 - [USER: fileuser10] - connected to the server
+2025-05-25 01:14:35 - [FILE] 'test_files/large.jpg' sent from fileuser1 to filerecipient successfully
+2025-05-25 01:14:35 - [SEND FILE] 'test_files/large.jpg' sent from fileuser1 to filerecipient (success)
+2025-05-25 01:14:36 - [FILE] 'test_files/large.jpg' sent from fileuser2 to filerecipient successfully
+2025-05-25 01:14:36 - [SEND FILE] 'test_files/large.jpg' sent from fileuser2 to filerecipient (success)
+2025-05-25 01:14:37 - [FILE] 'test_files/large.jpg' sent from fileuser3 to filerecipient successfully
+2025-05-25 01:14:37 - [SEND FILE] 'test_files/large.jpg' sent from fileuser3 to filerecipient (success)
+2025-05-25 01:14:38 - [FILE] 'test_files/large.jpg' sent from fileuser4 to filerecipient successfully
+2025-05-25 01:14:38 - [SEND FILE] 'test_files/large.jpg' sent from fileuser4 to filerecipient (success)
+2025-05-25 01:14:38 - [FILE] 'test_files/large.jpg' sent from fileuser5 to filerecipient successfully
+2025-05-25 01:14:38 - [SEND FILE] 'test_files/large.jpg' sent from fileuser5 to filerecipient (success)
+2025-05-25 01:14:42 - [FILE] 'test_files/large.jpg' sent from fileuser6 to filerecipient successfully
+2025-05-25 01:14:42 - [SEND FILE] 'test_files/large.jpg' sent from fileuser6 to filerecipient (success)
+2025-05-25 01:14:44 - [FILE] 'test_files/large.jpg' sent from fileuser7 to filerecipient successfully
+2025-05-25 01:14:44 - [SEND FILE] 'test_files/large.jpg' sent from fileuser7 to filerecipient (success)
+2025-05-25 01:14:45 - [FILE] 'test_files/large.jpg' sent from fileuser8 to filerecipient successfully
+2025-05-25 01:14:45 - [SEND FILE] 'test_files/large.jpg' sent from fileuser8 to filerecipient (success)
+2025-05-25 01:14:46 - [FILE] 'test_files/large.jpg' sent from fileuser9 to filerecipient successfully
+2025-05-25 01:14:46 - [SEND FILE] 'test_files/large.jpg' sent from fileuser9 to filerecipient (success)
+2025-05-25 01:14:48 - [FILE] 'test_files/large.jpg' sent from fileuser10 to filerecipient successfully
+2025-05-25 01:14:48 - [SEND FILE] 'test_files/large.jpg' sent from fileuser10 to filerecipient (success)
+2025-05-25 01:15:08 - [USER: normaluser] - connected to the server
+2025-05-25 01:15:10 - [USER: normaluser] - joined room
+2025-05-25 01:15:14 - [BROADCAST] user 'normaluser': Is anyone still here?
+2025-05-25 01:15:17 - [USER: switcher] - connected to the server
+2025-05-25 01:15:18 - [USER: room1user] - connected to the server
+2025-05-25 01:15:19 - [USER: room2user] - connected to the server
+2025-05-25 01:15:20 - [USER: room1user] - joined room
+2025-05-25 01:15:20 - [USER: room2user] - joined room
+2025-05-25 01:15:21 - [USER: switcher] - joined room
+2025-05-25 01:15:22 - [BROADCAST] user 'switcher': Hello room1
+2025-05-25 01:15:23 - [ROOM] user 'switcher' left room ''
+2025-05-25 01:15:23 - [USER: switcher] - joined room
+2025-05-25 01:15:25 - [BROADCAST] user 'switcher': Hello room2
+2025-05-25 01:15:29 - [USER: filesender] - connected to the server
+2025-05-25 01:15:30 - [USER: filereceiver] - connected to the server
+2025-05-25 01:15:35 - [USER: rejoiner] - connected to the server
+2025-05-25 01:15:37 - [USER: stayer] - connected to the server
+2025-05-25 01:15:37 - [USER: rejoiner] - joined room
+2025-05-25 01:15:38 - [USER: stayer] - joined room
+2025-05-25 01:15:39 - [BROADCAST] user 'stayer': First message
+2025-05-25 01:15:40 - [ROOM] user 'rejoiner' left room ''
+2025-05-25 01:15:40 - [USER: rejoiner] - left room
+2025-05-25 01:15:42 - [BROADCAST] user 'stayer': Second message (while rejoiner is away)
+2025-05-25 01:15:43 - [USER: rejoiner] - joined room
+2025-05-25 01:15:44 - [BROADCAST] user 'stayer': Third message (after rejoiner returned)
+2025-05-25 01:15:48 - [USER: sender1] - connected to the server
+2025-05-25 01:15:49 - [USER: sender2] - connected to the server
+2025-05-25 01:15:50 - [USER: collisionreceive] - connected to the server
+2025-05-25 01:15:51 - [FILE] 'test_files/small.txt' sent from sender1 to collisionreceive successfully
+2025-05-25 01:15:51 - [SEND FILE] 'test_files/small.txt' sent from sender1 to collisionreceive (success)
+2025-05-25 01:15:54 - [FILE] 'test_files/small.txt' sent from sender2 to collisionreceive successfully
+2025-05-25 01:15:54 - [SEND FILE] 'test_files/small.txt' sent from sender2 to collisionreceive (success)
+2025-05-25 01:16:00 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
