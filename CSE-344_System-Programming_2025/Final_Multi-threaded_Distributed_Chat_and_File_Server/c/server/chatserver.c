@@ -195,11 +195,18 @@ void *handle_client(void *arg) {
             break;
         }
         
-        buffer[bytes_read] = '\0';
+        buffer[bytes_read] = '\0'; // Null-terminate what was read
         
-        // If client is in file transfer mode, don't interpret data as commands
+        // If client is in file transfer mode, data is not commands.
         if (client->in_file_transfer) {
-            // Skip command processing - this data is part of a file transfer
+            continue;
+        }
+        
+        // Trim trailing newline and carriage return characters from the potential command string
+        buffer[strcspn(buffer, "\r\n")] = 0;
+        
+        // If the buffer is empty after trimming (e.g., it was just a newline or whitespace)
+        if (buffer[0] == '\0') {
             continue;
         }
         
@@ -230,7 +237,11 @@ void *handle_client(void *arg) {
                     break;
                 case CMD_INVALID:
                     if (!client->in_file_transfer) {
-                        notify_client(client, "[Server]: Invalid command. Type /help for available commands.");
+                        if (strlen(buffer) > 2) {
+                            notify_client(client, "[Server]: Invalid command. Type /help for available commands.");
+                        } else {
+                            log_message(server_ptr, "[INFO] Suppressed 'Invalid command' notification to %s for short input: \"%s\"", client->username, buffer);
+                        }
                     }
                     break;
             }

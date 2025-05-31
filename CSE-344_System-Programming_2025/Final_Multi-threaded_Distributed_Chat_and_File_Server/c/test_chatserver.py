@@ -150,11 +150,12 @@ class TestClient:
                             self.logger.log(f"[{self.username}] Received: {decoded_line}")
                 except UnicodeDecodeError:
                     # This is binary data (probably a file transfer), format it as hex
-                    hex_representation = ' '.join(f'{b:02x}' for b in line[:20]) + "..." if len(line) > 20 else ''
+                    hex_representation = ' '.join(f'{b:02x}' for b in line[:20]) + "..." if len(line) > 20 else ' '.join(f'{b:02x}' for b in line)
                     binary_message = f"Binary data ({len(line)} bytes): {hex_representation}"
                     self.response_buffer.append(binary_message)
                     if self.logger:
-                        self.logger.log(f"[{self.username}] Received: {binary_message}")
+                        # self.logger.log(f"[{self.username}] Received: {binary_message}") # Commented out as per request
+                        pass # Keep the if self.logger block structure
             except Exception as e:
                 if self.logger:
                     self.logger.log(f"Error reading output from {self.username}: {str(e)}")
@@ -535,7 +536,10 @@ class ChatServerTester:
         
         # Check responses for queue status
         queued_count = 0
-        for username in senders[5:]:  # Only check the last 5 clients that should be queued
+        expected_to_be_queued_clients = senders[5:] # Define expected_to_be_queued_clients here
+        self.logger.log(f"Checking clients {expected_to_be_queued_clients} for queue messages.")
+
+        for username in expected_to_be_queued_clients: # Iterate using the defined variable
             client = self.clients[username]
             queue_detected_for_client = False
             
@@ -544,7 +548,7 @@ class ChatServerTester:
 
             for response in responses_to_check:
                 # Expanded keywords for detecting queue messages
-                if any(keyword in response.lower() for keyword in ["queue", "waiting", "slot", "position", "queued", "full", "busy", "limit reached"]):
+                if any(keyword in response.lower() for keyword in ["queue", "waiting", "slot", "position", "queued", "busy", "limit reached", "pending"]):
                     self.logger.log(f"SUCCESS: Detected queue-related message for {username}: '{response}'")
                     queued_count += 1
                     queue_detected_for_client = True

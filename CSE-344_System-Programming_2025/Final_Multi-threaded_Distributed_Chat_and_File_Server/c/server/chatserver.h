@@ -89,6 +89,9 @@ typedef struct {
     ClientStatus status;
     pthread_t thread;
     bool in_file_transfer;  // Flag to indicate if client is currently in file transfer mode
+    bool waiting_for_upload_slot; // Flag to indicate this client is waiting for an upload slot
+    char queued_filename[MAX_FILE_NAME_LEN]; // Filename queued for upload when slot becomes available
+    char queued_recipient[MAX_USERNAME_LEN + 1]; // Recipient for queued file upload
 } Client;
 
 /* Server structure */
@@ -131,6 +134,7 @@ void handle_broadcast_command(Server *server, Client *client, const char *messag
 void handle_whisper_command(Server *server, Client *client, const char *args);
 void handle_sendfile_command(Server *server, Client *client, const char *args);
 void handle_exit_command(Server *server, Client *client);
+void process_waiting_clients(Server *server);
 
 // Room management
 int create_or_join_room(Server *server, Client *client, const char *room_name);

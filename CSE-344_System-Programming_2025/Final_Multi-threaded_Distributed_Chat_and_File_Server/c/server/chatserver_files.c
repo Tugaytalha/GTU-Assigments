@@ -5,7 +5,7 @@
 
 #include "chatserver.h"
 
-int SLEEP_TIME = 128000000;
+int SLEEP_TIME = 32000000;
 
 /**
  * Check if a file extension is allowed
