@@ -151,7 +151,7 @@ void process_user_input(Client *client) {
             sscanf(input + 10, "%s %s", filename, recipient);
             
             if (strlen(filename) == 0 || strlen(recipient) == 0) {
-                print_message("Error", "Invalid command format. Use: /sendfile <filename> <username>", COLOR_RED);
+                print_message("Error", "Invalid command format. Use: /sendfile <filename> <username> T", COLOR_RED);
                 continue;
             }
             
@@ -240,7 +240,7 @@ bool handle_file_send(Client *client, const char *filename, const char *recipien
     }
     
     // Wait for server acknowledgment
-    char ack_buffer[32];
+    char ack_buffer[256]; // Increased buffer size to handle longer messages
     ssize_t ack_bytes = recv(client->socket, ack_buffer, sizeof(ack_buffer) - 1, 0);
     if (ack_bytes <= 0) {
         print_message("Error", "Failed to receive server acknowledgment", COLOR_RED);
@@ -249,12 +249,144 @@ bool handle_file_send(Client *client, const char *filename, const char *recipien
     }
     ack_buffer[ack_bytes] = '\0';
     
-    // Check if server acknowledged
-    if (strstr(ack_buffer, "Error") != NULL) {
+    // Check if server indicated the queue is full
+    if (strstr(ack_buffer, "queue is full") != NULL) {
+        print_message("Info", "File upload queued. Waiting for available slot...", COLOR_CYAN);
+        fclose(file); // Close the file for now
+        
+        // Set socket to non-blocking mode for the wait period
+        int flags = fcntl(client->socket, F_GETFL, 0);
+        fcntl(client->socket, F_SETFL, flags | O_NONBLOCK);
+        
+        // Wait for the "slot available" message from server
+        char queue_msg[256];
+        int consecutive_errors = 0;
+        int max_consecutive_errors = 5; // Allow some transient errors
+        
+        while (1) {
+            // Use a timeout to check periodically if client is still connected
+            fd_set readfds;
+            struct timeval tv;
+            FD_ZERO(&readfds);
+            FD_SET(client->socket, &readfds);
+            tv.tv_sec = 2;  // 2 second timeout
+            tv.tv_usec = 0;
+            
+            int activity = select(client->socket + 1, &readfds, NULL, NULL, &tv);
+            
+            if (activity < 0) {
+                if (errno == EINTR) {
+                    // Interrupted by signal, not an error
+                    continue;
+                }
+                print_message("Error", "Select failed while waiting for upload slot: %s", COLOR_RED, strerror(errno));
+                fcntl(client->socket, F_SETFL, flags); // Restore original socket flags
+                return false;
+            }
+            else if (activity == 0) {
+                // Timeout, just continue waiting
+                continue;
+            }
+            
+            // Data is available to read
+            if (FD_ISSET(client->socket, &readfds)) {
+                memset(queue_msg, 0, sizeof(queue_msg));
+                ssize_t bytes = recv(client->socket, queue_msg, sizeof(queue_msg) - 1, 0);
+                
+                if (bytes < 0) {
+                    if (errno == EAGAIN || errno == EWOULDBLOCK) {
+                        // No data available yet, not an error
+                        continue;
+                    }
+                    consecutive_errors++;
+                    print_message("Warning", "Receive error: %s (retry %d/%d)", COLOR_YELLOW, 
+                                 strerror(errno), consecutive_errors, max_consecutive_errors);
+                    
+                    if (consecutive_errors >= max_consecutive_errors) {
+                        print_message("Error", "Too many consecutive errors while waiting for upload slot", COLOR_RED);
+                        fcntl(client->socket, F_SETFL, flags); // Restore original socket flags
+                        return false;
+                    }
+                    continue;
+                }
+                else if (bytes == 0) {
+                    print_message("Error", "Server closed connection while waiting for upload slot", COLOR_RED);
+                    fcntl(client->socket, F_SETFL, flags); // Restore original socket flags
+                    return false;
+                }
+                
+                // Reset error counter on successful receive
+                consecutive_errors = 0;
+                queue_msg[bytes] = '\0';
+                
+                // Check if we received the notification that a slot is available
+                if (strstr(queue_msg, "slot is now available") != NULL) {
+                    print_message("Info", "Upload slot available, resuming file transfer", COLOR_CYAN);
+                    
+                    // Restore blocking mode
+                    fcntl(client->socket, F_SETFL, flags);
+                    
+                    // Wait for the "Send file size" prompt
+                    char size_prompt[256];
+                    ssize_t prompt_bytes = recv(client->socket, size_prompt, sizeof(size_prompt) - 1, 0);
+                    if (prompt_bytes <= 0) {
+                        print_message("Error", "Failed to receive size prompt: %s", COLOR_RED, 
+                                     (prompt_bytes < 0) ? strerror(errno) : "Connection closed");
+                        return false;
+                    }
+                    size_prompt[prompt_bytes] = '\0';
+                    
+                    // Reopen the file
+                    file = fopen(filename, "rb");
+                    if (!file) {
+                        print_message("Error", "Failed to reopen file: %s (%s)", COLOR_RED, filename, strerror(errno));
+                        return false;
+                    }
+                    
+                    // Send the file size again
+                    char size_str[32];
+                    sprintf(size_str, "%zu", filesize);
+                    if (send(client->socket, size_str, strlen(size_str), 0) <= 0) {
+                        print_message("Error", "Failed to send file size: %s", COLOR_RED, strerror(errno));
+                        fclose(file);
+                        return false;
+                    }
+                    
+                    // Get acknowledgment for file size
+                    ssize_t ack2_bytes = recv(client->socket, ack_buffer, sizeof(ack_buffer) - 1, 0);
+                    if (ack2_bytes <= 0) {
+                        print_message("Error", "Failed to receive server acknowledgment: %s", COLOR_RED, 
+                                     (ack2_bytes < 0) ? strerror(errno) : "Connection closed");
+                        fclose(file);
+                        return false;
+                    }
+                    ack_buffer[ack2_bytes] = '\0';
+                    
+                    // Check the new acknowledgment
+                    if (strstr(ack_buffer, "Error") != NULL) {
+                        print_message("Error", "Server rejected file transfer: %s", COLOR_RED, ack_buffer);
+                        fclose(file);
+                        return false;
+                    }
+                    
+                    // Now we can break out of the waiting loop
+                    break;
+                }
+                
+                // If we received other messages, print them but keep waiting
+                if (strlen(queue_msg) > 0) {
+                    print_message("Server", "%s", COLOR_WHITE, queue_msg);
+                }
+            }
+        }
+    }
+    // Check if server acknowledged with an error
+    else if (strstr(ack_buffer, "Error") != NULL) {
         print_message("Error", "Server rejected file transfer: %s", COLOR_RED, ack_buffer);
         fclose(file);
         return false;
     }
+    // If we get here, either we got normal acknowledgment or we've already handled the queue and received acknowledgment
     
     // Read file data and send it
     char buffer[FILE_BUFFER_SIZE];

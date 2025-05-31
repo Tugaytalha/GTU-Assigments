@@ -429,18 +429,35 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
     }
     
     // File received from sender, now send to recipient
-    char unique_filename[MAX_FILE_NAME_LEN + 32];
-    time_t now = time(NULL);
+    char unique_filename[MAX_FILE_NAME_LEN + 64];
+    struct timespec ts;
+    clock_gettime(CLOCK_REALTIME, &ts);
+    int client_id = -1;
+    
+    // Find client index to use as unique identifier
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        if (&server->clients[i] == client) {
+            client_id = i;
+            break;
+        }
+    }
+    
+    // Extract the file extension
     const char *dot_char = strrchr(filename, '.');
     if (dot_char) {
         int name_len = dot_char - filename;
         char base_name[MAX_FILE_NAME_LEN];
         strncpy(base_name, filename, name_len);
         base_name[name_len] = '\0';
-        snprintf(unique_filename, sizeof(unique_filename), "%s_%ld%s", base_name, (long)now, dot_char);
+        // Use both seconds and nanoseconds along with client ID for guaranteed uniqueness
+        snprintf(unique_filename, sizeof(unique_filename), "%s_%ld_%ld_%d%s", 
+                base_name, (long)ts.tv_sec, (long)(ts.tv_nsec / 1000000), client_id, dot_char);
     } else {
-        snprintf(unique_filename, sizeof(unique_filename), "%s_%ld", filename, (long)now);
+        snprintf(unique_filename, sizeof(unique_filename), "%s_%ld_%ld_%d", 
+                filename, (long)ts.tv_sec, (long)(ts.tv_nsec / 1000000), client_id);
     }
+    
+    log_message(server, "[FILE] Generated unique filename: %s", unique_filename);
     
     char header[MAX_MESSAGE_LEN];
     sprintf(header, "FILE:%s:%zu\n", unique_filename, filesize);
