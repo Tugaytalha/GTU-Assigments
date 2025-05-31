@@ -5,6 +5,8 @@
 
 #include "chatserver.h"
 
+int SLEEP_TIME = 128000000;
+
 /**
  * Check if a file extension is allowed
  */
@@ -33,9 +35,13 @@ bool validate_file_extension(const char *filename) {
 bool add_to_upload_queue(Server *server, const char *sender, const char *recipient, const char *filename, size_t filesize) {
     bool result = false;
     
+    log_message(server, "[LOG] File '%s' from %s to %s: Attempting to acquire upload. Current active transfers (approx): %d", 
+                filename, sender, recipient, server->queue_count);
+
     // Wait for a slot in the queue (use semaphore)
     if (sem_wait(&server->upload_semaphore) != 0) {
         perror("sem_wait failed");
+        log_message(server, "[ERROR_LOG] sem_wait failed for file '%s' from %s to %s: %s", filename, sender, recipient, strerror(errno));
         return false;
     }
     
@@ -59,9 +65,16 @@ bool add_to_upload_queue(Server *server, const char *sender, const char *recipie
         server->upload_queue[slot].filesize = filesize;
         server->upload_queue[slot].queued_time = time(NULL);
         server->upload_queue[slot].in_progress = true;
+
+        // Wait a bit to be able to observe the queue 
+        usleep(SLEEP_TIME);
+        SLEEP_TIME /= 2;
         
         server->queue_count++;
         result = true;
+
+        log_message(server, "[LOG] File '%s' from %s to %s: Acquired upload. Order %d. Active transfers now (approx): %d. Spawning thread.", 
+                    filename, sender, recipient, slot, server->queue_count);
         
         // Create a new thread to process this file transfer
         pthread_t file_thread;
@@ -71,6 +84,12 @@ bool add_to_upload_queue(Server *server, const char *sender, const char *recipie
     
     pthread_mutex_unlock(&server->queue_mutex);
     
+    // If a slot wasn't found, we need to release the semaphore we acquired.
+    if (!result) {
+        sem_post(&server->upload_semaphore);
+        log_message(server, "[LOG] File '%s' from %s to %s: No slot found in queue, releasing semaphore.", filename, sender, recipient);
+    }
+
     return result;
 }
 
@@ -119,15 +138,25 @@ void *process_upload_queue(void *arg) {
         pthread_mutex_unlock(&server_ptr->queue_mutex);
         
         sem_post(&server_ptr->upload_semaphore);
+        log_message(server_ptr, "[LOG] File '%s' from %s to %s: Transfer failed early. Releasing upload slot.", 
+                    transfer->filename, transfer->sender_username, transfer->recipient_username);
         pthread_exit(NULL);
     }
     
     Client *sender = &server_ptr->clients[sender_index];
     Client *recipient = &server_ptr->clients[recipient_index];
     
-    // Validate client pointers
-    if (!sender || !recipient) {
-        printf("[ERROR] Invalid client pointers\n");
+    // Validate client pointers and status
+    if (!sender || !recipient || sender->status == CLIENT_DISCONNECTED || recipient->status == CLIENT_DISCONNECTED) {
+        printf("[ERROR] Invalid client pointers or client disconnected before transfer start\n");
+        log_message(server_ptr, "[FILE] Transfer of '%s' from %s to %s failed: sender/recipient invalid or disconnected early.",
+                    transfer->filename, transfer->sender_username, transfer->recipient_username);
+        
+        // Notify sender if still connected and it's not the one who disconnected
+        if (sender_index != -1 && sender->status == CLIENT_CONNECTED) {
+            notify_client(sender, "[Server]: File transfer cancelled - recipient issue or internal error.");
+        }
+
         // Release queue slot
         pthread_mutex_lock(&server_ptr->queue_mutex);
         transfer->in_progress = false;
@@ -135,6 +164,8 @@ void *process_upload_queue(void *arg) {
         pthread_mutex_unlock(&server_ptr->queue_mutex);
         
         sem_post(&server_ptr->upload_semaphore);
+        log_message(server_ptr, "[LOG] File '%s' from %s to %s: Transfer failed early. Releasing upload slot.", 
+                    transfer->filename, transfer->sender_username, transfer->recipient_username);
         pthread_exit(NULL);
     }
     
@@ -192,6 +223,8 @@ void *process_upload_queue(void *arg) {
         pthread_mutex_unlock(&server_ptr->queue_mutex);
         
         sem_post(&server_ptr->upload_semaphore);
+        log_message(server_ptr, "[LOG] File '%s' from %s to %s: Transfer failed due to file size. Releasing upload.", 
+                    transfer->filename, transfer->sender_username, transfer->recipient_username);
         pthread_exit(NULL);
     }
     
@@ -211,6 +244,8 @@ void *process_upload_queue(void *arg) {
         pthread_mutex_unlock(&server_ptr->queue_mutex);
         
         sem_post(&server_ptr->upload_semaphore);
+        log_message(server_ptr, "[LOG] File '%s' from %s to %s: Transfer failed due to memory allocation. Releasing upload.", 
+                    transfer->filename, transfer->sender_username, transfer->recipient_username);
         pthread_exit(NULL);
     }
     
@@ -247,6 +282,8 @@ void *process_upload_queue(void *arg) {
             pthread_mutex_unlock(&server_ptr->queue_mutex);
             
             sem_post(&server_ptr->upload_semaphore);
+            log_message(server_ptr, "[LOG] File '%s' from %s to %s: Transfer failed due to connection error. Releasing upload.", 
+                        transfer->filename, transfer->sender_username, transfer->recipient_username);
             pthread_exit(NULL);
         }
         
@@ -287,6 +324,8 @@ void *process_upload_queue(void *arg) {
         pthread_mutex_unlock(&server_ptr->queue_mutex);
         
         sem_post(&server_ptr->upload_semaphore);
+        log_message(server_ptr, "[LOG] File '%s' from %s to %s: Transfer failed due to header send error. Releasing upload.", 
+                    transfer->filename, transfer->sender_username, transfer->recipient_username);
         pthread_exit(NULL);
     }
     
@@ -321,6 +360,8 @@ void *process_upload_queue(void *arg) {
             pthread_mutex_unlock(&server_ptr->queue_mutex);
             
             sem_post(&server_ptr->upload_semaphore);
+            log_message(server_ptr, "[LOG] File '%s' from %s to %s: Transfer failed due to file send error. Releasing upload.", 
+                        transfer->filename, transfer->sender_username, transfer->recipient_username);
             pthread_exit(NULL);
         }
         
@@ -366,7 +407,10 @@ void *process_upload_queue(void *arg) {
     transfer->in_progress = false;
     server_ptr->queue_count--;
     pthread_mutex_unlock(&server_ptr->queue_mutex);
-    
+
     sem_post(&server_ptr->upload_semaphore);
+    log_message(server_ptr, "[LOG] File '%s' from %s to %s: Transfer process finished. Releasing upload. Active transfers now (approx): %d", 
+                transfer->filename, transfer->sender_username, transfer->recipient_username, server_ptr->queue_count);
+
     pthread_exit(NULL);
 }

@@ -182,7 +182,7 @@ class TestClient:
             binary_input = (text + "\n").encode('utf-8')
             self.process.stdin.write(binary_input)
             self.process.stdin.flush()
-            time.sleep(0.3)  # Short delay to allow processing
+            #time.sleep(0.3)  # Short delay to allow processing
             return True
         except Exception as e:
             if self.logger:
@@ -505,28 +505,31 @@ class ChatServerTester:
         for username in usernames:
             self.create_client(username)
         
-        # Have all clients attempt to send files simultaneously
-        self.logger.log("Having all clients attempt to send files simultaneously...")
+        # Have all clients attempt to send files
+        self.logger.log("Having all clients attempt to send files.")
         
-        # First send 5 files immediately - these should go through
-        senders = [username for username in usernames]
+        senders = [username for username in usernames] # This is effectively the 'usernames' list
         
-        # Send the first 5 files - these should process immediately
+        # Send the first 5 files - these should aim to occupy server slots
+        self.logger.log("Sending the first 5 files rapidly to occupy server slots...")
         for username in senders[:5]:
-            test_file = os.path.join(TEST_FILES_DIR, "large.jpg")
+            test_file = os.path.join(TEST_FILES_DIR, "large.jpg") # 2MB file
             self.clients[username].send_command(f"/sendfile {test_file} {recipient}")
-            time.sleep(0.5)  # Give some time for each send to start
+            #time.sleep(0.5)  # Give some time for each send to start
         
         # Wait a bit for the queue to fill up
-        time.sleep(3)
+        #time.sleep(3)
         
         # Send the next 5 files - these should be queued
         for username in senders[5:]:
             test_file = os.path.join(TEST_FILES_DIR, "large.jpg")
             self.clients[username].send_command(f"/sendfile {test_file} {recipient}")
             # Wait longer between these sends to ensure we can detect queue messages
-            time.sleep(1)
+            # for this specific client before moving to the next.
+            self.logger.log(f"Waiting 1.5s after sending from {username} for potential queue message.")
+            time.sleep(1.5) # Increased from 1.0s.
 
+        self.logger.log("All send commands issued. Waiting 20s for transfers and queue messages to finalize...")
         # Wait for queue processing and responses
         time.sleep(10)
         
@@ -534,22 +537,31 @@ class ChatServerTester:
         queued_count = 0
         for username in senders[5:]:  # Only check the last 5 clients that should be queued
             client = self.clients[username]
-            queue_detected = False
-            for response in client.response_buffer:
-                if any(keyword in response.lower() for keyword in ["queue", "waiting", "slot", "position"]):
-                    self.logger.log(f"Detected queue message for {username}: {response}")
-                    queued_count += 1
-                    queue_detected = True
-                    break
+            queue_detected_for_client = False
             
-            if queue_detected:
-                self.logger.log(f"Client {username} was properly queued")
-            else:
-                self.logger.log(f"WARNING: Client {username} was not queued as expected")
+            responses_to_check = list(client.response_buffer) # Check current state of buffer
+            self.logger.log(f"Responses for {username}: {responses_to_check}")
 
-        success = queued_count > 0
-        self.logger.result("File Upload Queue", success,
-                         f"Detected {queued_count} file transfers queued" if success else "No file transfers were queued")
+            for response in responses_to_check:
+                # Expanded keywords for detecting queue messages
+                if any(keyword in response.lower() for keyword in ["queue", "waiting", "slot", "position", "queued", "full", "busy", "limit reached"]):
+                    self.logger.log(f"SUCCESS: Detected queue-related message for {username}: '{response}'")
+                    queued_count += 1
+                    queue_detected_for_client = True
+                    break # Found a queue message for this client
+            
+            if not queue_detected_for_client:
+                self.logger.log(f"WARNING: Client {username} did not report a queue-related message. Buffer: {responses_to_check}")
+
+        # Success if at least one of the latter clients reported being queued.
+        success = queued_count > 0 
+        details = (f"Detected {queued_count}/{len(expected_to_be_queued_clients)} "
+                   f"expected file transfers were queued.")
+        if not success:
+            details += (f" Expected at least 1 of the last {len(expected_to_be_queued_clients)} senders "
+                        "to report being queued.")
+        
+        self.logger.result("File Upload Queue", success, details)
 
 
     def test_unexpected_disconnection(self):

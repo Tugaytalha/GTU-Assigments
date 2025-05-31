@@ -355,7 +355,7 @@ void *receive_messages(void *arg) {
                 char *endptr;
                 size_t filesize = strtoull(size_start, &endptr, 10);
                 //printf("DEBUG: Parsed filename='%s', filesize=%zu, remaining_len=%zu\n",
-                       filename_start, filesize, remaining_len); // Debug
+                //       filename_start, filesize, remaining_len); // Debug
                 
                 if (*endptr == '\0' && filesize > 0) {
                     handle_file_receive_with_data(client, filename_start, filesize, remaining_data, remaining_len);
@@ -406,7 +406,7 @@ void *receive_messages(void *arg) {
 void handle_file_receive_with_data(Client *client, const char *filename, size_t filesize, 
                                    const char *initial_data, size_t initial_len) {
     //printf("DEBUG: Starting file receive: filename='%s', filesize=%zu, initial_len=%zu\n",
-           filename, filesize, initial_len); // Debug
+    //       filename, filesize, initial_len); // Debug
     
     // Extract only the base filename, not any path components for security
     const char *base_filename = strrchr(filename, '/');
