@@ -1,0 +1,14 @@
+2025-05-31 22:20:49 - [SERVER] Started on port 5000
+2025-05-31 22:20:49 - [SERVER] Accepting connections on port 5000
+2025-05-31 22:20:52 - [LOGIN] user 'filerecipient' connected from 127.0.0.1
+2025-05-31 22:20:53 - [LOGIN] user 'fileuser1' connected from 127.0.0.1
+2025-05-31 22:20:54 - [LOGIN] user 'fileuser2' connected from 127.0.0.1
+2025-05-31 22:20:55 - [SHUTDOWN] SIGINT received. Shutting down server...
+2025-05-31 22:20:55 - [SHUTDOWN] Disconnecting 3 clients, saving logs.
+2025-05-31 22:20:55 - [EXIT] user 'fileuser1' disconnected
+2025-05-31 22:20:55 - [EXIT] user 'filerecipient' disconnected
+2025-05-31 22:20:55 - [DISCONNECT] Unnamed client from 127.0.0.1 disconnected
+2025-05-31 22:20:55 - [EXIT] user 'fileuser2' disconnected
+2025-05-31 22:20:55 - [DISCONNECT] user 'fileuser1' lost connection. Cleaned up resources.
+2025-05-31 22:20:55 - [DISCONNECT] user 'filerecipient' lost connection. Cleaned up resources.
+2025-05-31 22:20:55 - [DISCONNECT] user 'fileuser2' lost connection. Cleaned up resources.
