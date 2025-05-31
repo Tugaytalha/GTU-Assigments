@@ -25,7 +25,7 @@
 #include <strings.h> /* For strcasecmp */
 
 /* Constants */
-#define MAX_CLIENTS 15
+#define MAX_CLIENTS 50
 #define MAX_USERNAME_LEN 16
 #define MAX_ROOM_NAME_LEN 32
 #define MAX_MESSAGE_LEN 1024

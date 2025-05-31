@@ -381,8 +381,8 @@ class ChatServerTester:
             return
         
         # Run all test scenarios
-        #self.test_concurrent_user_load()
-        #self.test_duplicate_usernames()
+        self.test_concurrent_user_load()
+        self.test_duplicate_usernames()
         self.test_file_upload_queue()
         self.test_unexpected_disconnection()
         self.test_room_switching()
@@ -405,7 +405,7 @@ class ChatServerTester:
         self.disconnect_all_clients()
         
         # Create 15 clients
-        usernames = [f"user{i}" for i in range(1, 16)]
+        usernames = [f"user{i}" for i in range(1, 31)]
         connected_count = 0
         
         for username in usernames:
@@ -413,7 +413,7 @@ class ChatServerTester:
                 connected_count += 1
         
         # Verify connections
-        success = connected_count >= 15
+        success = connected_count >= 30
 
         # Have clients join rooms and interact
         if success:
@@ -516,7 +516,7 @@ class ChatServerTester:
         for username in senders[:5]:
             test_file = os.path.join(TEST_FILES_DIR, "large.jpg") # 2MB file
             self.clients[username].send_command(f"/sendfile {test_file} {recipient}")
-            #time.sleep(0.5)  # Give some time for each send to start
+            time.sleep(1)  # Give some time for each send to start
         
         # Wait a bit for the queue to fill up
         #time.sleep(3)

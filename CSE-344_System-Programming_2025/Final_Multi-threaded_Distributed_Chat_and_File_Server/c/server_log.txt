@@ -231,3 +231,782 @@
 2025-05-25 01:15:54 - [FILE] 'test_files/small.txt' sent from sender2 to collisionreceive successfully
 2025-05-25 01:15:54 - [SEND FILE] 'test_files/small.txt' sent from sender2 to collisionreceive (success)
 2025-05-25 01:16:00 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-31 22:30:22 - [INFO] Server initialized and listening on port 5000
+2025-05-31 22:30:26 - [USER: filerecipient] - connected to the server
+2025-05-31 22:30:27 - [USER: fileuser1] - connected to the server
+2025-05-31 22:30:28 - [USER: fileuser2] - connected to the server
+2025-05-31 22:30:29 - [USER: fileuser3] - connected to the server
+2025-05-31 22:30:30 - [USER: fileuser4] - connected to the server
+2025-05-31 22:30:31 - [USER: fileuser5] - connected to the server
+2025-05-31 22:30:32 - [USER: fileuser6] - connected to the server
+2025-05-31 22:30:33 - [USER: fileuser7] - connected to the server
+2025-05-31 22:30:34 - [USER: fileuser8] - connected to the server
+2025-05-31 22:30:35 - [USER: fileuser9] - connected to the server
+2025-05-31 22:30:36 - [USER: fileuser10] - connected to the server
+2025-05-31 22:30:36 - [FILE] 'test_files/large.jpg' sent from fileuser6 to filerecipient successfully
+2025-05-31 22:30:36 - [SEND FILE] 'test_files/large.jpg' sent from fileuser6 to filerecipient (success)
+2025-05-31 22:30:36 - [FILE] 'test_files/large.jpg' sent from fileuser1 to filerecipient successfully
+2025-05-31 22:30:36 - [SEND FILE] 'test_files/large.jpg' sent from fileuser1 to filerecipient (success)
+2025-05-31 22:32:53 - [INFO] Server initialized and listening on port 5000
+2025-05-31 22:32:56 - [USER: filerecipient] - connected to the server
+2025-05-31 22:32:57 - [USER: fileuser1] - connected to the server
+2025-05-31 22:32:58 - [USER: fileuser2] - connected to the server
+2025-05-31 22:32:59 - [USER: fileuser3] - connected to the server
+2025-05-31 22:33:00 - [USER: fileuser4] - connected to the server
+2025-05-31 22:33:01 - [USER: fileuser5] - connected to the server
+2025-05-31 22:33:02 - [USER: fileuser6] - connected to the server
+2025-05-31 22:33:03 - [USER: fileuser7] - connected to the server
+2025-05-31 22:33:04 - [USER: fileuser8] - connected to the server
+2025-05-31 22:33:05 - [USER: fileuser9] - connected to the server
+2025-05-31 22:33:06 - [USER: fileuser10] - connected to the server
+2025-05-31 22:33:07 - [FILE_QUEUE] Client fileuser1 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:33:07 - [FILE_QUEUE] Slot acquired immediately for fileuser1.
+2025-05-31 22:33:07 - [FILE_QUEUE] Client fileuser2 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:33:07 - [FILE_QUEUE] Slot acquired immediately for fileuser2.
+2025-05-31 22:33:07 - [FILE_QUEUE] Client fileuser3 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:33:07 - [FILE_QUEUE] Slot acquired immediately for fileuser3.
+2025-05-31 22:33:07 - [FILE_QUEUE] Client fileuser4 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:33:07 - [FILE_QUEUE] Slot acquired immediately for fileuser4.
+2025-05-31 22:33:07 - [FILE_QUEUE] Client fileuser5 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:33:07 - [FILE_QUEUE] Slot acquired immediately for fileuser5.
+2025-05-31 22:33:07 - [FILE_QUEUE] Client fileuser6 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:33:07 - [FILE_QUEUE] Upload queue full for fileuser6. Client will be notified when a slot is available.
+2025-05-31 22:33:07 - [FILE_QUEUE] Current semaphore value: 0 (max: 5)
+2025-05-31 22:33:07 - [FILE_QUEUE] Client fileuser6 marked as waiting for upload slot (1 clients waiting total)
+2025-05-31 22:33:07 - [FILE] Generated unique filename: test_files/large_1748719987_281_1.jpg
+2025-05-31 22:33:07 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748719987_281_1.jpg') from fileuser1 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:33:07 - [FILE_QUEUE] Slot released by fileuser1 (transfer complete).
+2025-05-31 22:33:07 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 1
+2025-05-31 22:33:07 - [FILE_QUEUE] Found waiting client: fileuser6. Assigned slot 1.
+2025-05-31 22:33:07 - [FILE] Generated unique filename: test_files/large_1748719987_285_2.jpg
+2025-05-31 22:33:07 - [FILE] Generated unique filename: test_files/large_1748719987_297_3.jpg
+2025-05-31 22:33:07 - [FILE] Generated unique filename: test_files/large_1748719987_305_5.jpg
+2025-05-31 22:33:07 - [FILE] Generated unique filename: test_files/large_1748719987_305_4.jpg
+2025-05-31 22:33:07 - [FILE_QUEUE] Successfully notified client fileuser6 to start transfer.
+2025-05-31 22:33:07 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 0
+2025-05-31 22:33:07 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:33:07 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748719987_285_2.jpg') from fileuser2 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:33:07 - [FILE_QUEUE] Slot released by fileuser2 (transfer complete).
+2025-05-31 22:33:07 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 1
+2025-05-31 22:33:07 - 2025-05-31 22:33:07 - [FILE_QUEUE] No clients waiting for upload slots
+[FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748719987_297_3.jpg') from fileuser3 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:33:07 - 2025-05-31 22:33:07 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748719987_305_4.jpg') from fileuser4 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:33:07 - [FILE_QUEUE] Slot released by fileuser4 (transfer complete).
+2025-05-31 22:33:07 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 3
+2025-05-31 22:33:07 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:33:07 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748719987_305_5.jpg') from fileuser5 to filerecipient successfully (2097152 bytes)
+[FILE_QUEUE] Slot released by fileuser3 (transfer complete).2025-05-31 22:33:07 - 
+[FILE_QUEUE] Slot released by fileuser5 (transfer complete).2025-05-31 22:33:07 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+
+2025-05-31 22:33:07 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:33:07 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:33:07 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:33:08 - [FILE_QUEUE] Client fileuser7 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:33:08 - [FILE_QUEUE] Slot acquired immediately for fileuser7.
+2025-05-31 22:33:08 - [FILE] Generated unique filename: test_files/large_1748719988_809_7.jpg
+2025-05-31 22:33:08 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748719988_809_7.jpg') from fileuser7 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:33:08 - [FILE_QUEUE] Slot released by fileuser7 (transfer complete).
+2025-05-31 22:33:08 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:33:08 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:33:10 - [FILE_QUEUE] Client fileuser8 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:33:10 - [FILE_QUEUE] Slot acquired immediately for fileuser8.
+2025-05-31 22:33:10 - [FILE] Generated unique filename: test_files/large_1748719990_317_8.jpg
+2025-05-31 22:33:10 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748719990_317_8.jpg') from fileuser8 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:33:10 - [FILE_QUEUE] Slot released by fileuser8 (transfer complete).
+2025-05-31 22:33:10 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:33:10 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:33:11 - [FILE_QUEUE] Client fileuser9 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:33:11 - [FILE_QUEUE] Slot acquired immediately for fileuser9.
+2025-05-31 22:33:11 - [FILE] Generated unique filename: test_files/large_1748719991_787_9.jpg
+2025-05-31 22:33:11 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748719991_787_9.jpg') from fileuser9 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:33:11 - [FILE_QUEUE] Slot released by fileuser9 (transfer complete).
+2025-05-31 22:33:11 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:33:11 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:33:13 - [FILE_QUEUE] Client fileuser10 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:33:13 - [FILE_QUEUE] Slot acquired immediately for fileuser10.
+2025-05-31 22:33:13 - [FILE] Generated unique filename: test_files/large_1748719993_341_10.jpg
+2025-05-31 22:33:13 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748719993_341_10.jpg') from fileuser10 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:33:13 - [FILE_QUEUE] Slot released by fileuser10 (transfer complete).
+2025-05-31 22:33:13 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:33:13 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:33:27 - [USER: fileuser4] - disconnected (connection closed)
+2025-05-31 22:33:27 - [USER: fileuser4] - disconnected
+2025-05-31 22:33:28 - [USER: fileuser6] - disconnected (connection closed)
+2025-05-31 22:33:28 - [USER: fileuser6] - disconnected
+2025-05-31 22:33:31 - [USER: normaluser] - connected to the server
+2025-05-31 22:33:32 - [USER: normaluser] - joined room
+2025-05-31 22:33:35 - [BROADCAST] user 'normaluser': Is anyone still here?
+2025-05-31 22:33:37 - [USER: switcher] - connected to the server
+2025-05-31 22:33:38 - [USER: room1user] - connected to the server
+2025-05-31 22:33:39 - [USER: room2user] - connected to the server
+2025-05-31 22:33:40 - [USER: room1user] - joined room
+2025-05-31 22:33:40 - [USER: room2user] - joined room
+2025-05-31 22:33:40 - [USER: switcher] - joined room
+2025-05-31 22:33:41 - [BROADCAST] user 'switcher': Hello room1
+2025-05-31 22:33:42 - [ROOM] user 'switcher' left room ''
+2025-05-31 22:33:42 - [USER: switcher] - joined room
+2025-05-31 22:33:43 - [BROADCAST] user 'switcher': Hello room2
+2025-05-31 22:33:46 - [USER: filesender] - connected to the server
+2025-05-31 22:33:47 - [USER: filereceiver] - connected to the server
+2025-05-31 22:33:51 - [USER: rejoiner] - connected to the server
+2025-05-31 22:33:52 - [USER: stayer] - connected to the server
+2025-05-31 22:33:53 - [USER: rejoiner] - joined room
+2025-05-31 22:33:53 - [USER: stayer] - joined room
+2025-05-31 22:33:54 - [BROADCAST] user 'stayer': First message
+2025-05-31 22:33:55 - [ROOM] user 'rejoiner' left room ''
+2025-05-31 22:33:55 - [USER: rejoiner] - left room
+2025-05-31 22:33:56 - [BROADCAST] user 'stayer': Second message (while rejoiner is away)
+2025-05-31 22:33:57 - [USER: rejoiner] - joined room
+2025-05-31 22:33:58 - [BROADCAST] user 'stayer': Third message (after rejoiner returned)
+2025-05-31 22:34:00 - [USER: sender1] - connected to the server
+2025-05-31 22:34:01 - [USER: sender2] - connected to the server
+2025-05-31 22:34:02 - [USER: collisionreceive] - connected to the server
+2025-05-31 22:34:02 - [INFO] Suppressed 'Invalid command' notification to collisionreceive for short input: "r"
+2025-05-31 22:34:03 - [FILE_QUEUE] Client sender1 attempting to send 'test_files/small.txt' to collisionreceive. Checking queue...
+2025-05-31 22:34:03 - [FILE_QUEUE] Slot acquired immediately for sender1.
+2025-05-31 22:34:03 - [FILE] Generated unique filename: test_files/small_1748720043_209_0.txt
+2025-05-31 22:34:03 - [FILE] 'test_files/small.txt' (sent as 'test_files/small_1748720043_209_0.txt') from sender1 to collisionreceive successfully (10240 bytes)
+2025-05-31 22:34:03 - [FILE_QUEUE] Slot released by sender1 (transfer complete).
+2025-05-31 22:34:03 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:34:03 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:34:06 - [FILE_QUEUE] Client sender2 attempting to send 'test_files/small.txt' to collisionreceive. Checking queue...
+2025-05-31 22:34:06 - [FILE_QUEUE] Slot acquired immediately for sender2.
+2025-05-31 22:34:06 - [FILE] Generated unique filename: test_files/small_1748720046_219_1.txt
+2025-05-31 22:34:06 - [FILE] 'test_files/small.txt' (sent as 'test_files/small_1748720046_219_1.txt') from sender2 to collisionreceive successfully (10240 bytes)
+2025-05-31 22:34:06 - [FILE_QUEUE] Slot released by sender2 (transfer complete).
+2025-05-31 22:34:06 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:34:06 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:34:10 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-31 22:37:22 - [INFO] Server initialized and listening on port 5000
+2025-05-31 22:37:25 - [USER: filerecipient] - connected to the server
+2025-05-31 22:37:26 - [USER: fileuser1] - connected to the server
+2025-05-31 22:37:27 - [USER: fileuser2] - connected to the server
+2025-05-31 22:37:28 - [USER: fileuser3] - connected to the server
+2025-05-31 22:37:29 - [USER: fileuser4] - connected to the server
+2025-05-31 22:37:30 - [USER: fileuser5] - connected to the server
+2025-05-31 22:37:32 - [USER: fileuser6] - connected to the server
+2025-05-31 22:37:33 - [USER: fileuser7] - connected to the server
+2025-05-31 22:37:34 - [USER: fileuser8] - connected to the server
+2025-05-31 22:37:35 - [USER: fileuser9] - connected to the server
+2025-05-31 22:37:36 - [USER: fileuser10] - connected to the server
+2025-05-31 22:37:36 - [FILE_QUEUE] Client fileuser1 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:37:36 - [FILE_QUEUE] Slot acquired immediately for fileuser1.
+2025-05-31 22:37:36 - [FILE_QUEUE] Client fileuser2 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:37:36 - [FILE_QUEUE] Slot acquired immediately for fileuser2.
+2025-05-31 22:37:36 - [FILE_QUEUE] Client fileuser3 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:37:36 - [FILE_QUEUE] Slot acquired immediately for fileuser3.
+2025-05-31 22:37:36 - [FILE_QUEUE] Client fileuser4 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:37:36 - [FILE_QUEUE] Slot acquired immediately for fileuser4.
+2025-05-31 22:37:36 - [FILE_QUEUE] Client fileuser5 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:37:36 - [FILE_QUEUE] Slot acquired immediately for fileuser5.
+2025-05-31 22:37:36 - [FILE_QUEUE] Client fileuser6 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:37:36 - [FILE_QUEUE] Upload queue full for fileuser6. Client will be notified when a slot is available.
+2025-05-31 22:37:36 - [FILE_QUEUE] Current semaphore value: 0 (max: 5)
+2025-05-31 22:37:36 - [FILE_QUEUE] Client fileuser6 marked as waiting for upload slot (1 clients waiting total)
+2025-05-31 22:37:36 - [FILE] Generated unique filename: test_files/large_1748720256_639_4.jpg
+2025-05-31 22:37:36 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720256_639_4.jpg') from fileuser4 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:37:36 - [FILE_QUEUE] Slot released by fileuser4 (transfer complete).
+2025-05-31 22:37:36 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 1
+2025-05-31 22:37:36 - [FILE_QUEUE] Found waiting client: fileuser6. Assigned slot 1.
+2025-05-31 22:37:36 - [FILE] Generated unique filename: test_files/large_1748720256_643_5.jpg
+2025-05-31 22:37:36 - [FILE] Generated unique filename: test_files/large_1748720256_665_1.jpg
+2025-05-31 22:37:36 - [FILE] Generated unique filename: test_files/large_1748720256_665_2.jpg
+2025-05-31 22:37:36 - [FILE] Generated unique filename: test_files/large_1748720256_673_3.jpg
+2025-05-31 22:37:36 - [FILE_QUEUE] Successfully notified client fileuser6 to start transfer.
+2025-05-31 22:37:36 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 0
+2025-05-31 22:37:36 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:37:36 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720256_643_5.jpg') from fileuser5 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:37:36 - [FILE_QUEUE] Slot released by fileuser5 (transfer complete).
+2025-05-31 22:37:36 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 1
+2025-05-31 22:37:36 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:37:36 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720256_665_1.jpg') from fileuser1 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:37:36 - [FILE_QUEUE] Slot released by fileuser1 (transfer complete).
+2025-05-31 22:37:36 - 2025-05-31 22:37:36 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720256_673_3.jpg') from fileuser3 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:37:36 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720256_665_2.jpg') from fileuser2 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:37:36 - 2025-05-31 22:37:36 - [FILE_QUEUE] Slot released by fileuser2 (transfer complete).
+[FILE_QUEUE] Slot released by fileuser3 (transfer complete).2025-05-31 22:37:36 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+
+2025-05-31 22:37:36 - [FILE_QUEUE] No clients waiting for upload slots
+[FILE_QUEUE] Processing waiting clients. Current semaphore value: 2
+2025-05-31 22:37:36 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:37:36 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:37:36 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:37:38 - [FILE_QUEUE] Client fileuser7 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:37:38 - [FILE_QUEUE] Slot acquired immediately for fileuser7.
+2025-05-31 22:37:38 - [FILE] Generated unique filename: test_files/large_1748720258_181_7.jpg
+2025-05-31 22:37:38 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720258_181_7.jpg') from fileuser7 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:37:38 - [FILE_QUEUE] Slot released by fileuser7 (transfer complete).
+2025-05-31 22:37:38 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:37:38 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:37:39 - [FILE_QUEUE] Client fileuser8 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:37:39 - [FILE_QUEUE] Slot acquired immediately for fileuser8.
+2025-05-31 22:37:39 - [FILE] Generated unique filename: test_files/large_1748720259_652_8.jpg
+2025-05-31 22:37:39 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720259_652_8.jpg') from fileuser8 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:37:39 - [FILE_QUEUE] Slot released by fileuser8 (transfer complete).
+2025-05-31 22:37:39 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:37:39 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:37:41 - [FILE_QUEUE] Client fileuser9 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:37:41 - [FILE_QUEUE] Slot acquired immediately for fileuser9.
+2025-05-31 22:37:41 - [FILE] Generated unique filename: test_files/large_1748720261_166_9.jpg
+2025-05-31 22:37:41 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720261_166_9.jpg') from fileuser9 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:37:41 - [FILE_QUEUE] Slot released by fileuser9 (transfer complete).
+2025-05-31 22:37:41 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:37:41 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:37:42 - [FILE_QUEUE] Client fileuser10 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:37:42 - [FILE_QUEUE] Slot acquired immediately for fileuser10.
+2025-05-31 22:37:42 - [FILE] Generated unique filename: test_files/large_1748720262_721_10.jpg
+2025-05-31 22:37:42 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720262_721_10.jpg') from fileuser10 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:37:42 - [FILE_QUEUE] Slot released by fileuser10 (transfer complete).
+2025-05-31 22:37:42 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:37:42 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:37:57 - [USER: fileuser6] - disconnected (connection closed)
+2025-05-31 22:37:57 - [USER: fileuser6] - disconnected
+2025-05-31 22:38:00 - [USER: normaluser] - connected to the server
+2025-05-31 22:38:02 - [USER: normaluser] - joined room
+2025-05-31 22:38:05 - [BROADCAST] user 'normaluser': Is anyone still here?
+2025-05-31 22:38:07 - [USER: switcher] - connected to the server
+2025-05-31 22:38:08 - [USER: room1user] - connected to the server
+2025-05-31 22:38:09 - [USER: room2user] - connected to the server
+2025-05-31 22:38:09 - [USER: room1user] - joined room
+2025-05-31 22:38:09 - [USER: room2user] - joined room
+2025-05-31 22:38:09 - [USER: switcher] - joined room
+2025-05-31 22:38:10 - [BROADCAST] user 'switcher': Hello room1
+2025-05-31 22:38:11 - [ROOM] user 'switcher' left room ''
+2025-05-31 22:38:11 - [USER: switcher] - joined room
+2025-05-31 22:38:12 - [BROADCAST] user 'switcher': Hello room2
+2025-05-31 22:38:15 - [USER: filesender] - connected to the server
+2025-05-31 22:38:16 - [USER: filereceiver] - connected to the server
+2025-05-31 22:38:20 - [USER: rejoiner] - connected to the server
+2025-05-31 22:38:21 - [USER: stayer] - connected to the server
+2025-05-31 22:38:22 - [USER: rejoiner] - joined room
+2025-05-31 22:38:22 - [USER: stayer] - joined room
+2025-05-31 22:38:23 - [BROADCAST] user 'stayer': First message
+2025-05-31 22:38:24 - [ROOM] user 'rejoiner' left room ''
+2025-05-31 22:38:24 - [USER: rejoiner] - left room
+2025-05-31 22:38:25 - [BROADCAST] user 'stayer': Second message (while rejoiner is away)
+2025-05-31 22:38:26 - [USER: rejoiner] - joined room
+2025-05-31 22:38:27 - [BROADCAST] user 'stayer': Third message (after rejoiner returned)
+2025-05-31 22:38:29 - [USER: sender1] - connected to the server
+2025-05-31 22:38:30 - [USER: sender2] - connected to the server
+2025-05-31 22:38:31 - [USER: collisionreceive] - connected to the server
+2025-05-31 22:38:31 - [INFO] Suppressed 'Invalid command' notification to collisionreceive for short input: "r"
+2025-05-31 22:38:32 - [FILE_QUEUE] Client sender1 attempting to send 'test_files/small.txt' to collisionreceive. Checking queue...
+2025-05-31 22:38:32 - [FILE_QUEUE] Slot acquired immediately for sender1.
+2025-05-31 22:38:32 - [FILE] Generated unique filename: test_files/small_1748720312_379_0.txt
+2025-05-31 22:38:32 - [FILE] 'test_files/small.txt' (sent as 'test_files/small_1748720312_379_0.txt') from sender1 to collisionreceive successfully (10240 bytes)
+2025-05-31 22:38:32 - [FILE_QUEUE] Slot released by sender1 (transfer complete).
+2025-05-31 22:38:32 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:38:32 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:38:35 - [FILE_QUEUE] Client sender2 attempting to send 'test_files/small.txt' to collisionreceive. Checking queue...
+2025-05-31 22:38:35 - [FILE_QUEUE] Slot acquired immediately for sender2.
+2025-05-31 22:38:35 - [FILE] Generated unique filename: test_files/small_1748720315_390_1.txt
+2025-05-31 22:38:35 - [FILE] 'test_files/small.txt' (sent as 'test_files/small_1748720315_390_1.txt') from sender2 to collisionreceive successfully (10240 bytes)
+2025-05-31 22:38:35 - [FILE_QUEUE] Slot released by sender2 (transfer complete).
+2025-05-31 22:38:35 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 4
+2025-05-31 22:38:35 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:38:39 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-31 22:41:35 - [INFO] Server initialized and listening on port 5000
+2025-05-31 22:41:39 - [USER: filerecipient] - connected to the server
+2025-05-31 22:41:40 - [USER: fileuser1] - connected to the server
+2025-05-31 22:41:41 - [USER: fileuser2] - connected to the server
+2025-05-31 22:41:42 - [USER: fileuser3] - connected to the server
+2025-05-31 22:41:43 - [USER: fileuser4] - connected to the server
+2025-05-31 22:41:44 - [USER: fileuser5] - connected to the server
+2025-05-31 22:41:45 - [USER: fileuser6] - connected to the server
+2025-05-31 22:41:46 - [USER: fileuser7] - connected to the server
+2025-05-31 22:41:47 - [USER: fileuser8] - connected to the server
+2025-05-31 22:41:48 - [USER: fileuser9] - connected to the server
+2025-05-31 22:41:49 - [USER: fileuser10] - connected to the server
+2025-05-31 22:41:49 - [FILE_QUEUE] Client fileuser1 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:41:49 - [FILE_QUEUE] Slot acquired immediately for fileuser1.
+2025-05-31 22:41:49 - [FILE] Generated unique filename: test_files/large_1748720509_985_1.jpg
+2025-05-31 22:41:49 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720509_985_1.jpg') from fileuser1 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:41:49 - [FILE_QUEUE] Slot released by fileuser1 (transfer complete).
+2025-05-31 22:41:49 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:41:49 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:41:50 - [FILE_QUEUE] Client fileuser2 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:41:50 - [FILE_QUEUE] Slot acquired immediately for fileuser2.
+2025-05-31 22:41:50 - [FILE] Generated unique filename: test_files/large_1748720510_989_2.jpg
+2025-05-31 22:41:50 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720510_989_2.jpg') from fileuser2 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:41:50 - [FILE_QUEUE] Slot released by fileuser2 (transfer complete).
+2025-05-31 22:41:50 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:41:50 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:41:51 - [FILE_QUEUE] Client fileuser3 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:41:51 - [FILE_QUEUE] Slot acquired immediately for fileuser3.
+2025-05-31 22:41:51 - [FILE] Generated unique filename: test_files/large_1748720511_958_3.jpg
+2025-05-31 22:41:51 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720511_958_3.jpg') from fileuser3 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:41:51 - [FILE_QUEUE] Slot released by fileuser3 (transfer complete).
+2025-05-31 22:41:51 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:41:51 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:41:52 - [FILE_QUEUE] Client fileuser4 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:41:52 - [FILE_QUEUE] Slot acquired immediately for fileuser4.
+2025-05-31 22:41:53 - [FILE] Generated unique filename: test_files/large_1748720513_5_4.jpg
+2025-05-31 22:41:53 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720513_5_4.jpg') from fileuser4 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:41:53 - [FILE_QUEUE] Slot released by fileuser4 (transfer complete).
+2025-05-31 22:41:53 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:41:53 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:41:53 - [FILE_QUEUE] Client fileuser5 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:41:53 - [FILE_QUEUE] Slot acquired immediately for fileuser5.
+2025-05-31 22:41:54 - [FILE] Generated unique filename: test_files/large_1748720514_5_5.jpg
+2025-05-31 22:41:54 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720514_5_5.jpg') from fileuser5 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:41:54 - [FILE_QUEUE] Slot released by fileuser5 (transfer complete).
+2025-05-31 22:41:54 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:41:54 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:41:54 - [FILE_QUEUE] Client fileuser6 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:41:54 - [FILE_QUEUE] Slot acquired immediately for fileuser6.
+2025-05-31 22:41:55 - [FILE] Generated unique filename: test_files/large_1748720515_13_6.jpg
+2025-05-31 22:41:55 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720515_13_6.jpg') from fileuser6 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:41:55 - [FILE_QUEUE] Slot released by fileuser6 (transfer complete).
+2025-05-31 22:41:55 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:41:55 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:41:56 - [FILE_QUEUE] Client fileuser7 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:41:56 - [FILE_QUEUE] Slot acquired immediately for fileuser7.
+2025-05-31 22:41:56 - [FILE] Generated unique filename: test_files/large_1748720516_525_7.jpg
+2025-05-31 22:41:56 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720516_525_7.jpg') from fileuser7 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:41:56 - [FILE_QUEUE] Slot released by fileuser7 (transfer complete).
+2025-05-31 22:41:56 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:41:56 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:41:57 - [FILE_QUEUE] Client fileuser8 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:41:57 - [FILE_QUEUE] Slot acquired immediately for fileuser8.
+2025-05-31 22:41:58 - [FILE] Generated unique filename: test_files/large_1748720518_41_8.jpg
+2025-05-31 22:41:58 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720518_41_8.jpg') from fileuser8 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:41:58 - [FILE_QUEUE] Slot released by fileuser8 (transfer complete).
+2025-05-31 22:41:58 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:41:58 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:41:59 - [FILE_QUEUE] Client fileuser9 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:41:59 - [FILE_QUEUE] Slot acquired immediately for fileuser9.
+2025-05-31 22:41:59 - [FILE] Generated unique filename: test_files/large_1748720519_549_9.jpg
+2025-05-31 22:41:59 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720519_549_9.jpg') from fileuser9 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:41:59 - [FILE_QUEUE] Slot released by fileuser9 (transfer complete).
+2025-05-31 22:41:59 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:41:59 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:42:00 - [FILE_QUEUE] Client fileuser10 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:42:00 - [FILE_QUEUE] Slot acquired immediately for fileuser10.
+2025-05-31 22:42:01 - [FILE] Generated unique filename: test_files/large_1748720521_61_10.jpg
+2025-05-31 22:42:01 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720521_61_10.jpg') from fileuser10 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:42:01 - [FILE_QUEUE] Slot released by fileuser10 (transfer complete).
+2025-05-31 22:42:01 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:42:01 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:42:18 - [USER: normaluser] - connected to the server
+2025-05-31 22:42:20 - [USER: normaluser] - joined room
+2025-05-31 22:42:23 - [BROADCAST] user 'normaluser': Is anyone still here?
+2025-05-31 22:42:25 - [USER: switcher] - connected to the server
+2025-05-31 22:42:26 - [USER: room1user] - connected to the server
+2025-05-31 22:42:27 - [USER: room2user] - connected to the server
+2025-05-31 22:42:27 - [USER: room1user] - joined room
+2025-05-31 22:42:27 - [USER: room2user] - joined room
+2025-05-31 22:42:27 - [USER: switcher] - joined room
+2025-05-31 22:42:28 - [BROADCAST] user 'switcher': Hello room1
+2025-05-31 22:42:29 - [ROOM] user 'switcher' left room ''
+2025-05-31 22:42:29 - [USER: switcher] - joined room
+2025-05-31 22:42:30 - [BROADCAST] user 'switcher': Hello room2
+2025-05-31 22:42:33 - [USER: filesender] - connected to the server
+2025-05-31 22:42:34 - [USER: filereceiver] - connected to the server
+2025-05-31 22:42:38 - [USER: rejoiner] - connected to the server
+2025-05-31 22:42:39 - [USER: stayer] - connected to the server
+2025-05-31 22:42:40 - [USER: rejoiner] - joined room
+2025-05-31 22:42:40 - [USER: stayer] - joined room
+2025-05-31 22:42:41 - [BROADCAST] user 'stayer': First message
+2025-05-31 22:42:42 - [ROOM] user 'rejoiner' left room ''
+2025-05-31 22:42:42 - [USER: rejoiner] - left room
+2025-05-31 22:42:43 - [BROADCAST] user 'stayer': Second message (while rejoiner is away)
+2025-05-31 22:42:44 - [USER: rejoiner] - joined room
+2025-05-31 22:42:45 - [BROADCAST] user 'stayer': Third message (after rejoiner returned)
+2025-05-31 22:42:47 - [USER: sender1] - connected to the server
+2025-05-31 22:42:49 - [USER: sender2] - connected to the server
+2025-05-31 22:42:50 - [USER: collisionreceive] - connected to the server
+2025-05-31 22:42:50 - [INFO] Suppressed 'Invalid command' notification to collisionreceive for short input: "r"
+2025-05-31 22:42:50 - [FILE_QUEUE] Client sender1 attempting to send 'test_files/small.txt' to collisionreceive. Checking queue...
+2025-05-31 22:42:50 - [FILE_QUEUE] Slot acquired immediately for sender1.
+2025-05-31 22:42:50 - [FILE] Generated unique filename: test_files/small_1748720570_537_0.txt
+2025-05-31 22:42:50 - [FILE] 'test_files/small.txt' (sent as 'test_files/small_1748720570_537_0.txt') from sender1 to collisionreceive successfully (10240 bytes)
+2025-05-31 22:42:50 - [FILE_QUEUE] Slot released by sender1 (transfer complete).
+2025-05-31 22:42:50 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:42:50 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:42:53 - [FILE_QUEUE] Client sender2 attempting to send 'test_files/small.txt' to collisionreceive. Checking queue...
+2025-05-31 22:42:53 - [FILE_QUEUE] Slot acquired immediately for sender2.
+2025-05-31 22:42:53 - [FILE] Generated unique filename: test_files/small_1748720573_548_1.txt
+2025-05-31 22:42:53 - [FILE] 'test_files/small.txt' (sent as 'test_files/small_1748720573_548_1.txt') from sender2 to collisionreceive successfully (10240 bytes)
+2025-05-31 22:42:53 - [FILE_QUEUE] Slot released by sender2 (transfer complete).
+2025-05-31 22:42:53 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:42:53 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:42:58 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-31 22:45:08 - [INFO] Server initialized and listening on port 5000
+2025-05-31 22:45:12 - [USER: user1] - connected to the server
+2025-05-31 22:45:13 - [USER: user2] - connected to the server
+2025-05-31 22:45:14 - [USER: user3] - connected to the server
+2025-05-31 22:45:15 - [USER: user4] - connected to the server
+2025-05-31 22:45:16 - [USER: user5] - connected to the server
+2025-05-31 22:45:17 - [USER: user6] - connected to the server
+2025-05-31 22:45:18 - [USER: user7] - connected to the server
+2025-05-31 22:45:19 - [USER: user8] - connected to the server
+2025-05-31 22:45:20 - [USER: user9] - connected to the server
+2025-05-31 22:45:21 - [USER: user10] - connected to the server
+2025-05-31 22:45:22 - [USER: user11] - connected to the server
+2025-05-31 22:45:23 - [USER: user12] - connected to the server
+2025-05-31 22:45:24 - [USER: user13] - connected to the server
+2025-05-31 22:45:25 - [USER: user14] - connected to the server
+2025-05-31 22:45:26 - [USER: user15] - connected to the server
+2025-05-31 22:45:26 - [USER: user1] - joined room
+2025-05-31 22:45:26 - [USER: user2] - joined room
+2025-05-31 22:45:26 - [USER: user3] - joined room
+2025-05-31 22:45:26 - [USER: user4] - joined room
+2025-05-31 22:45:27 - [USER: user5] - joined room
+2025-05-31 22:45:27 - [USER: user6] - joined room
+2025-05-31 22:45:27 - [USER: user7] - joined room
+2025-05-31 22:45:27 - [USER: user8] - joined room
+2025-05-31 22:45:27 - [USER: user9] - joined room
+2025-05-31 22:45:27 - [USER: user10] - joined room
+2025-05-31 22:45:27 - [USER: user11] - joined room
+2025-05-31 22:45:27 - [USER: user12] - joined room
+2025-05-31 22:45:27 - [USER: user13] - joined room
+2025-05-31 22:45:27 - [USER: user14] - joined room
+2025-05-31 22:45:28 - [USER: user15] - joined room
+2025-05-31 22:45:30 - [BROADCAST] user 'user1': Hello from user1!
+2025-05-31 22:45:30 - [BROADCAST] user 'user2': Hello from user2!
+2025-05-31 22:45:30 - [BROADCAST] user 'user3': Hello from user3!
+2025-05-31 22:45:30 - [BROADCAST] user 'user4': Hello from user4!
+2025-05-31 22:45:31 - [BROADCAST] user 'user5': Hello from user5!
+2025-05-31 22:45:34 - [WHISPER] user1 to user6: This is a private message from user1
+2025-05-31 22:45:34 - [WHISPER] user2 to user7: This is a private message from user2
+2025-05-31 22:45:34 - [WHISPER] user3 to user8: This is a private message from user3
+2025-05-31 22:45:45 - [USER: duplicatetest] - connected to the server
+2025-05-31 22:45:46 - [REJECTED] Duplicate username attempted: duplicatetest
+2025-05-31 22:45:49 - [USER: filerecipient] - connected to the server
+2025-05-31 22:45:50 - [USER: fileuser1] - connected to the server
+2025-05-31 22:45:51 - [USER: fileuser2] - connected to the server
+2025-05-31 22:45:52 - [USER: fileuser3] - connected to the server
+2025-05-31 22:45:53 - [USER: fileuser4] - connected to the server
+2025-05-31 22:45:54 - [USER: fileuser5] - connected to the server
+2025-05-31 22:45:55 - [USER: fileuser6] - connected to the server
+2025-05-31 22:45:56 - [USER: fileuser7] - connected to the server
+2025-05-31 22:45:57 - [USER: fileuser8] - connected to the server
+2025-05-31 22:45:58 - [USER: fileuser9] - connected to the server
+2025-05-31 22:45:59 - [USER: fileuser10] - connected to the server
+2025-05-31 22:45:59 - [FILE_QUEUE] Client fileuser1 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:45:59 - [FILE_QUEUE] Slot acquired immediately for fileuser1.
+2025-05-31 22:45:59 - [FILE] Generated unique filename: test_files/large_1748720759_701_1.jpg
+2025-05-31 22:45:59 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720759_701_1.jpg') from fileuser1 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:45:59 - [FILE_QUEUE] Slot released by fileuser1 (transfer complete).
+2025-05-31 22:45:59 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:45:59 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:46:00 - [FILE_QUEUE] Client fileuser2 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:46:00 - [FILE_QUEUE] Slot acquired immediately for fileuser2.
+2025-05-31 22:46:00 - [FILE] Generated unique filename: test_files/large_1748720760_749_2.jpg
+2025-05-31 22:46:00 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720760_749_2.jpg') from fileuser2 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:46:00 - [FILE_QUEUE] Slot released by fileuser2 (transfer complete).
+2025-05-31 22:46:00 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:46:00 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:46:01 - [FILE_QUEUE] Client fileuser3 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:46:01 - [FILE_QUEUE] Slot acquired immediately for fileuser3.
+2025-05-31 22:46:01 - [FILE] Generated unique filename: test_files/large_1748720761_753_3.jpg
+2025-05-31 22:46:01 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720761_753_3.jpg') from fileuser3 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:46:01 - [FILE_QUEUE] Slot released by fileuser3 (transfer complete).
+2025-05-31 22:46:01 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:46:01 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:46:02 - [FILE_QUEUE] Client fileuser4 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:46:02 - [FILE_QUEUE] Slot acquired immediately for fileuser4.
+2025-05-31 22:46:02 - [FILE] Generated unique filename: test_files/large_1748720762_757_4.jpg
+2025-05-31 22:46:02 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720762_757_4.jpg') from fileuser4 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:46:02 - [FILE_QUEUE] Slot released by fileuser4 (transfer complete).
+2025-05-31 22:46:02 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:46:02 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:46:03 - [FILE_QUEUE] Client fileuser5 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:46:03 - [FILE_QUEUE] Slot acquired immediately for fileuser5.
+2025-05-31 22:46:03 - [FILE] Generated unique filename: test_files/large_1748720763_765_5.jpg
+2025-05-31 22:46:03 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720763_765_5.jpg') from fileuser5 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:46:03 - [FILE_QUEUE] Slot released by fileuser5 (transfer complete).
+2025-05-31 22:46:03 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:46:03 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:46:04 - [FILE_QUEUE] Client fileuser6 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:46:04 - [FILE_QUEUE] Slot acquired immediately for fileuser6.
+2025-05-31 22:46:04 - [FILE] Generated unique filename: test_files/large_1748720764_773_6.jpg
+2025-05-31 22:46:04 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720764_773_6.jpg') from fileuser6 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:46:04 - [FILE_QUEUE] Slot released by fileuser6 (transfer complete).
+2025-05-31 22:46:04 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:46:04 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:46:06 - [FILE_QUEUE] Client fileuser7 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:46:06 - [FILE_QUEUE] Slot acquired immediately for fileuser7.
+2025-05-31 22:46:06 - [FILE] Generated unique filename: test_files/large_1748720766_285_7.jpg
+2025-05-31 22:46:06 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720766_285_7.jpg') from fileuser7 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:46:06 - [FILE_QUEUE] Slot released by fileuser7 (transfer complete).
+2025-05-31 22:46:06 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:46:06 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:46:07 - [FILE_QUEUE] Client fileuser8 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:46:07 - [FILE_QUEUE] Slot acquired immediately for fileuser8.
+2025-05-31 22:46:07 - [FILE] Generated unique filename: test_files/large_1748720767_793_8.jpg
+2025-05-31 22:46:07 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720767_793_8.jpg') from fileuser8 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:46:07 - [FILE_QUEUE] Slot released by fileuser8 (transfer complete).
+2025-05-31 22:46:07 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:46:07 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:46:08 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-31 22:46:08 - [USER: filerecipient] - lost connection (recv error)
+2025-05-31 22:46:08 - [USER: filerecipient] - disconnected
+2025-05-31 22:46:08 - [USER: fileuser2] - disconnected (connection closed)
+2025-05-31 22:46:08 - 2025-05-31 22:46:08 - [USER: fileuser2] - disconnected
+2025-05-31 22:46:08 - [USER: fileuser8] - disconnected (connection closed)
+2025-05-31 22:46:08 - [USER: fileuser8] - disconnected
+2025-05-31 22:46:08 - [USER: fileuser6] - disconnected (connection closed)
+2025-05-31 22:46:08 - [USER: fileuser6] - disconnected
+2025-05-31 22:46:08 - [USER: fileuser1] - disconnected (connection closed)
+2025-05-31 22:46:08 - [USER: fileuser4] - disconnected (connection closed)
+2025-05-31 22:46:08 - [USER: fileuser4] - disconnected
+2025-05-31 22:46:08 - 2025-05-31 22:46:10 - [INFO] Server initialized and listening on port 5000
+2025-05-31 22:46:14 - [USER: user1] - connected to the server
+2025-05-31 22:46:15 - [USER: user2] - connected to the server
+2025-05-31 22:46:16 - [USER: user3] - connected to the server
+2025-05-31 22:46:17 - [USER: user4] - connected to the server
+2025-05-31 22:46:18 - [USER: user5] - connected to the server
+2025-05-31 22:46:19 - [USER: user6] - connected to the server
+2025-05-31 22:46:20 - [USER: user7] - connected to the server
+2025-05-31 22:46:21 - [USER: user8] - connected to the server
+2025-05-31 22:46:22 - [USER: user9] - connected to the server
+2025-05-31 22:46:23 - [USER: user10] - connected to the server
+2025-05-31 22:46:24 - [USER: user11] - connected to the server
+2025-05-31 22:46:25 - [USER: user12] - connected to the server
+2025-05-31 22:46:26 - [USER: user13] - connected to the server
+2025-05-31 22:46:27 - [USER: user14] - connected to the server
+2025-05-31 22:46:28 - [USER: user15] - connected to the server
+2025-05-31 22:46:28 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:29 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:30 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:31 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:32 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:33 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:34 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:35 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:36 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:37 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:38 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:39 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:41 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:42 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:43 - [REJECTED] Connection rejected - server full
+2025-05-31 22:46:44 - [USER: user1] - joined room
+2025-05-31 22:46:44 - [USER: user2] - joined room
+2025-05-31 22:46:44 - [USER: user3] - joined room
+2025-05-31 22:46:44 - [USER: user4] - joined room
+2025-05-31 22:46:44 - [USER: user5] - joined room
+2025-05-31 22:46:44 - [USER: user6] - joined room
+2025-05-31 22:46:44 - [USER: user7] - joined room
+2025-05-31 22:46:44 - [USER: user8] - joined room
+2025-05-31 22:46:44 - [USER: user9] - joined room
+2025-05-31 22:46:44 - [USER: user10] - joined room
+2025-05-31 22:46:45 - [USER: user11] - joined room
+2025-05-31 22:46:45 - [USER: user12] - joined room
+2025-05-31 22:46:45 - [USER: user13] - joined room
+2025-05-31 22:46:45 - [USER: user14] - joined room
+2025-05-31 22:46:45 - [USER: user15] - joined room
+2025-05-31 22:46:49 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-31 22:46:49 - [USER: user1] - disconnected (connection closed)
+2025-05-31 22:46:49 - [ROOM] user 'user1' left room ''
+2025-05-31 22:46:49 - [USER: user1] - disconnected
+2025-05-31 22:46:49 - [USER: user5] - disconnected (connection closed)
+2025-05-31 22:46:49 - 2025-05-31 22:46:49 - [ROOM] user 'user5' left room ''
+2025-05-31 22:46:49 - [USER: user5] - disconnected
+2025-05-31 22:47:05 - [INFO] Server initialized and listening on port 5000
+2025-05-31 22:47:09 - [USER: user1] - connected to the server
+2025-05-31 22:47:10 - [USER: user2] - connected to the server
+2025-05-31 22:47:11 - [USER: user3] - connected to the server
+2025-05-31 22:47:12 - [USER: user4] - connected to the server
+2025-05-31 22:47:13 - [USER: user5] - connected to the server
+2025-05-31 22:47:14 - [USER: user6] - connected to the server
+2025-05-31 22:47:15 - [USER: user7] - connected to the server
+2025-05-31 22:47:16 - [USER: user8] - connected to the server
+2025-05-31 22:47:17 - [USER: user9] - connected to the server
+2025-05-31 22:47:18 - [USER: user10] - connected to the server
+2025-05-31 22:47:19 - [USER: user11] - connected to the server
+2025-05-31 22:47:20 - [USER: user12] - connected to the server
+2025-05-31 22:47:21 - [USER: user13] - connected to the server
+2025-05-31 22:47:22 - [USER: user14] - connected to the server
+2025-05-31 22:47:23 - [USER: user15] - connected to the server
+2025-05-31 22:47:24 - [USER: user16] - connected to the server
+2025-05-31 22:47:25 - [USER: user17] - connected to the server
+2025-05-31 22:47:26 - [USER: user18] - connected to the server
+2025-05-31 22:47:27 - [USER: user19] - connected to the server
+2025-05-31 22:47:28 - [USER: user20] - connected to the server
+2025-05-31 22:47:29 - [USER: user21] - connected to the server
+2025-05-31 22:47:30 - [USER: user22] - connected to the server
+2025-05-31 22:47:31 - [USER: user23] - connected to the server
+2025-05-31 22:47:32 - [USER: user24] - connected to the server
+2025-05-31 22:47:33 - [USER: user25] - connected to the server
+2025-05-31 22:47:34 - [USER: user26] - connected to the server
+2025-05-31 22:47:35 - [USER: user27] - connected to the server
+2025-05-31 22:47:36 - [USER: user28] - connected to the server
+2025-05-31 22:47:37 - [USER: user29] - connected to the server
+2025-05-31 22:47:38 - [USER: user30] - connected to the server
+2025-05-31 22:47:39 - [USER: user1] - joined room
+2025-05-31 22:47:39 - [USER: user2] - joined room
+2025-05-31 22:47:39 - [USER: user3] - joined room
+2025-05-31 22:47:39 - [USER: user4] - joined room
+2025-05-31 22:47:39 - [USER: user5] - joined room
+2025-05-31 22:47:39 - [USER: user6] - joined room
+2025-05-31 22:47:39 - [USER: user7] - joined room
+2025-05-31 22:47:39 - [USER: user8] - joined room
+2025-05-31 22:47:39 - [USER: user9] - joined room
+2025-05-31 22:47:40 - [USER: user10] - joined room
+2025-05-31 22:47:40 - [USER: user11] - joined room
+2025-05-31 22:47:40 - [USER: user12] - joined room
+2025-05-31 22:47:40 - [USER: user13] - joined room
+2025-05-31 22:47:40 - [USER: user14] - joined room
+2025-05-31 22:47:40 - [USER: user15] - joined room
+2025-05-31 22:47:40 - [USER: user16] - joined room
+2025-05-31 22:47:40 - [USER: user17] - joined room
+2025-05-31 22:47:40 - [USER: user18] - joined room
+2025-05-31 22:47:41 - [USER: user19] - joined room
+2025-05-31 22:47:41 - [USER: user20] - joined room
+2025-05-31 22:47:41 - [USER: user21] - joined room
+2025-05-31 22:47:41 - [USER: user22] - joined room
+2025-05-31 22:47:41 - [USER: user23] - joined room
+2025-05-31 22:47:41 - [USER: user24] - joined room
+2025-05-31 22:47:41 - [USER: user25] - joined room
+2025-05-31 22:47:41 - [USER: user26] - joined room
+2025-05-31 22:47:41 - [USER: user27] - joined room
+2025-05-31 22:47:41 - [USER: user28] - joined room
+2025-05-31 22:47:42 - [USER: user29] - joined room
+2025-05-31 22:47:42 - [USER: user30] - joined room
+2025-05-31 22:47:44 - [BROADCAST] user 'user1': Hello from user1!
+2025-05-31 22:47:44 - [BROADCAST] user 'user2': Hello from user2!
+2025-05-31 22:47:44 - [BROADCAST] user 'user3': Hello from user3!
+2025-05-31 22:47:44 - [BROADCAST] user 'user4': Hello from user4!
+2025-05-31 22:47:45 - [BROADCAST] user 'user5': Hello from user5!
+2025-05-31 22:47:48 - [WHISPER] user1 to user6: This is a private message from user1
+2025-05-31 22:47:48 - [WHISPER] user2 to user7: This is a private message from user2
+2025-05-31 22:47:48 - [WHISPER] user3 to user8: This is a private message from user3
+2025-05-31 22:48:06 - [USER: duplicatetest] - connected to the server
+2025-05-31 22:48:07 - [REJECTED] Duplicate username attempted: duplicatetest
+2025-05-31 22:48:10 - [USER: filerecipient] - connected to the server
+2025-05-31 22:48:11 - [USER: fileuser1] - connected to the server
+2025-05-31 22:48:12 - [USER: fileuser2] - connected to the server
+2025-05-31 22:48:13 - [USER: fileuser3] - connected to the server
+2025-05-31 22:48:14 - [USER: fileuser4] - connected to the server
+2025-05-31 22:48:15 - [USER: fileuser5] - connected to the server
+2025-05-31 22:48:16 - [USER: fileuser6] - connected to the server
+2025-05-31 22:48:17 - [USER: fileuser7] - connected to the server
+2025-05-31 22:48:18 - [USER: fileuser8] - connected to the server
+2025-05-31 22:48:19 - [USER: fileuser9] - connected to the server
+2025-05-31 22:48:20 - [USER: fileuser10] - connected to the server
+2025-05-31 22:48:21 - [FILE_QUEUE] Client fileuser1 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:48:21 - [FILE_QUEUE] Slot acquired immediately for fileuser1.
+2025-05-31 22:48:21 - [FILE] Generated unique filename: test_files/large_1748720901_517_1.jpg
+2025-05-31 22:48:21 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720901_517_1.jpg') from fileuser1 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:48:21 - [FILE_QUEUE] Slot released by fileuser1 (transfer complete).
+2025-05-31 22:48:21 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:48:21 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:48:22 - [FILE_QUEUE] Client fileuser2 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:48:22 - [FILE_QUEUE] Slot acquired immediately for fileuser2.
+2025-05-31 22:48:22 - [FILE] Generated unique filename: test_files/large_1748720902_479_2.jpg
+2025-05-31 22:48:22 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720902_479_2.jpg') from fileuser2 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:48:22 - [FILE_QUEUE] Slot released by fileuser2 (transfer complete).
+2025-05-31 22:48:22 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:48:22 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:48:23 - [FILE_QUEUE] Client fileuser3 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:48:23 - [FILE_QUEUE] Slot acquired immediately for fileuser3.
+2025-05-31 22:48:23 - [FILE] Generated unique filename: test_files/large_1748720903_487_3.jpg
+2025-05-31 22:48:23 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720903_487_3.jpg') from fileuser3 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:48:23 - [FILE_QUEUE] Slot released by fileuser3 (transfer complete).
+2025-05-31 22:48:23 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:48:23 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:48:24 - [FILE_QUEUE] Client fileuser4 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:48:24 - [FILE_QUEUE] Slot acquired immediately for fileuser4.
+2025-05-31 22:48:24 - [FILE] Generated unique filename: test_files/large_1748720904_533_4.jpg
+2025-05-31 22:48:24 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720904_533_4.jpg') from fileuser4 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:48:24 - [FILE_QUEUE] Slot released by fileuser4 (transfer complete).
+2025-05-31 22:48:24 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:48:24 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:48:25 - [FILE_QUEUE] Client fileuser5 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:48:25 - [FILE_QUEUE] Slot acquired immediately for fileuser5.
+2025-05-31 22:48:25 - [FILE] Generated unique filename: test_files/large_1748720905_541_5.jpg
+2025-05-31 22:48:25 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720905_541_5.jpg') from fileuser5 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:48:25 - [FILE_QUEUE] Slot released by fileuser5 (transfer complete).
+2025-05-31 22:48:25 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:48:25 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:48:26 - [FILE_QUEUE] Client fileuser6 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:48:26 - [FILE_QUEUE] Slot acquired immediately for fileuser6.
+2025-05-31 22:48:26 - [FILE] Generated unique filename: test_files/large_1748720906_545_6.jpg
+2025-05-31 22:48:26 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720906_545_6.jpg') from fileuser6 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:48:26 - [FILE_QUEUE] Slot released by fileuser6 (transfer complete).
+2025-05-31 22:48:26 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:48:26 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:48:27 - [FILE_QUEUE] Client fileuser7 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:48:27 - [FILE_QUEUE] Slot acquired immediately for fileuser7.
+2025-05-31 22:48:28 - [FILE] Generated unique filename: test_files/large_1748720908_57_7.jpg
+2025-05-31 22:48:28 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720908_57_7.jpg') from fileuser7 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:48:28 - [FILE_QUEUE] Slot released by fileuser7 (transfer complete).
+2025-05-31 22:48:28 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:48:28 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:48:29 - [FILE_QUEUE] Client fileuser8 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:48:29 - [FILE_QUEUE] Slot acquired immediately for fileuser8.
+2025-05-31 22:48:29 - [FILE] Generated unique filename: test_files/large_1748720909_569_8.jpg
+2025-05-31 22:48:29 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720909_569_8.jpg') from fileuser8 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:48:29 - [FILE_QUEUE] Slot released by fileuser8 (transfer complete).
+2025-05-31 22:48:29 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:48:29 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:48:30 - [FILE_QUEUE] Client fileuser9 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:48:30 - [FILE_QUEUE] Slot acquired immediately for fileuser9.
+2025-05-31 22:48:31 - [FILE] Generated unique filename: test_files/large_1748720911_38_9.jpg
+2025-05-31 22:48:31 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720911_38_9.jpg') from fileuser9 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:48:31 - [FILE_QUEUE] Slot released by fileuser9 (transfer complete).
+2025-05-31 22:48:31 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:48:31 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:48:32 - [FILE_QUEUE] Client fileuser10 attempting to send 'test_files/large.jpg' to filerecipient. Checking queue...
+2025-05-31 22:48:32 - [FILE_QUEUE] Slot acquired immediately for fileuser10.
+2025-05-31 22:48:32 - [FILE] Generated unique filename: test_files/large_1748720912_549_10.jpg
+2025-05-31 22:48:32 - [FILE] 'test_files/large.jpg' (sent as 'test_files/large_1748720912_549_10.jpg') from fileuser10 to filerecipient successfully (2097152 bytes)
+2025-05-31 22:48:32 - [FILE_QUEUE] Slot released by fileuser10 (transfer complete).
+2025-05-31 22:48:32 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:48:32 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:48:50 - [USER: normaluser] - connected to the server
+2025-05-31 22:48:51 - [USER: normaluser] - joined room
+2025-05-31 22:48:54 - [BROADCAST] user 'normaluser': Is anyone still here?
+2025-05-31 22:48:56 - [USER: switcher] - connected to the server
+2025-05-31 22:48:57 - [USER: room1user] - connected to the server
+2025-05-31 22:48:58 - [USER: room2user] - connected to the server
+2025-05-31 22:48:59 - [USER: room1user] - joined room
+2025-05-31 22:48:59 - [USER: room2user] - joined room
+2025-05-31 22:48:59 - [USER: switcher] - joined room
+2025-05-31 22:49:00 - [BROADCAST] user 'switcher': Hello room1
+2025-05-31 22:49:01 - [ROOM] user 'switcher' left room ''
+2025-05-31 22:49:01 - [USER: switcher] - joined room
+2025-05-31 22:49:02 - [BROADCAST] user 'switcher': Hello room2
+2025-05-31 22:49:05 - [USER: filesender] - connected to the server
+2025-05-31 22:49:06 - [USER: filereceiver] - connected to the server
+2025-05-31 22:49:10 - [USER: rejoiner] - connected to the server
+2025-05-31 22:49:11 - [USER: stayer] - connected to the server
+2025-05-31 22:49:11 - [USER: rejoiner] - joined room
+2025-05-31 22:49:11 - [USER: stayer] - joined room
+2025-05-31 22:49:12 - [BROADCAST] user 'stayer': First message
+2025-05-31 22:49:13 - [ROOM] user 'rejoiner' left room ''
+2025-05-31 22:49:13 - [USER: rejoiner] - left room
+2025-05-31 22:49:14 - [BROADCAST] user 'stayer': Second message (while rejoiner is away)
+2025-05-31 22:49:15 - [USER: rejoiner] - joined room
+2025-05-31 22:49:16 - [BROADCAST] user 'stayer': Third message (after rejoiner returned)
+2025-05-31 22:49:19 - [USER: sender1] - connected to the server
+2025-05-31 22:49:20 - [USER: sender2] - connected to the server
+2025-05-31 22:49:21 - [USER: collisionreceive] - connected to the server
+2025-05-31 22:49:21 - [INFO] Suppressed 'Invalid command' notification to collisionreceive for short input: "r"
+2025-05-31 22:49:22 - [FILE_QUEUE] Client sender1 attempting to send 'test_files/small.txt' to collisionreceive. Checking queue...
+2025-05-31 22:49:22 - [FILE_QUEUE] Slot acquired immediately for sender1.
+2025-05-31 22:49:22 - [FILE] Generated unique filename: test_files/small_1748720962_75_0.txt
+2025-05-31 22:49:22 - [FILE] 'test_files/small.txt' (sent as 'test_files/small_1748720962_75_0.txt') from sender1 to collisionreceive successfully (10240 bytes)
+2025-05-31 22:49:22 - [FILE_QUEUE] Slot released by sender1 (transfer complete).
+2025-05-31 22:49:22 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:49:22 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:49:25 - [FILE_QUEUE] Client sender2 attempting to send 'test_files/small.txt' to collisionreceive. Checking queue...
+2025-05-31 22:49:25 - [FILE_QUEUE] Slot acquired immediately for sender2.
+2025-05-31 22:49:25 - [FILE] Generated unique filename: test_files/small_1748720965_86_1.txt
+2025-05-31 22:49:25 - [FILE] 'test_files/small.txt' (sent as 'test_files/small_1748720965_86_1.txt') from sender2 to collisionreceive successfully (10240 bytes)
+2025-05-31 22:49:25 - [FILE_QUEUE] Slot released by sender2 (transfer complete).
+2025-05-31 22:49:25 - [FILE_QUEUE] Processing waiting clients. Current semaphore value: 5
+2025-05-31 22:49:25 - [FILE_QUEUE] No clients waiting for upload slots
+2025-05-31 22:49:29 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-31 22:55:23 - [INFO] Server initialized and listening on port 9999
+2025-05-31 22:56:26 - [USER: t1] - connected to the server
+2025-05-31 22:56:27 - [USER: t2] - connected to the server
+2025-05-31 22:56:29 - [USER: t3] - connected to the server
+2025-05-31 22:56:32 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
+2025-05-31 22:56:42 - [INFO] Server initialized and listening on port 9999
+2025-05-31 22:57:01 - [USER: t1] - connected to the server
+2025-05-31 22:57:02 - [USER: t2] - connected to the server
+2025-05-31 22:57:03 - [USER: t3] - connected to the server
+2025-05-31 22:58:05 - [SHUTDOWN] SIGINT received. Disconnecting 0 clients, saving logs.
