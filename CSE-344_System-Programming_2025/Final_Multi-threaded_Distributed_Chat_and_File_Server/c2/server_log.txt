@@ -1,14 +1,26 @@
-2025-05-31 22:20:49 - [SERVER] Started on port 5000
-2025-05-31 22:20:49 - [SERVER] Accepting connections on port 5000
-2025-05-31 22:20:52 - [LOGIN] user 'filerecipient' connected from 127.0.0.1
-2025-05-31 22:20:53 - [LOGIN] user 'fileuser1' connected from 127.0.0.1
-2025-05-31 22:20:54 - [LOGIN] user 'fileuser2' connected from 127.0.0.1
-2025-05-31 22:20:55 - [SHUTDOWN] SIGINT received. Shutting down server...
-2025-05-31 22:20:55 - [SHUTDOWN] Disconnecting 3 clients, saving logs.
-2025-05-31 22:20:55 - [EXIT] user 'fileuser1' disconnected
-2025-05-31 22:20:55 - [EXIT] user 'filerecipient' disconnected
-2025-05-31 22:20:55 - [DISCONNECT] Unnamed client from 127.0.0.1 disconnected
-2025-05-31 22:20:55 - [EXIT] user 'fileuser2' disconnected
-2025-05-31 22:20:55 - [DISCONNECT] user 'fileuser1' lost connection. Cleaned up resources.
-2025-05-31 22:20:55 - [DISCONNECT] user 'filerecipient' lost connection. Cleaned up resources.
-2025-05-31 22:20:55 - [DISCONNECT] user 'fileuser2' lost connection. Cleaned up resources.
+2025-05-31 22:24:55 - [SERVER] Started on port 8888
+2025-05-31 22:24:55 - [SERVER] Accepting connections on port 8888
+2025-05-31 22:24:58 - [LOGIN] user 'user1' connected from 127.0.0.1
+2025-05-31 22:25:00 - [ROOM] Room 'room1' created by user 'user1'
+2025-05-31 22:25:00 - [JOIN] user 'user1' joined room 'room1'
+2025-05-31 22:25:00 - [INFO] user1 joined room 'room1'
+2025-05-31 22:25:01 - [BROADCAST] user 'user1': Hello from user1!
+2025-05-31 22:25:01 - [BROADCAST] user 'user1': This is a regular message in room1
+2025-05-31 22:25:03 - [LOGIN] user 'user2' connected from 127.0.0.1
+2025-05-31 22:25:06 - [JOIN] user 'user2' joined room 'room1'
+2025-05-31 22:25:06 - [INFO] user2 joined room 'room1'
+2025-05-31 22:25:06 - [BROADCAST] user 'user2': I've joined room1!
+2025-05-31 22:25:07 - [WHISPER] From 'user2' to 'user1': This is a private message to user1
+2025-05-31 22:25:09 - [LOGIN] user 'user3' connected from 127.0.0.1
+2025-05-31 22:25:11 - [ROOM] Room 'room2' created by user 'user3'
+2025-05-31 22:25:11 - [JOIN] user 'user3' joined room 'room2'
+2025-05-31 22:25:11 - [INFO] user3 joined room 'room2'
+2025-05-31 22:25:12 - [BROADCAST] user 'user3': Hello from room2!
+2025-05-31 22:25:12 - [WHISPER] From 'user3' to 'user1': Can you see this from room2?
+2025-05-31 22:26:18 - [SHUTDOWN] SIGINT received. Shutting down server...
+2025-05-31 22:26:18 - [SHUTDOWN] Disconnecting 3 clients, saving logs.
+2025-05-31 22:26:18 - [EXIT] user 'user1' disconnected
+2025-05-31 22:26:18 - [EXIT] user 'user2' disconnected
+2025-05-31 22:26:18 - [SHUTDOWN] SIGINT received. Shutting down server...
+2025-05-31 22:26:18 - [SHUTDOWN] Disconnecting 1 clients, saving logs.
+2025-05-31 22:26:18 - [EXIT] user 'user3' disconnected

@@ -95,56 +95,96 @@ void handle_join_command(Server *server, Client *client, const char *room_name) 
  * and initiates their file transfer if a slot is available
  */
 void process_waiting_clients(Server *server) {
-    // Try to get a semaphore slot first - if none available, don't bother checking
-    if (sem_trywait(&server->upload_semaphore) == -1) {
-        return; // No slots available
-    }
+    int slots_checked = 0;
+    int max_attempts = 5; // Try this many times to assign slots to waiting clients
     
-    // We got a slot, now find a waiting client
-    Client *waiting_client = NULL;
-    int waiting_client_index = -1;
+    // Log current semaphore value for debugging
+    int sem_value;
+    sem_getvalue(&server->upload_semaphore, &sem_value);
+    log_message(server, "[FILE_QUEUE] Processing waiting clients. Current semaphore value: %d", sem_value);
     
+    // Check if there are any waiting clients at all before trying to acquire semaphore
+    bool has_waiting_clients = false;
     pthread_mutex_lock(&server->clients_mutex);
-    
-    // Find the first client waiting for an upload slot
     for (int i = 0; i < MAX_CLIENTS; i++) {
         if (server->clients[i].status == CLIENT_CONNECTED && 
             server->clients[i].waiting_for_upload_slot) {
-            waiting_client = &server->clients[i];
-            waiting_client_index = i;
+            has_waiting_clients = true;
             break;
         }
     }
+    pthread_mutex_unlock(&server->clients_mutex);
     
-    // If no waiting clients found, release the semaphore
-    if (waiting_client == NULL) {
-        pthread_mutex_unlock(&server->clients_mutex);
-        sem_post(&server->upload_semaphore);
+    if (!has_waiting_clients) {
+        log_message(server, "[FILE_QUEUE] No clients waiting for upload slots");
         return;
     }
     
-    // Reset the waiting flag and get the queued info
-    waiting_client->waiting_for_upload_slot = false;
-    char filename[MAX_FILE_NAME_LEN];
-    char recipient[MAX_USERNAME_LEN + 1];
-    strncpy(filename, waiting_client->queued_filename, MAX_FILE_NAME_LEN);
-    strncpy(recipient, waiting_client->queued_recipient, MAX_USERNAME_LEN + 1);
-    
-    // Mark client as in file transfer
-    waiting_client->in_file_transfer = true;
-    
-    pthread_mutex_unlock(&server->clients_mutex);
-    
-    // Notify client that a slot is now available
-    notify_client(waiting_client, "[Server]: A file upload slot is now available. Your queued file transfer will begin.");
-    log_message(server, "[FILE_QUEUE] Slot assigned to waiting client %s.", waiting_client->username);
-    
-    // Continue with file transfer protocol
-    notify_client(waiting_client, "[Server]: Send file size in bytes:");
-    
-    // The rest of the file transfer process will continue as usual when the client
-    // responds with the file size, since the client is now in file transfer mode
-    // and has been notified to send the size
+    // Try to acquire a semaphore slot
+    while (slots_checked < max_attempts) {
+        slots_checked++;
+        
+        if (sem_trywait(&server->upload_semaphore) == -1) {
+            if (errno != EAGAIN) {
+                log_message(server, "[ERROR] sem_trywait failed in process_waiting_clients: %s", strerror(errno));
+            } else {
+                log_message(server, "[FILE_QUEUE] No slots available for waiting clients");
+            }
+            return; // No slots available
+        }
+        
+        // We acquired a slot, now find a waiting client
+        Client *waiting_client = NULL;
+        int waiting_client_index = -1;
+        
+        pthread_mutex_lock(&server->clients_mutex);
+        
+        // Find the first client waiting for an upload slot
+        for (int i = 0; i < MAX_CLIENTS; i++) {
+            if (server->clients[i].status == CLIENT_CONNECTED && 
+                server->clients[i].waiting_for_upload_slot) {
+                waiting_client = &server->clients[i];
+                waiting_client_index = i;
+                
+                // Capture the queued info first before changing flags
+                char filename[MAX_FILE_NAME_LEN];
+                char recipient[MAX_USERNAME_LEN + 1];
+                strncpy(filename, waiting_client->queued_filename, MAX_FILE_NAME_LEN);
+                strncpy(recipient, waiting_client->queued_recipient, MAX_USERNAME_LEN + 1);
+                
+                // Reset the waiting flag
+                waiting_client->waiting_for_upload_slot = false;
+                
+                // Mark client as in file transfer
+                waiting_client->in_file_transfer = true;
+                
+                log_message(server, "[FILE_QUEUE] Found waiting client: %s. Assigned slot %d.", 
+                          waiting_client->username, slots_checked);
+                
+                // Unlock before notification to prevent potential deadlocks
+                pthread_mutex_unlock(&server->clients_mutex);
+                
+                // Send notifications with a small delay between them to ensure proper ordering
+                notify_client(waiting_client, "[Server]: A file upload slot is now available. Your queued file transfer will begin.");
+                usleep(50000); // 50ms delay to ensure messages are processed in order
+                notify_client(waiting_client, "[Server]: Send file size in bytes:");
+                
+                log_message(server, "[FILE_QUEUE] Successfully notified client %s to start transfer.", 
+                          waiting_client->username);
+                
+                // Try to process more waiting clients if available
+                process_waiting_clients(server);
+                return;
+            }
+        }
+        
+        // If we get here, we acquired a semaphore but found no waiting clients.
+        // This shouldn't normally happen, but just in case...
+        pthread_mutex_unlock(&server->clients_mutex);
+        log_message(server, "[FILE_QUEUE] Warning: Acquired semaphore but no waiting clients found. Releasing slot.");
+        sem_post(&server->upload_semaphore);
+        return;
+    }
 }
 
 /**
@@ -333,15 +373,33 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
     if (sem_trywait(&server->upload_semaphore) == -1) {
         if (errno == EAGAIN) {
             log_message(server, "[FILE_QUEUE] Upload queue full for %s. Client will be notified when a slot is available.", client->username);
-            notify_client(client, "[Server]: File upload queue is full. Your request has been queued. You will be notified when a slot becomes available.");
+            
+            // Get current semaphore value for debugging
+            int sem_value;
+            sem_getvalue(&server->upload_semaphore, &sem_value);
+            log_message(server, "[FILE_QUEUE] Current semaphore value: %d (max: 5)", sem_value);
             
             // Add this file transfer request to a queue to be processed later
-            // We'll use the client's in_file_transfer flag to track this status
             pthread_mutex_lock(&server->clients_mutex);
             client->waiting_for_upload_slot = true;
             strncpy(client->queued_filename, filename, MAX_FILE_NAME_LEN);
             strncpy(client->queued_recipient, recipient_username, MAX_USERNAME_LEN);
+            
+            // Log all currently waiting clients for debugging
+            int waiting_count = 0;
+            for (int i = 0; i < MAX_CLIENTS; i++) {
+                if (server->clients[i].status == CLIENT_CONNECTED && 
+                    server->clients[i].waiting_for_upload_slot) {
+                    waiting_count++;
+                }
+            }
             pthread_mutex_unlock(&server->clients_mutex);
+            
+            log_message(server, "[FILE_QUEUE] Client %s marked as waiting for upload slot (%d clients waiting total)", 
+                      client->username, waiting_count);
+            
+            // Notify client about queuing
+            notify_client(client, "[Server]: File upload queue is full. Your request has been queued. You will be notified when a slot becomes available.");
             
             // Don't wait for the semaphore here - just return
             client->in_file_transfer = false;
@@ -370,8 +428,11 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
     if (bytes_read <= 0) {
         notify_client(client, "[Server]: Error - Failed to receive file size.");
         client->in_file_transfer = false;
-        if (semaphore_acquired) sem_post(&server->upload_semaphore);
-        log_message(server, "[FILE_QUEUE] Slot released by %s (failed to recv size).", client->username);
+        if (semaphore_acquired) {
+            log_message(server, "[FILE_QUEUE] Slot released by %s (failed to recv size).", client->username);
+            sem_post(&server->upload_semaphore);
+            process_waiting_clients(server);
+        }
         return;
     }
     
@@ -382,8 +443,11 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
     if (*endptr != '\0' || (*endptr == '\0' && buffer[0] == '\0') || filesize == 0) { // also check if buffer was empty
         notify_client(client, "[Server]: Error - Invalid file size format.");
         client->in_file_transfer = false;
-        if (semaphore_acquired) sem_post(&server->upload_semaphore);
-        log_message(server, "[FILE_QUEUE] Slot released by %s (invalid file size format: '%s').", client->username, buffer);
+        if (semaphore_acquired) {
+            log_message(server, "[FILE_QUEUE] Slot released by %s (invalid file size format: '%s').", client->username, buffer);
+            sem_post(&server->upload_semaphore);
+            process_waiting_clients(server);
+        }
         return;
     }
     
@@ -391,8 +455,11 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
         notify_client(client, "[Server]: Error - File size must be between 1 and 3MB.");
         log_message(server, "[ERROR] File '%s' from user '%s' exceeds size limit (%zu bytes).", filename, client->username, filesize);
         client->in_file_transfer = false;
-        if (semaphore_acquired) sem_post(&server->upload_semaphore);
-        log_message(server, "[FILE_QUEUE] Slot released by %s (file too large).", client->username);
+        if (semaphore_acquired) {
+            log_message(server, "[FILE_QUEUE] Slot released by %s (file too large).", client->username);
+            sem_post(&server->upload_semaphore);
+            process_waiting_clients(server);
+        }
         return;
     }
     
@@ -403,8 +470,11 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
         notify_client(client, "[Server]: Error - Memory allocation failed for file buffer.");
         log_message(server, "[ERROR] Failed to malloc file buffer for %s (size %zu).", client->username, filesize);
         client->in_file_transfer = false;
-        if (semaphore_acquired) sem_post(&server->upload_semaphore);
-        log_message(server, "[FILE_QUEUE] Slot released by %s (malloc failed).", client->username);
+        if (semaphore_acquired) {
+            log_message(server, "[FILE_QUEUE] Slot released by %s (malloc failed).", client->username);
+            sem_post(&server->upload_semaphore);
+            process_waiting_clients(server);
+        }
         return;
     }
     
@@ -421,8 +491,11 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
             notify_client(client, "[Server]: Error - File transfer failed during reception.");
             free(file_buffer_ptr);
             client->in_file_transfer = false;
-            if (semaphore_acquired) sem_post(&server->upload_semaphore);
-            log_message(server, "[FILE_QUEUE] Slot released by %s (recv data chunk failed).", client->username);
+            if (semaphore_acquired) {
+                log_message(server, "[FILE_QUEUE] Slot released by %s (recv data chunk failed).", client->username);
+                sem_post(&server->upload_semaphore);
+                process_waiting_clients(server);
+            }
             return;
         }
         total_received += data_received_chunk;
@@ -466,8 +539,11 @@ void handle_sendfile_command(Server *server, Client *client, const char *args) {
         notify_client(client, "[Server]: Error - Failed to initiate file transfer with recipient.");
         free(file_buffer_ptr);
         client->in_file_transfer = false;
-        if (semaphore_acquired) sem_post(&server->upload_semaphore);
-        log_message(server, "[FILE_QUEUE] Slot released by %s (send header to recp failed).", client->username);
+        if (semaphore_acquired) {
+            log_message(server, "[FILE_QUEUE] Slot released by %s (send header to recp failed).", client->username);
+            sem_post(&server->upload_semaphore);
+            process_waiting_clients(server);
+        }
         return;
     }
     

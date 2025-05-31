@@ -323,10 +323,26 @@ bool handle_file_send(Client *client, const char *filename, const char *recipien
                 if (strstr(queue_msg, "slot is now available") != NULL) {
                     print_message("Info", "Upload slot available, resuming file transfer", COLOR_CYAN);
                     
+                    // Add a small delay to ensure server is ready
+                    usleep(100000); // 100ms delay
+                    
                     // Restore blocking mode
                     fcntl(client->socket, F_SETFL, flags);
                     
-                    // Wait for the "Send file size" prompt
+                    // Wait for the "Send file size" prompt with a timeout
+                    fd_set readfds;
+                    struct timeval tv;
+                    FD_ZERO(&readfds);
+                    FD_SET(client->socket, &readfds);
+                    tv.tv_sec = 3;  // 3 second timeout
+                    tv.tv_usec = 0;
+                    
+                    int prompt_activity = select(client->socket + 1, &readfds, NULL, NULL, &tv);
+                    if (prompt_activity <= 0) {
+                        print_message("Error", "Timeout waiting for server prompt", COLOR_RED);
+                        return false;
+                    }
+                    
                     char size_prompt[256];
                     ssize_t prompt_bytes = recv(client->socket, size_prompt, sizeof(size_prompt) - 1, 0);
                     if (prompt_bytes <= 0) {
@@ -335,6 +351,7 @@ bool handle_file_send(Client *client, const char *filename, const char *recipien
                         return false;
                     }
                     size_prompt[prompt_bytes] = '\0';
+                    print_message("Debug", "Received prompt: %s", COLOR_BLUE, size_prompt);
                     
                     // Reopen the file
                     file = fopen(filename, "rb");
